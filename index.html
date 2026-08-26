@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#145c4b">
+    <meta
+      id="meta-description"
+      name="description"
+      content="Wakeup은 설치 없이 브라우저에서 PC와 Mac 화면이 꺼지지 않도록 유지하고 타이머를 설정할 수 있는 간단한 웹 도구입니다."
+    >
+    <title>Wakeup — PC와 Mac 화면 절전 방지</title>
+    <link rel="canonical" href="https://wakeup.subproject.kr/">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icons/icon-192.png" type="image/png">
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <main class="app" aria-labelledby="service-title">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <h1 class="brand" id="service-title">
+            <a href="./" aria-label="Wakeup 홈" data-i18n-aria="homeLabel">Wakeup</a>
+          </h1>
+          <p class="tagline" data-i18n="tagline">브라우저에서 화면이 잠들지 않게.</p>
+        </div>
+        <div
+          class="language-switch"
+          role="group"
+          aria-label="언어 선택"
+          data-i18n-aria="languageGroup"
+        >
+          <button type="button" data-language="ko" aria-pressed="true">한국어</button>
+          <button type="button" data-language="en" aria-pressed="false">English</button>
+        </div>
+      </header>
+
+      <section class="status-panel" id="status-panel" data-state="requesting">
+        <div class="status-heading">
+          <span class="status-mark" aria-hidden="true"></span>
+          <div class="status-copy" aria-live="polite" aria-atomic="true">
+            <h2 id="status-title">절전 방지를 시작하는 중</h2>
+            <p id="status-description">브라우저에 화면 잠금 방지를 요청하고 있습니다.</p>
+          </div>
+        </div>
+
+        <div class="status-times" aria-label="시간 정보" data-i18n-aria="timeGroup">
+          <div class="time-item">
+            <span class="time-label" data-i18n="elapsedLabel">절전 방지 시간</span>
+            <output class="time-value" id="elapsed-time">00:00:00</output>
+          </div>
+          <div class="time-item" id="remaining-group" hidden>
+            <span class="time-label" data-i18n="remainingLabel">남은 시간</span>
+            <output class="time-value" id="remaining-time">00:00:00</output>
+          </div>
+        </div>
+      </section>
+
+      <button class="primary-action" id="action-button" type="button">
+        절전 방지 중지
+      </button>
+
+      <section class="timer-section" aria-labelledby="timer-title">
+        <div class="section-heading">
+          <h2 id="timer-title" data-i18n="timerTitle">타이머 설정</h2>
+          <p class="current-timer">
+            <span data-i18n="currentTimerLabel">현재</span>
+            <strong id="current-timer">제한 없음</strong>
+          </p>
+        </div>
+
+        <div
+          class="timer-options"
+          role="group"
+          aria-label="타이머 선택"
+          data-i18n-aria="timerGroup"
+        >
+          <button type="button" data-duration="unlimited" aria-pressed="true" data-i18n="unlimited">제한 없음</button>
+          <button type="button" data-duration="15" aria-pressed="false" data-i18n="minutes15">15분</button>
+          <button type="button" data-duration="30" aria-pressed="false" data-i18n="minutes30">30분</button>
+          <button type="button" data-duration="60" aria-pressed="false" data-i18n="hour1">1시간</button>
+          <button type="button" data-duration="120" aria-pressed="false" data-i18n="hours2">2시간</button>
+          <button
+            type="button"
+            data-duration="custom"
+            aria-pressed="false"
+            aria-expanded="false"
+            aria-controls="custom-duration"
+            data-i18n="custom"
+          >직접 입력</button>
+        </div>
+
+        <form class="custom-duration" id="custom-duration" hidden>
+          <div class="field">
+            <label for="custom-hours" data-i18n="customHoursLabel">시간</label>
+            <input
+              id="custom-hours"
+              name="custom-hours"
+              type="number"
+              min="0"
+              max="999"
+              step="1"
+              value="0"
+              inputmode="numeric"
+              required
+            >
+          </div>
+          <div class="field">
+            <label for="custom-minutes" data-i18n="customMinutesLabel">분</label>
+            <input
+              id="custom-minutes"
+              name="custom-minutes"
+              type="number"
+              min="0"
+              max="59"
+              step="1"
+              value="30"
+              inputmode="numeric"
+              required
+            >
+          </div>
+          <button class="apply-timer" type="submit" data-i18n="applyTimer">적용</button>
+        </form>
+      </section>
+
+      <details class="limitations">
+        <summary data-i18n="limitationsSummary">작동 방식 및 제한 사항</summary>
+        <div class="limitations-body">
+          <p data-i18n="limitationsIntro">
+            Wakeup은 설치 없이 브라우저의 표준 Screen Wake Lock 기능으로 화면이 꺼지지 않도록 요청합니다.
+          </p>
+          <ul>
+            <li data-i18n="limitationVisible">
+              Wakeup 페이지가 보이는 동안에만 작동합니다. 다른 탭으로 이동하거나 창을 최소화하면 일시 중지되며, 돌아오면 자동으로 다시 시도합니다.
+            </li>
+            <li data-i18n="limitationWindow">
+              다른 앱을 함께 사용할 때는 Wakeup을 별도 창으로 열어 화면 한쪽에 두는 방법이 가장 안정적입니다.
+            </li>
+            <li data-i18n="limitationSystem">
+              저전력 모드, 배터리 상태, 운영체제 정책이나 닫힌 노트북 덮개는 웹페이지가 제어할 수 없습니다.
+            </li>
+            <li data-i18n="limitationScreen">
+              화면 꺼짐 방지 기능이며, 화면을 끈 채 컴퓨터만 깨워 두는 기능은 아닙니다.
+            </li>
+          </ul>
+          <p data-i18n="privacyNote">
+            사용자 설정이나 이용 기록은 저장하지 않습니다. 오프라인 실행에 필요한 앱 파일만 브라우저에 캐시됩니다.
+          </p>
+        </div>
+      </details>
+
+      <noscript>
+        <p class="noscript">이 기능을 사용하려면 JavaScript를 허용해야 합니다.</p>
+      </noscript>
+    </main>
+  </body>
+</html>
