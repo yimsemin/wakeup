@@ -1,0 +1,21 @@
+# Operating system metadata
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# Editor and local workspace files
+.idea/
+.vscode/
+*.swp
+*~
+
+# Local environment and logs
+.env
+.env.*
+!.env.example
+*.log
+
+# Agent-local state
+.agents/
+.codex/
