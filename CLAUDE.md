@@ -13,7 +13,7 @@
 
 ## 파일 구조 (전부)
 
-`index.html` · `styles.css` · `app.js`(단일 IIFE) · `sw.js` · `manifest.webmanifest` · `_headers` · `icons/`
+`index.html` · `styles.css` · `app.js`(단일 IIFE) · `sw.js` · `manifest.webmanifest` · `_headers` · `_redirects` · `icons/`
 
 ## 로컬 실행 / 검증
 
@@ -44,9 +44,11 @@ python3 -m http.server 8000
 - 앱 셸 파일(`index.html`/`styles.css`/`app.js`/`manifest`/아이콘) 내용을 바꾸면
   `sw.js`의 `CACHE_NAME` 버전을 반드시 올린다. 안 올리면 재방문자가 구버전을 본다.
 - 자산 파일명에 해시가 없다. SW 캐시 무효화는 위 버전 규율에만 의존한다.
-- `_headers`는 로컬 python 서버에서는 적용되지 않는다. CSP 확인은 배포 환경에서.
+- `_headers`/`_redirects`는 로컬 python 서버에서는 적용되지 않는다. 헤더·404 확인은 배포 환경에서.
 
 ## 배포
 
-빌드 없음. Cloudflare Pages를 GitHub 리포에 연결하면 루트의 정적 파일과 `_headers`가 그대로 적용된다.
-설정 파일(`wrangler.toml` 등) 추가 금지 — 대시보드 Git 연동만 사용한다.
+빌드 없음. Cloudflare Pages를 GitHub 리포에 연결하면 루트의 정적 파일, `_headers`(보안 헤더), `_redirects`(미존재 경로 → `index.html` 본문 + 404)가 그대로 적용된다. main에 push하면 자동 배포된다.
+`wrangler.toml` 등 빌드/배포 설정 파일은 추가하지 않는다 — 대시보드 Git 연동만 사용한다.
+
+CF 대시보드 쪽 설정(존별): Web Analytics 비활성(추적 코드 금지 원칙), SSL/TLS에서 HSTS, 필요 시 Browser Cache TTL을 "Respect Existing Headers"로 두어 `_headers`가 권위를 갖게 한다.
