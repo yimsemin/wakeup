@@ -52,7 +52,7 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 - Service Worker로 앱 셸 파일만 캐시한다.
 - 사용자 데이터나 실행 상태는 캐시에 넣지 않는다.
 - Web App Manifest를 제공해 지원 브라우저에서 설치 가능한 형태로 만든다.
-- 배포는 나중에 Cloudflare Pages와 `wakeup.subproject.kr`을 사용한다. 빌드나 서버 기능은 두지 않고 정적 보안 헤더만 `_headers`로 설정한다.
+- 배포는 Cloudflare Pages와 `wakeup.subproject.kr`을 사용한다. 빌드나 서버 기능은 두지 않고, 보안 헤더는 `_headers`, 존재하지 않는 경로의 404 응답은 `_redirects` 한 줄로만 설정한다.
 
 ### 3.6 검색 기본 정보
 
@@ -92,6 +92,7 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 ├── .gitattributes
 ├── .gitignore
 ├── _headers
+├── _redirects
 ├── index.html
 ├── styles.css
 ├── app.js
@@ -111,6 +112,7 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 - 텍스트 파일은 UTF-8과 LF로 통일해 Windows와 macOS에서 같은 형식을 유지한다.
 - 저장소에는 비밀정보, 개인 로컬 경로, 운영체제와 편집기의 로컬 파일을 포함하지 않는다.
 - `_headers`에는 Cloudflare Pages에서 필요한 최소 보안 헤더와 Service Worker의 재검증 정책만 둔다.
+- `_redirects`에는 존재하지 않는 경로를 `index.html` 본문과 `404` 상태로 응답하는 규칙 한 줄만 둔다.
 
 ## 7. 브라우저 제약
 

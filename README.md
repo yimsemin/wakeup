@@ -31,13 +31,14 @@ python3 -m http.server 8000
 - `sw.js`: 앱 셸 오프라인 캐시
 - `manifest.webmanifest`: 설치형 웹앱 정보
 - `_headers`: Cloudflare Pages 보안 및 캐시 응답 헤더
+- `_redirects`: 존재하지 않는 경로의 404 응답 규칙
 - `.gitattributes`, `.editorconfig`: 운영체제와 무관한 UTF-8/LF 편집 규칙
 - `PLANNING.md`: 제품 범위와 완료 기준
 - `AGENTS.md`: 이후 작업자가 따라야 할 프로젝트 규칙
 
 ## 배포
 
-빌드 과정 없이 저장소의 정적 파일을 그대로 Cloudflare Pages에 배포할 수 있다. `_headers`의 보안 정책도 함께 적용되며, 실제 도메인 연결은 별도 배포 단계에서 진행한다.
+빌드 과정 없이 저장소의 정적 파일을 그대로 Cloudflare Pages에 배포한다. `_headers`의 보안 정책과 `_redirects`의 404 규칙이 함께 적용된다. 현재 `wakeup.subproject.kr`에 연결되어 있다.
 
 ## 알려진 제약
 

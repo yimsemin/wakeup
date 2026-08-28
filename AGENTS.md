@@ -48,7 +48,7 @@ Wakeup은 데스크톱 브라우저에서 Screen Wake Lock을 이용해 화면 �
 - 공개되어도 문제가 없도록 비밀정보, 개인 식별 정보, 개인 로컬 경로와 실제 환경 설정 파일을 커밋하지 않는다.
 - 텍스트 파일은 UTF-8과 LF를 사용하고 `.gitattributes`와 `.editorconfig`를 기준으로 Windows와 macOS에서 같은 형식을 유지한다.
 - 운영체제, 편집기와 에이전트가 만든 로컬 파일은 `.gitignore`에만 최소한으로 추가한다.
-- `_headers`는 Cloudflare Pages의 정적 보안 헤더와 Service Worker 갱신 정책만 담당한다. 서버 기능이나 별도 배포 계층을 만들지 않는다.
+- `_headers`는 정적 보안 헤더와 Service Worker 갱신 정책만, `_redirects`는 존재하지 않는 경로의 `404` 응답 한 줄만 담당한다. 서버 기능이나 별도 배포 계층을 만들지 않는다.
 
 ## 검증
 
