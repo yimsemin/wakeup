@@ -1,13 +1,13 @@
 {
   "name": "Wakeup",
   "short_name": "Wakeup",
-  "description": "Keep your screen awake while this app is visible.",
+  "description": "Keep your screen awake in the browser.",
   "lang": "ko",
   "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#f3f6f5",
+  "background_color": "#f4f6f5",
   "theme_color": "#145c4b",
   "icons": [
     {
