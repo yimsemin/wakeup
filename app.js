@@ -1,6 +1,15 @@
 (() => {
   "use strict";
 
+  // 상태 기계 개요
+  // `state`는 화면에 표시되는 상태이며 PLANNING.md 5절의 값만 가진다.
+  // 세 불리언이 전이를 결정한다.
+  //   shouldStayAwake: 사용자가 절전 방지를 원하는지. stop/expire/unsupported 시 false.
+  //   timerExpired:     설정한 타이머가 끝났는지. 끝나면 가시성 변경으로 재시작하지 않는다.
+  //   requestInProgress: wakeLock 요청이 진행 중인지. 중복 요청을 막는다.
+  // 활성 시간과 남은 시간은 tick이 아니라 Date.now() 차이를 누적하며,
+  // wakeLock이 실제로 잡혀 있는 구간에서만 진행한다(startActiveTiming/pauseActiveTiming).
+
   const COPY = {
     ko: {
       seoTitle: "Wakeup — PC와 Mac 화면 절전 방지",
@@ -390,6 +399,9 @@
 
   elements.timerButtons.forEach((button) => {
     button.addEventListener("click", () => {
+      // 이전 입력 오류가 남아 있으면 유효한 값도 다시 적용되지 않으므로 먼저 지운다.
+      elements.customHours.setCustomValidity("");
+      elements.customMinutes.setCustomValidity("");
       const value = button.dataset.duration;
       if (value === "custom") {
         elements.customForm.hidden = false;
