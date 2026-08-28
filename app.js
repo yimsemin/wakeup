@@ -7,6 +7,10 @@
   //   shouldStayAwake: 사용자가 절전 방지를 원하는지. stop/expire/unsupported 시 false.
   //   timerExpired:     설정한 타이머가 끝났는지. 끝나면 가시성 변경으로 재시작하지 않는다.
   //   requestInProgress: wakeLock 요청이 진행 중인지. 중복 요청을 막는다.
+  // requestWakeLock(fromUserGesture)는 요청이 사용자 조작에서 나왔는지 구분한다.
+  // 일부 브라우저(예: Safari)는 사용자 조작 없는 자동 요청을 거부한다. 이때는
+  // 오류가 아니라 `prompt`(시작 버튼을 누르도록 안내)를 표시하고, 조작에서 나온
+  // 요청이 거부됐을 때만 `error`로 다룬다.
   // 활성 시간과 남은 시간은 tick이 아니라 Date.now() 차이를 누적하며,
   // wakeLock이 실제로 잡혀 있는 구간에서만 진행한다(startActiveTiming/pauseActiveTiming).
 
@@ -45,6 +49,7 @@
       invalidDuration: "시간과 분을 합쳐 1분 이상 입력하세요.",
       states: {
         requesting: ["절전 방지를 시작하는 중", "브라우저에 화면 잠금 방지를 요청하고 있습니다."],
+        prompt: ["절전 방지를 시작하려면 버튼을 누르세요", "이 브라우저에서는 사용자가 직접 시작해야 화면 잠금 방지가 허용됩니다. 아래 ‘절전 방지 시작’을 누르면 시작됩니다."],
         active: ["절전 방지 중", "이 페이지가 보이는 동안 화면이 켜진 상태를 유지합니다."],
         idle: ["절전 방지 꺼짐", "컴퓨터가 시스템 설정에 따라 절전 모드로 들어갈 수 있습니다."],
         suspended: ["절전 방지가 일시 중단됨", "이 탭이 화면에 보이지 않는 동안에는 절전 방지가 멈추고, 탭으로 돌아오면 자동으로 다시 시작합니다. 다른 창을 보면서 계속 쓰려면 Wakeup을 별도 창으로 열어 최소화하지 말고 화면에 보이게 두세요."],
@@ -87,6 +92,7 @@
       invalidDuration: "Enter a total duration of at least 1 minute.",
       states: {
         requesting: ["Starting wake lock", "Requesting permission from the browser to keep the screen awake."],
+        prompt: ["Press the button to start", "This browser only allows screen wake lock after you start it yourself. Press “Start keeping awake” below to begin."],
         active: ["Keeping screen awake", "The screen will stay on while this page remains visible."],
         idle: ["Wake lock is off", "The computer may sleep according to its system settings."],
         suspended: ["Keeping awake is paused", "Staying awake pauses while this tab is not visible and resumes automatically when you return to it. To keep it running while you work in another window, open Wakeup in its own window and keep that window visible on screen, not minimized."],
@@ -292,7 +298,7 @@
     if (currentLock && !currentLock.released) await currentLock.release();
   }
 
-  async function requestWakeLock() {
+  async function requestWakeLock(fromUserGesture = false) {
     if (!("wakeLock" in navigator)) {
       shouldStayAwake = false;
       pauseActiveTiming();
@@ -340,7 +346,8 @@
     } catch {
       wakeLock = null;
       pauseActiveTiming();
-      setState(document.visibilityState === "visible" ? "error" : "suspended");
+      if (document.visibilityState !== "visible") setState("suspended");
+      else setState(fromUserGesture ? "error" : "prompt");
     } finally {
       requestInProgress = false;
       renderState();
@@ -364,7 +371,7 @@
     timerExpired = false;
     shouldStayAwake = true;
     renderClock();
-    await requestWakeLock();
+    await requestWakeLock(true);
   }
 
   async function stopWakeLock() {
@@ -397,7 +404,7 @@
   elements.action.addEventListener("click", () => {
     const shouldStop = shouldStayAwake && (state === "active" || state === "requesting");
     if (shouldStop) void stopWakeLock();
-    else if (shouldStayAwake) void requestWakeLock();
+    else if (shouldStayAwake) void requestWakeLock(true);
     else void startNewSession();
   });
 

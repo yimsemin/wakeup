@@ -33,8 +33,9 @@ python3 -m http.server 8000
 
 ## app.js 구조 메모
 
-- 상태 `state`는 `PLANNING.md` 5절의 값만 가진다(`requesting`/`active`/`idle`/`suspended`/`expired`/`unsupported`/`error`).
+- 상태 `state`는 `PLANNING.md` 5절의 값만 가진다(`requesting`/`prompt`/`active`/`idle`/`suspended`/`expired`/`unsupported`/`error`).
 - 전이를 결정하는 세 불리언: `shouldStayAwake`(사용자 의도), `timerExpired`, `requestInProgress`.
+- `requestWakeLock(fromUserGesture)`: 자동 요청(로드·가시성 복귀·해제 후 재요청)이 거부되면 `prompt`, 사용자 조작에서 나온 요청이 거부되면 `error`. Safari는 사용자 조작 없는 요청을 항상 거부한다.
 - 활성 시간·남은 시간은 tick 카운트가 아니라 `Date.now()` 차이를 누적하며,
   wakeLock이 실제로 잡힌 구간(`startActiveTiming`/`pauseActiveTiming`)에서만 진행한다.
 - 사용자 표시 문구는 `COPY` 사전 한 곳. 새 문구는 ko/en 동시 추가.
