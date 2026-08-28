@@ -37,8 +37,8 @@
       retry: "다시 시도",
       limitationsSummary: "작동 방식 및 제한 사항",
       limitationsIntro: "Wakeup은 설치 없이 브라우저의 표준 Screen Wake Lock 기능으로 화면이 꺼지지 않도록 요청합니다.",
-      limitationVisible: "Wakeup 페이지가 보이는 동안에만 작동합니다. 다른 탭으로 이동하거나 창을 최소화하면 일시 중지되며, 돌아오면 자동으로 다시 시도합니다.",
-      limitationWindow: "다른 앱을 함께 사용할 때는 Wakeup을 별도 창으로 열어 화면 한쪽에 두는 방법이 가장 안정적입니다.",
+      limitationVisible: "Wakeup 탭이 화면에 보일 때만 작동합니다. 다른 탭으로 이동하거나 창을 최소화하면 절전 방지가 멈추고, 이 탭으로 돌아오면 자동으로 다시 시작합니다.",
+      limitationWindow: "다른 창에서 작업하면서 계속 켜 두려면 Wakeup을 별도 창으로 열고, 그 창을 최소화하지 말고 화면에 보이도록 두세요. 창에 포커스가 없어도 보이기만 하면 됩니다.",
       limitationSystem: "저전력 모드, 배터리 상태, 운영체제 정책이나 닫힌 노트북 덮개는 웹페이지가 제어할 수 없습니다.",
       limitationScreen: "화면 꺼짐 방지 기능이며, 화면을 끈 채 컴퓨터만 깨워 두는 기능은 아닙니다.",
       privacyNote: "사용자 설정이나 이용 기록은 저장하지 않습니다. 오프라인 실행에 필요한 앱 파일만 브라우저에 캐시됩니다.",
@@ -47,7 +47,7 @@
         requesting: ["절전 방지를 시작하는 중", "브라우저에 화면 잠금 방지를 요청하고 있습니다."],
         active: ["절전 방지 중", "이 페이지가 보이는 동안 화면이 켜진 상태를 유지합니다."],
         idle: ["절전 방지 꺼짐", "컴퓨터가 시스템 설정에 따라 절전 모드로 들어갈 수 있습니다."],
-        suspended: ["절전 방지가 일시 중단됨", "탭이 보이지 않거나 시스템이 잠금을 해제했습니다. 페이지로 돌아오면 다시 시도합니다."],
+        suspended: ["절전 방지가 일시 중단됨", "이 탭이 화면에 보이지 않는 동안에는 절전 방지가 멈추고, 탭으로 돌아오면 자동으로 다시 시작합니다. 다른 창을 보면서 계속 쓰려면 Wakeup을 별도 창으로 열어 최소화하지 말고 화면에 보이게 두세요."],
         expired: ["타이머 종료", "이제 컴퓨터가 시스템 설정에 따라 절전 모드로 들어갈 수 있습니다."],
         unsupported: ["지원되지 않는 브라우저", "이 브라우저에서는 화면 잠금 방지 기능을 사용할 수 없습니다."],
         error: ["절전 방지를 시작하지 못함", "브라우저 또는 시스템이 요청을 허용하지 않았습니다. 아래 버튼으로 다시 시도할 수 있습니다."]
@@ -79,8 +79,8 @@
       retry: "Try again",
       limitationsSummary: "How it works and limitations",
       limitationsIntro: "Wakeup uses the browser's standard Screen Wake Lock feature to keep your screen on, with nothing to install.",
-      limitationVisible: "Wakeup works only while its page is visible. Switching tabs or minimizing the window pauses it, and returning automatically retries the lock.",
-      limitationWindow: "When using another app, opening Wakeup in a separate, non-minimized window is the most reliable setup.",
+      limitationVisible: "Wakeup works only while its tab is visible on screen. Switching to another tab or minimizing the window pauses it; returning to this tab starts it again automatically.",
+      limitationWindow: "To keep it on while you work in another window, open Wakeup in its own window and keep that window visible on screen, not minimized. The window does not need to be focused, only visible.",
       limitationSystem: "A web page cannot override low-power mode, battery restrictions, operating system policies, or a closed laptop lid.",
       limitationScreen: "This keeps the screen on; it cannot keep only the computer awake while the screen is off.",
       privacyNote: "No preferences or usage history are saved. Only the app files required for offline use are cached by the browser.",
@@ -89,7 +89,7 @@
         requesting: ["Starting wake lock", "Requesting permission from the browser to keep the screen awake."],
         active: ["Keeping screen awake", "The screen will stay on while this page remains visible."],
         idle: ["Wake lock is off", "The computer may sleep according to its system settings."],
-        suspended: ["Wake lock paused", "The tab is hidden or the system released the lock. Wakeup will retry when you return."],
+        suspended: ["Keeping awake is paused", "Staying awake pauses while this tab is not visible and resumes automatically when you return to it. To keep it running while you work in another window, open Wakeup in its own window and keep that window visible on screen, not minimized."],
         expired: ["Timer finished", "The computer may now sleep according to its system settings."],
         unsupported: ["Browser not supported", "This browser does not provide the screen wake lock feature."],
         error: ["Could not start wake lock", "The browser or system rejected the request. You can try again below."]
@@ -177,7 +177,11 @@
     elements.statusPanel.dataset.state = state;
     elements.statusTitle.textContent = title;
     elements.statusDescription.textContent = description;
-    document.title = state === "expired" ? `${title} · Wakeup` : copy.seoTitle;
+    // 탭이 백그라운드일 때도 사용자가 탭 제목만으로 알 수 있도록,
+    // 주의가 필요한 상태(일시 중단·타이머 종료·오류)는 상태 제목을 탭 제목에 노출한다.
+    const titleShowsStatus =
+      state === "suspended" || state === "expired" || state === "error";
+    document.title = titleShowsStatus ? `${title} · Wakeup` : copy.seoTitle;
 
     const canStop = shouldStayAwake && (state === "active" || state === "requesting");
     elements.action.dataset.action = canStop ? "stop" : "start";
