@@ -53,6 +53,21 @@
       limitationScreen: "화면 꺼짐 방지 기능이며, 화면을 끈 채 컴퓨터만 깨워 두는 기능은 아닙니다.",
       privacyNote: "사용자 설정이나 이용 기록은 저장하지 않습니다. 오프라인 실행에 필요한 앱 파일만 브라우저에 캐시됩니다.",
       sourceLink: "GitHub에서 프로젝트 보기",
+      faqTitle: "자주 묻는 질문",
+      faqTabQ: "다른 탭이나 창으로 전환하면 어떻게 되나요?",
+      faqTabA: "절전 방지가 잠시 멈췄다가 Wakeup 탭으로 돌아오면 자동으로 다시 시작합니다. 화면에 표시되는 절전 방지 시간은 잠금이 실제로 걸려 있던 시간만 셉니다.",
+      faqBatteryQ: "배터리가 더 빨리 닳나요?",
+      faqBatteryA: "화면을 켜 두는 동안에는 화면이 꺼질 때보다 전력을 더 씁니다. Wakeup 자체는 배경에서 아무 작업도 하지 않으며, 노트북의 저전력 정책이 브라우저 요청을 무시할 수도 있습니다.",
+      faqInstallQ: "설치해야 하나요?",
+      faqInstallA: "아니요. 브라우저에서 페이지를 열기만 하면 됩니다. 원하면 설치형 앱으로 추가할 수 있고, 한 번 열어 두면 다음부터는 오프라인에서도 실행됩니다.",
+      faqBrowserQ: "어떤 브라우저에서 작동하나요?",
+      faqBrowserA: "표준 Screen Wake Lock 기능을 지원하는 최신 데스크톱 브라우저에서 작동합니다. 대부분의 최신 Chrome, Edge, Safari, Firefox가 여기에 해당하며, 지원하지 않는 브라우저에서는 ‘지원되지 않는 브라우저’라고 안내합니다.",
+      faqLidQ: "노트북 덮개를 닫아도 화면이 켜져 있나요?",
+      faqLidA: "아니요. 덮개를 닫거나 운영체제가 절전에 들어가는 것은 웹페이지가 막을 수 없습니다. Wakeup은 화면이 스스로 꺼지거나 잠기는 것만 늦춥니다.",
+      faqScreenOffQ: "화면은 끄고 컴퓨터만 깨어 있게 할 수 있나요?",
+      faqScreenOffA: "아니요. 브라우저가 제공하는 것은 화면 잠금 방지뿐입니다. 화면을 끈 채로 다운로드나 작업을 계속하려면 운영체제의 전원 설정을 사용하세요.",
+      faqPrivacyQ: "사용 기록이나 개인정보를 수집하나요?",
+      faqPrivacyA: "아니요. 쿠키, 사용자 설정 저장, 분석 코드가 없습니다. 오프라인 실행에 필요한 앱 파일만 브라우저에 캐시됩니다.",
       invalidDuration: "시간과 분을 합쳐 1분 이상 입력하세요.",
       states: {
         requesting: ["절전 방지를 시작하는 중", "브라우저에 화면 잠금 방지를 요청하고 있습니다."],
@@ -103,6 +118,21 @@
       limitationScreen: "This keeps the screen on; it cannot keep only the computer awake while the screen is off.",
       privacyNote: "No preferences or usage history are saved. Only the app files required for offline use are cached by the browser.",
       sourceLink: "View the project on GitHub",
+      faqTitle: "Frequently asked questions",
+      faqTabQ: "What happens when I switch to another tab or window?",
+      faqTabA: "Keeping the screen awake pauses, then resumes automatically when you return to the Wakeup tab. The wake lock time shown counts only the time a lock was actually held.",
+      faqBatteryQ: "Does it drain the battery faster?",
+      faqBatteryA: "Keeping the display on uses more power than letting it turn off. Wakeup itself does no background work, and a laptop's low-power policy may override the browser request.",
+      faqInstallQ: "Do I need to install anything?",
+      faqInstallA: "No. Just open the page in your browser. You can optionally add it as an installed app, and once loaded it also runs offline.",
+      faqBrowserQ: "Which browsers does it work in?",
+      faqBrowserA: "It works in modern desktop browsers that support the standard Screen Wake Lock feature — most current versions of Chrome, Edge, Safari, and Firefox. Browsers without it show a “not supported” notice.",
+      faqLidQ: "Does it keep the screen on when I close the laptop lid?",
+      faqLidA: "No. A web page cannot stop the lid closing or the operating system going to sleep. Wakeup only holds off the screen turning off or locking on its own.",
+      faqScreenOffQ: "Can it keep the computer awake with the screen off?",
+      faqScreenOffA: "No. The browser only offers a screen wake lock. To keep downloads or tasks running with the display off, use your operating system's power settings.",
+      faqPrivacyQ: "Does it collect any usage data or personal information?",
+      faqPrivacyA: "No. There are no cookies, no stored preferences, and no analytics. Only the app files needed for offline use are cached by the browser.",
       invalidDuration: "Enter a total duration of at least 1 minute.",
       states: {
         requesting: ["Starting wake lock", "Requesting permission from the browser to keep the screen awake."],
@@ -118,7 +148,6 @@
   };
 
   const elements = {
-    metaDescription: document.querySelector("#meta-description"),
     statusPanel: document.querySelector("#status-panel"),
     statusTitle: document.querySelector("#status-title"),
     statusDescription: document.querySelector("#status-description"),
@@ -202,10 +231,12 @@
   function translatePage() {
     const copy = COPY[language];
     document.documentElement.lang = language;
-    elements.metaDescription.setAttribute("content", copy.seoDescription);
 
     document.querySelectorAll("[data-i18n]").forEach((element) => {
       element.textContent = copy[element.dataset.i18n];
+    });
+    document.querySelectorAll("[data-i18n-content]").forEach((element) => {
+      element.setAttribute("content", copy[element.dataset.i18nContent]);
     });
     document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
       element.setAttribute("aria-label", copy[element.dataset.i18nAria]);
