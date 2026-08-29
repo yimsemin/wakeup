@@ -197,6 +197,18 @@ label {
   opacity: 0.55;
 }
 
+.secondary-action {
+  width: 100%;
+  min-height: 2.9rem;
+  margin-top: 0.6rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid #cdd8d4;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  color: #244039;
+  font-weight: 700;
+}
+
 .timer-section {
   margin-top: 3.25rem;
 }
