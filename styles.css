@@ -430,6 +430,13 @@ input {
   font-variant-numeric: tabular-nums;
 }
 
+.ambient-note {
+  max-width: 34rem;
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
+}
+
 .ambient-hint {
   position: fixed;
   left: 0;
