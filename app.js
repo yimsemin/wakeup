@@ -28,6 +28,8 @@
       endTimeLabel: "종료 예정",
       interruptionLabel: "중단",
       popout: "작은 창으로 열기",
+      ambientButton: "큰 화면으로 보기",
+      ambientHint: "ESC 또는 클릭하면 돌아갑니다",
       timerTitle: "타이머 설정",
       currentTimerLabel: "현재",
       unlimited: "제한 없음",
@@ -93,6 +95,8 @@
       endTimeLabel: "Ends around",
       interruptionLabel: "Interruptions",
       popout: "Open in a small window",
+      ambientButton: "Show on a large screen",
+      ambientHint: "Press ESC or click to return",
       timerTitle: "Set a timer",
       currentTimerLabel: "Current",
       unlimited: "No limit",
@@ -160,6 +164,12 @@
     interruptionCount: document.querySelector("#interruption-count"),
     action: document.querySelector("#action-button"),
     popout: document.querySelector("#popout-button"),
+    appMain: document.querySelector("main.app"),
+    ambientButton: document.querySelector("#ambient-button"),
+    ambient: document.querySelector("#ambient"),
+    ambientClock: document.querySelector("#ambient-clock"),
+    ambientRemaining: document.querySelector("#ambient-remaining"),
+    ambientRemainingTime: document.querySelector("#ambient-remaining-time"),
     currentTimer: document.querySelector("#current-timer"),
     timerButtons: document.querySelectorAll("[data-duration]"),
     customForm: document.querySelector("#custom-duration"),
@@ -176,6 +186,7 @@
   let timerExpired = false;
   let interruptionCount = 0;
   let audioContext = null;
+  let cursorHideTimer = null;
 
   let selectedDurationKey = "unlimited";
   let selectedDurationMs = null;
@@ -226,6 +237,79 @@
     } catch {
       // 재생이 차단되면 조용히 무시한다.
     }
+  }
+
+  // 앰비언트(큰 화면) 보기. Fullscreen API로 전체 화면에 현재 시각과, 타이머가
+  // 설정돼 있으면 남은 시간만 저휘도로 크게 보여준다. 전체 화면은 visible 상태라
+  // Wake Lock 흐름·상태 기계·타이밍은 그대로 재사용하며, 저장하는 값은 없다.
+  function requestFullscreenOn(element) {
+    const request = element.requestFullscreen || element.webkitRequestFullscreen;
+    if (!request) return;
+    try {
+      const result = request.call(element);
+      if (result && typeof result.catch === "function") result.catch(() => {});
+    } catch {
+      // 전체 화면 요청이 거부돼도 오버레이만으로 동작한다.
+    }
+  }
+
+  function exitFullscreen() {
+    if (!(document.fullscreenElement || document.webkitFullscreenElement)) return;
+    const exit = document.exitFullscreen || document.webkitExitFullscreen;
+    if (!exit) return;
+    try {
+      const result = exit.call(document);
+      if (result && typeof result.catch === "function") result.catch(() => {});
+    } catch {
+      // 무시: 오버레이 정리는 closeAmbient에서 끝난다.
+    }
+  }
+
+  function scheduleCursorHide() {
+    elements.ambient.classList.remove("cursor-hidden");
+    window.clearTimeout(cursorHideTimer);
+    cursorHideTimer = window.setTimeout(() => {
+      elements.ambient.classList.add("cursor-hidden");
+    }, 3000);
+  }
+
+  function renderAmbient() {
+    if (elements.ambient.hidden) return;
+    elements.ambientClock.textContent = new Date().toLocaleTimeString(
+      language === "ko" ? "ko-KR" : "en-US",
+      { hour: "2-digit", minute: "2-digit", second: "2-digit" }
+    );
+    const remaining = getTimerRemaining();
+    elements.ambientRemaining.hidden = remaining === null;
+    if (remaining !== null) {
+      elements.ambientRemainingTime.textContent = formatTime(remaining, true);
+    }
+  }
+
+  function openAmbient() {
+    if (!elements.ambient.hidden) return;
+    elements.appMain.inert = true;
+    elements.ambient.hidden = false;
+    renderAmbient();
+    requestFullscreenOn(elements.ambient);
+    elements.ambient.focus();
+    scheduleCursorHide();
+  }
+
+  function closeAmbient() {
+    if (elements.ambient.hidden) return;
+    window.clearTimeout(cursorHideTimer);
+    elements.ambient.classList.remove("cursor-hidden");
+    elements.ambient.hidden = true;
+    elements.appMain.inert = false;
+    exitFullscreen();
+    elements.ambientButton.focus();
+  }
+
+  function handleFullscreenChange() {
+    const fullscreenElement =
+      document.fullscreenElement || document.webkitFullscreenElement;
+    if (!fullscreenElement && !elements.ambient.hidden) closeAmbient();
   }
 
   function translatePage() {
@@ -486,6 +570,7 @@
   }
 
   function renderClock() {
+    renderAmbient();
     elements.elapsed.textContent = formatTime(getActiveElapsed());
 
     elements.interruptionGroup.hidden = interruptionCount === 0;
@@ -527,8 +612,21 @@
     );
   });
 
+  elements.ambientButton.addEventListener("click", openAmbient);
+  elements.ambient.addEventListener("click", closeAmbient);
+  elements.ambient.addEventListener("mousemove", () => {
+    if (!elements.ambient.hidden) scheduleCursorHide();
+  });
+  document.addEventListener("fullscreenchange", handleFullscreenChange);
+  document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !elements.ambient.hidden) {
+      closeAmbient();
+      return;
+    }
     if (event.code !== "Space" || event.repeat) return;
+    if (!elements.ambient.hidden) return;
     if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
     if (event.target instanceof Element &&
         event.target.closest("input, button, summary, a, [contenteditable]")) return;

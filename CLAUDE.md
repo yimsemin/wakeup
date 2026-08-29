@@ -41,6 +41,8 @@ python3 -m http.server 8000
 - 예상 종료 시각(`#endtime-group`)은 `state === "active"`일 때만 표시한다. 남은 시간이 멈춘 상태에서는 의미가 없기 때문.
 - `playChime()`은 외부 파일 없이 Web Audio 오실레이터로 만든 두 음. `ensureAudio()`는 시작·타이머 버튼 클릭 등 사용자 조작에서만 AudioContext를 만든다(자동재생 정책).
 - ‘작은 창으로 열기’(`#popout-button`)는 `window.opener`가 있거나 `display-mode: standalone`이면 숨긴다.
+- 앰비언트(`#ambient`)는 `<main>` 밖 body 직속 오버레이. `openAmbient`/`closeAmbient`가 `hidden` 토글 + Fullscreen API + `<main>`의 `inert`를 관리한다. 브라우저가 전체 화면을 나가면 `fullscreenchange`로 닫힌다. `renderAmbient`는 `renderClock`(1초 간격)에서 호출되고 오버레이가 숨겨져 있으면 즉시 반환한다. 저장하는 값 없음.
+- 번역 대상 속성: `data-i18n`(textContent), `data-i18n-content`(meta content), `data-i18n-aria`(aria-label). `<head>`의 og/twitter/description도 `data-i18n-content`로 언어를 따른다.
 
 ## 자주 실수하는 지점
 
