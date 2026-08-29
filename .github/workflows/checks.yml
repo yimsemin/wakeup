@@ -1,0 +1,23 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: |
+          node --check app.js
+          node --check sw.js
+      - name: Manifest is valid JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest', 'utf8'))"
+      - name: Whitespace and newline errors
+        run: git diff --check "$(git hash-object -t tree /dev/null)" HEAD

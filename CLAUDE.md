@@ -11,9 +11,7 @@
 데스크톱 브라우저에서 Screen Wake Lock으로 화면 꺼짐을 막는 단일 페이지 정적 웹앱.
 빌드·서버·의존성·계정 없음. GitHub `yimsemin/wakeup` → Cloudflare Pages → `wakeup.subproject.kr`.
 
-## 파일 구조 (전부)
-
-`index.html` · `styles.css` · `app.js`(단일 IIFE) · `sw.js` · `manifest.webmanifest` · `_headers` · `_redirects` · `icons/`
+파일 구조는 `PLANNING.md` 6절의 트리를 기준으로 한다. `app.js`는 단일 IIFE다.
 
 ## 로컬 실행 / 검증
 
@@ -22,7 +20,7 @@ python3 -m http.server 8000
 ```
 
 - `http://localhost:8000` — `localhost`는 보안 컨텍스트라 Wake Lock/SW가 동작한다. `file://`로 열지 말 것.
-- 자동 검증 도구(테스트·린트·CI)는 없다. 변경 후 최소한:
+- 린트·유닛 테스트는 없다. CI는 `.github/workflows/checks.yml` 하나로, 푸시·PR마다 아래를 실행한다. 로컬에서도 변경 후 최소한 같은 것을 확인한다:
   - `node --check app.js && node --check sw.js`
   - `node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest'))"`
   - `git diff --check`
@@ -52,4 +50,6 @@ python3 -m http.server 8000
 빌드 없음. Cloudflare Pages를 GitHub 리포에 연결하면 루트의 정적 파일, `_headers`(보안 헤더), `_redirects`(미존재 경로 → `index.html` 본문 + 404)가 그대로 적용된다. main에 push하면 자동 배포된다.
 `wrangler.toml` 등 빌드/배포 설정 파일은 추가하지 않는다 — 대시보드 Git 연동만 사용한다.
 
-CF 대시보드 쪽 설정(존별): Web Analytics 비활성(추적 코드 금지 원칙), SSL/TLS에서 HSTS, 필요 시 Browser Cache TTL을 "Respect Existing Headers"로 두어 `_headers`가 권위를 갖게 한다.
+CF 대시보드 쪽 설정(존별): Web Analytics 비활성(추적 코드 금지 원칙), SSL/TLS에서 HSTS, 필요 시 Browser Cache TTL을 "Respect Existing Headers"로 두어 `_headers`가 권위를 갖게 한다. 방문 통계가 필요하면 존 수준(엣지) 집계만 본다 — 페이지에 코드를 넣지 않는다.
+
+릴리스를 표시할 때는 배포와 무관하게 해당 커밋에 `git tag -a vX.Y.Z`를 달고 push한다. 규칙은 `AGENTS.md` "저장소 및 배포" 참고.
