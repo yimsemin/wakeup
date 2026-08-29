@@ -198,6 +198,10 @@
         작은 창으로 열기
       </button>
 
+      <button class="secondary-action" id="ambient-button" type="button" data-i18n="ambientButton">
+        큰 화면으로 보기
+      </button>
+
       <section class="timer-section" aria-labelledby="timer-title">
         <div class="section-heading">
           <h2 id="timer-title" data-i18n="timerTitle">타이머 설정</h2>
@@ -357,5 +361,23 @@
         <p class="noscript">이 기능을 사용하려면 JavaScript를 허용해야 합니다.</p>
       </noscript>
     </main>
+
+    <div
+      class="ambient"
+      id="ambient"
+      role="dialog"
+      aria-modal="true"
+      aria-label="큰 화면으로 보기"
+      data-i18n-aria="ambientButton"
+      tabindex="-1"
+      hidden
+    >
+      <output class="ambient-clock" id="ambient-clock">00:00:00</output>
+      <div class="ambient-remaining" id="ambient-remaining" hidden>
+        <span class="ambient-label" data-i18n="remainingLabel">남은 시간</span>
+        <output class="ambient-remaining-time" id="ambient-remaining-time">00:00:00</output>
+      </div>
+      <p class="ambient-hint" data-i18n="ambientHint">ESC 또는 클릭하면 돌아갑니다</p>
+    </div>
   </body>
 </html>

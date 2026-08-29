@@ -356,6 +356,71 @@ input {
   background: #fff2f1;
 }
 
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.75rem;
+  padding: 2rem;
+  background: #070d0b;
+  color: #5e6a65;
+}
+
+.ambient:focus-visible {
+  outline: none;
+}
+
+.ambient.cursor-hidden {
+  cursor: none;
+}
+
+.ambient-clock {
+  max-width: 100%;
+  font-size: clamp(2.5rem, 11vw, 8.5rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.ambient-remaining {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  color: #4f5b56;
+}
+
+.ambient-label {
+  font-weight: 650;
+}
+
+.ambient-remaining-time {
+  font-size: clamp(1.5rem, 5vw, 2.75rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.ambient-hint {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 1.75rem;
+  margin: 0;
+  text-align: center;
+  color: #45504b;
+}
+
+.ambient.cursor-hidden .ambient-hint {
+  visibility: hidden;
+}
+
 @media (max-width: 560px) {
   body {
     align-items: start;
