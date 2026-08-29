@@ -39,8 +39,8 @@ python3 -m http.server 8000
 - 사용자 표시 문구는 `COPY` 사전 한 곳. 새 문구는 ko/en 동시 추가.
 - `interruptionCount`는 페이지가 보이는 동안 `release` 이벤트가 온 경우(자기도 모르게 잠금이 풀린 경우)에만 +1 한다. 탭 전환은 안 센다. `startNewSession`에서 0으로 초기화.
 - 예상 종료 시각(`#endtime-group`)은 `state === "active"`일 때만 표시한다. 남은 시간이 멈춘 상태에서는 의미가 없기 때문.
-- `playChime()`은 외부 파일 없이 Web Audio 오실레이터로 만든 두 음. `ensureAudio()`는 시작·타이머 버튼 클릭 등 사용자 조작에서만 AudioContext를 만든다(자동재생 정책).
-- ‘작은 창으로 열기’(`#popout-button`)는 `window.opener`가 있거나 `display-mode: standalone`이면 숨긴다.
+- `playChime()`은 외부 파일 없이 Web Audio 오실레이터로 만든 두 음. `ensureAudio()`는 시작·타이머 버튼·미리듣기 클릭 등 사용자 조작에서만 AudioContext를 만든다(자동재생 정책). 크기 `chimeLevel`(0~1)은 슬라이더로만 바뀌고 저장하지 않는다. 0이면 재생 안 함.
+- ‘작은 창으로 열기’(`#popout-button`)는 `window.opener`가 있거나 `display-mode: standalone`이면 숨긴다. 새 창은 로드 시 `wakeup:hello`를 opener로 보내고, opener가 `wakeup:settings`(타이머·언어)로 답한다. 새 창은 `pagehide`에서 자기 설정을 opener로 되돌려 보낸다. `applySettings`가 양쪽에서 같은 코드로 반영. 모두 같은 출처 확인 후 처리.
 - 앰비언트(`#ambient`)는 `<main>` 밖 body 직속 오버레이. `openAmbient`/`closeAmbient`가 `hidden` 토글 + Fullscreen API + `<main>`의 `inert`를 관리한다. 브라우저가 전체 화면을 나가면 `fullscreenchange`로 닫힌다. `renderAmbient`는 `renderClock`(1초 간격)에서 호출되고 오버레이가 숨겨져 있으면 즉시 반환한다. 저장하는 값 없음.
 - 번역 대상 속성: `data-i18n`(textContent), `data-i18n-content`(meta content), `data-i18n-aria`(aria-label). `<head>`의 og/twitter/description도 `data-i18n-content`로 언어를 따른다.
 
