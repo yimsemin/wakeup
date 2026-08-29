@@ -298,6 +298,16 @@ input {
   margin-top: 0.45rem;
 }
 
+.site-footer {
+  margin-top: 2.75rem;
+  text-align: center;
+}
+
+.site-footer a {
+  color: #52605c;
+  font-weight: 650;
+}
+
 .noscript {
   padding: 1rem;
   border-radius: 0.7rem;

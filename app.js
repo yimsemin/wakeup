@@ -46,6 +46,7 @@
       limitationSystem: "저전력 모드, 배터리 상태, 운영체제 정책이나 닫힌 노트북 덮개는 웹페이지가 제어할 수 없습니다.",
       limitationScreen: "화면 꺼짐 방지 기능이며, 화면을 끈 채 컴퓨터만 깨워 두는 기능은 아닙니다.",
       privacyNote: "사용자 설정이나 이용 기록은 저장하지 않습니다. 오프라인 실행에 필요한 앱 파일만 브라우저에 캐시됩니다.",
+      sourceLink: "GitHub에서 프로젝트 보기",
       invalidDuration: "시간과 분을 합쳐 1분 이상 입력하세요.",
       states: {
         requesting: ["절전 방지를 시작하는 중", "브라우저에 화면 잠금 방지를 요청하고 있습니다."],
@@ -89,6 +90,7 @@
       limitationSystem: "A web page cannot override low-power mode, battery restrictions, operating system policies, or a closed laptop lid.",
       limitationScreen: "This keeps the screen on; it cannot keep only the computer awake while the screen is off.",
       privacyNote: "No preferences or usage history are saved. Only the app files required for offline use are cached by the browser.",
+      sourceLink: "View the project on GitHub",
       invalidDuration: "Enter a total duration of at least 1 minute.",
       states: {
         requesting: ["Starting wake lock", "Requesting permission from the browser to keep the screen awake."],
