@@ -310,6 +310,36 @@ input {
   margin-top: 0.45rem;
 }
 
+.faq {
+  margin-top: 3.25rem;
+}
+
+.faq h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.faq-list {
+  margin: 1.25rem 0 0;
+}
+
+.faq-item + .faq-item {
+  margin-top: 1.4rem;
+}
+
+.faq-item dt {
+  color: #17201e;
+  font-weight: 700;
+}
+
+.faq-item dd {
+  margin: 0.4rem 0 0;
+  color: #4f5d59;
+  line-height: 1.65;
+}
+
 .site-footer {
   margin-top: 2.75rem;
   text-align: center;
