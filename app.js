@@ -30,6 +30,8 @@
       popout: "작은 창으로 열기",
       ambientButton: "큰 화면으로 보기",
       ambientHint: "ESC 또는 클릭하면 돌아갑니다",
+      chimeLabel: "종료 알림음",
+      chimePreview: "미리 듣기",
       timerTitle: "타이머 설정",
       currentTimerLabel: "현재",
       unlimited: "제한 없음",
@@ -97,6 +99,8 @@
       popout: "Open in a small window",
       ambientButton: "Show on a large screen",
       ambientHint: "Press ESC or click to return",
+      chimeLabel: "Timer chime",
+      chimePreview: "Preview",
       timerTitle: "Set a timer",
       currentTimerLabel: "Current",
       unlimited: "No limit",
@@ -170,6 +174,9 @@
     ambientClock: document.querySelector("#ambient-clock"),
     ambientRemaining: document.querySelector("#ambient-remaining"),
     ambientRemainingTime: document.querySelector("#ambient-remaining-time"),
+    chimeVolume: document.querySelector("#chime-volume"),
+    chimeVolumeValue: document.querySelector("#chime-volume-value"),
+    chimePreview: document.querySelector("#chime-preview"),
     currentTimer: document.querySelector("#current-timer"),
     timerButtons: document.querySelectorAll("[data-duration]"),
     customForm: document.querySelector("#custom-duration"),
@@ -187,6 +194,8 @@
   let interruptionCount = 0;
   let audioContext = null;
   let cursorHideTimer = null;
+  // 알림음 크기(0~1). 저장하지 않으므로 새로 열면 기본값으로 돌아간다.
+  let chimeLevel = 0.4;
 
   let selectedDurationKey = "unlimited";
   let selectedDurationMs = null;
@@ -218,17 +227,18 @@
   }
 
   function playChime() {
-    if (!audioContext) return;
+    if (!audioContext || chimeLevel <= 0) return;
     try {
       if (audioContext.state === "suspended") void audioContext.resume();
       const start = audioContext.currentTime;
+      const peak = 0.02 + chimeLevel * 0.34;
       [[0, 660], [0.18, 880]].forEach(([offset, frequency]) => {
         const oscillator = audioContext.createOscillator();
         const gain = audioContext.createGain();
         oscillator.type = "sine";
         oscillator.frequency.value = frequency;
         gain.gain.setValueAtTime(0.0001, start + offset);
-        gain.gain.exponentialRampToValueAtTime(0.13, start + offset + 0.02);
+        gain.gain.exponentialRampToValueAtTime(peak, start + offset + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.0001, start + offset + 0.5);
         oscillator.connect(gain).connect(audioContext.destination);
         oscillator.start(start + offset);
@@ -237,6 +247,12 @@
     } catch {
       // 재생이 차단되면 조용히 무시한다.
     }
+  }
+
+  function renderChimeSetting() {
+    const percent = Math.round(chimeLevel * 100);
+    elements.chimeVolume.value = String(percent);
+    elements.chimeVolumeValue.textContent = `${percent}%`;
   }
 
   // 앰비언트(큰 화면) 보기. Fullscreen API로 전체 화면에 현재 시각과, 타이머가
@@ -436,6 +452,48 @@
     renderClock();
   }
 
+  const TIMER_KEYS = ["unlimited", "15", "30", "60", "120", "custom"];
+
+  // '작은 창으로 열기'는 opener와 새 창이 postMessage로 타이머·언어 설정만 주고받는다.
+  // 창이 열릴 때 opener → 새 창으로, 새 창이 닫힐 때 새 창 → opener로 전달한다.
+  // 저장소를 쓰지 않고 같은 출처끼리만 통신한다.
+  function collectSettings() {
+    return {
+      type: "wakeup:settings",
+      language,
+      timerKey: selectedDurationKey,
+      customHours: selectedCustomHours,
+      customMinutes: selectedCustomMinutes
+    };
+  }
+
+  function applySettings(data) {
+    if ((data.language === "ko" || data.language === "en") && data.language !== language) {
+      setLanguage(data.language);
+    }
+    if (!TIMER_KEYS.includes(data.timerKey)) return;
+    if (data.timerKey === "custom") {
+      const hours = Number(data.customHours);
+      const minutes = Number(data.customMinutes);
+      if (!Number.isInteger(hours) || !Number.isInteger(minutes) ||
+          hours < 0 || hours > 999 || minutes < 0 || minutes > 59 ||
+          hours + minutes === 0) return;
+      elements.customHours.value = String(hours);
+      elements.customMinutes.value = String(minutes);
+      elements.customForm.hidden = false;
+      setTimer((hours * 60 + minutes) * 60 * 1000, "custom", hours, minutes);
+    } else {
+      elements.customForm.hidden = true;
+      const duration = data.timerKey === "unlimited" ? null : Number(data.timerKey) * 60 * 1000;
+      setTimer(duration, data.timerKey);
+    }
+    renderTimerSetting();
+  }
+
+  function postToPeer(target) {
+    if (target && !target.closed) target.postMessage(collectSettings(), window.location.origin);
+  }
+
   function startActiveTiming() {
     const now = Date.now();
     if (activeStartedAt === null) activeStartedAt = now;
@@ -612,6 +670,28 @@
     );
   });
 
+  window.addEventListener("message", (event) => {
+    if (event.origin !== window.location.origin) return;
+    const data = event.data;
+    if (!data || typeof data !== "object") return;
+    if (data.type === "wakeup:hello") {
+      // 새로 열린 창의 요청. 현재 설정을 그 창으로 보낸다.
+      if (event.source) event.source.postMessage(collectSettings(), window.location.origin);
+    } else if (data.type === "wakeup:settings") {
+      applySettings(data);
+    }
+  });
+
+  elements.chimeVolume.addEventListener("input", () => {
+    chimeLevel = Math.min(1, Math.max(0, Number(elements.chimeVolume.value) / 100));
+    renderChimeSetting();
+  });
+
+  elements.chimePreview.addEventListener("click", () => {
+    ensureAudio();
+    playChime();
+  });
+
   elements.ambientButton.addEventListener("click", openAmbient);
   elements.ambient.addEventListener("click", closeAmbient);
   elements.ambient.addEventListener("mousemove", () => {
@@ -700,11 +780,19 @@
   });
 
   // 팝업 창이나 설치된 앱에서는 이미 별도 창이므로 '작은 창으로 열기'를 숨긴다.
+  const openedFromPeer = window.opener !== null && !window.opener.closed;
   if (window.opener !== null || window.matchMedia("(display-mode: standalone)").matches) {
     elements.popout.hidden = true;
   }
 
+  if (openedFromPeer) {
+    // 연 창에 현재 설정을 요청하고, 이 창이 닫힐 때 마지막 설정을 돌려준다.
+    window.opener.postMessage({ type: "wakeup:hello" }, window.location.origin);
+    window.addEventListener("pagehide", () => postToPeer(window.opener), { once: true });
+  }
+
   translatePage();
+  renderChimeSetting();
   renderClock();
   window.setInterval(renderClock, 1000);
   void requestWakeLock();
