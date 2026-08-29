@@ -41,6 +41,7 @@ python3 -m http.server 8000
 - `favicon.svg`, `icons/`: 파비콘과 PWA 아이콘
 - `_headers`: Cloudflare Pages 보안 및 캐시 응답 헤더
 - `_redirects`: 존재하지 않는 경로의 404 응답 규칙
+- `robots.txt`, `sitemap.xml`: 크롤러 허용과 사이트맵 (ko/en 대체 링크 포함)
 - `.gitattributes`, `.editorconfig`, `.gitignore`: 운영체제와 무관한 편집·형식 규칙
 - `.github/workflows/checks.yml`: 푸시·PR마다 도는 정적 검사 (문법·manifest JSON·공백)
 - `LICENSE`: MIT 라이선스

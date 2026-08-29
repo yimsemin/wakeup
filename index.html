@@ -5,18 +5,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#145c4b">
     <meta
-      id="meta-description"
       name="description"
+      data-i18n-content="seoDescription"
       content="Wakeup은 설치 없이 브라우저에서 PC와 Mac 화면이 꺼지지 않도록 유지하고 타이머를 설정할 수 있는 간단한 웹 도구입니다."
     >
     <title>Wakeup — PC와 Mac 화면 절전 방지</title>
     <link rel="canonical" href="https://wakeup.subproject.kr/">
+    <link rel="alternate" hreflang="ko" href="https://wakeup.subproject.kr/?lang=ko">
+    <link rel="alternate" hreflang="en" href="https://wakeup.subproject.kr/?lang=en">
+    <link rel="alternate" hreflang="x-default" href="https://wakeup.subproject.kr/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Wakeup">
+    <meta property="og:url" content="https://wakeup.subproject.kr/">
+    <meta
+      property="og:title"
+      data-i18n-content="seoTitle"
+      content="Wakeup — PC와 Mac 화면 절전 방지"
+    >
+    <meta
+      property="og:description"
+      data-i18n-content="seoDescription"
+      content="Wakeup은 설치 없이 브라우저에서 PC와 Mac 화면이 꺼지지 않도록 유지하고 타이머를 설정할 수 있는 간단한 웹 도구입니다."
+    >
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:image" content="https://wakeup.subproject.kr/icons/icon-512.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:alt" content="Wakeup">
+    <meta name="twitter:card" content="summary">
+    <meta
+      name="twitter:title"
+      data-i18n-content="seoTitle"
+      content="Wakeup — PC와 Mac 화면 절전 방지"
+    >
+    <meta
+      name="twitter:description"
+      data-i18n-content="seoDescription"
+      content="Wakeup은 설치 없이 브라우저에서 PC와 Mac 화면이 꺼지지 않도록 유지하고 타이머를 설정할 수 있는 간단한 웹 도구입니다."
+    >
+    <meta name="twitter:image" content="https://wakeup.subproject.kr/icons/icon-512.png">
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <link rel="icon" href="./icons/icon-192.png" sizes="192x192" type="image/png">
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
     <link rel="stylesheet" href="./styles.css">
     <script src="./app.js" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Wakeup",
+      "url": "https://wakeup.subproject.kr/",
+      "description": "Wakeup은 설치 없이 브라우저에서 PC와 Mac 화면이 꺼지지 않도록 유지하고 타이머를 설정할 수 있는 간단한 웹 도구입니다.",
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Windows, macOS",
+      "browserRequirements": "Requires a browser that supports the Screen Wake Lock API",
+      "inLanguage": ["ko", "en"],
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "inLanguage": "ko",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "다른 탭이나 창으로 전환하면 어떻게 되나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "절전 방지가 잠시 멈췄다가 Wakeup 탭으로 돌아오면 자동으로 다시 시작합니다. 화면에 표시되는 절전 방지 시간은 잠금이 실제로 걸려 있던 시간만 셉니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "배터리가 더 빨리 닳나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "화면을 켜 두는 동안에는 화면이 꺼질 때보다 전력을 더 씁니다. Wakeup 자체는 배경에서 아무 작업도 하지 않으며, 노트북의 저전력 정책이 브라우저 요청을 무시할 수도 있습니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "설치해야 하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "아니요. 브라우저에서 페이지를 열기만 하면 됩니다. 원하면 설치형 앱으로 추가할 수 있고, 한 번 열어 두면 다음부터는 오프라인에서도 실행됩니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "어떤 브라우저에서 작동하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "표준 Screen Wake Lock 기능을 지원하는 최신 데스크톱 브라우저에서 작동합니다. 대부분의 최신 Chrome, Edge, Safari, Firefox가 여기에 해당하며, 지원하지 않는 브라우저에서는 ‘지원되지 않는 브라우저’라고 안내합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "노트북 덮개를 닫아도 화면이 켜져 있나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "아니요. 덮개를 닫거나 운영체제가 절전에 들어가는 것은 웹페이지가 막을 수 없습니다. Wakeup은 화면이 스스로 꺼지거나 잠기는 것만 늦춥니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "화면은 끄고 컴퓨터만 깨어 있게 할 수 있나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "아니요. 브라우저가 제공하는 것은 화면 잠금 방지뿐입니다. 화면을 끈 채로 다운로드나 작업을 계속하려면 운영체제의 전원 설정을 사용하세요."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "사용 기록이나 개인정보를 수집하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "아니요. 쿠키, 사용자 설정 저장, 분석 코드가 없습니다. 오프라인 실행에 필요한 앱 파일만 브라우저에 캐시됩니다."
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <main class="app" aria-labelledby="service-title">
@@ -177,6 +295,54 @@
           </p>
         </div>
       </details>
+
+      <section class="faq" aria-labelledby="faq-title">
+        <h2 id="faq-title" data-i18n="faqTitle">자주 묻는 질문</h2>
+        <dl class="faq-list">
+          <div class="faq-item">
+            <dt data-i18n="faqTabQ">다른 탭이나 창으로 전환하면 어떻게 되나요?</dt>
+            <dd data-i18n="faqTabA">
+              절전 방지가 잠시 멈췄다가 Wakeup 탭으로 돌아오면 자동으로 다시 시작합니다. 화면에 표시되는 절전 방지 시간은 잠금이 실제로 걸려 있던 시간만 셉니다.
+            </dd>
+          </div>
+          <div class="faq-item">
+            <dt data-i18n="faqBatteryQ">배터리가 더 빨리 닳나요?</dt>
+            <dd data-i18n="faqBatteryA">
+              화면을 켜 두는 동안에는 화면이 꺼질 때보다 전력을 더 씁니다. Wakeup 자체는 배경에서 아무 작업도 하지 않으며, 노트북의 저전력 정책이 브라우저 요청을 무시할 수도 있습니다.
+            </dd>
+          </div>
+          <div class="faq-item">
+            <dt data-i18n="faqInstallQ">설치해야 하나요?</dt>
+            <dd data-i18n="faqInstallA">
+              아니요. 브라우저에서 페이지를 열기만 하면 됩니다. 원하면 설치형 앱으로 추가할 수 있고, 한 번 열어 두면 다음부터는 오프라인에서도 실행됩니다.
+            </dd>
+          </div>
+          <div class="faq-item">
+            <dt data-i18n="faqBrowserQ">어떤 브라우저에서 작동하나요?</dt>
+            <dd data-i18n="faqBrowserA">
+              표준 Screen Wake Lock 기능을 지원하는 최신 데스크톱 브라우저에서 작동합니다. 대부분의 최신 Chrome, Edge, Safari, Firefox가 여기에 해당하며, 지원하지 않는 브라우저에서는 ‘지원되지 않는 브라우저’라고 안내합니다.
+            </dd>
+          </div>
+          <div class="faq-item">
+            <dt data-i18n="faqLidQ">노트북 덮개를 닫아도 화면이 켜져 있나요?</dt>
+            <dd data-i18n="faqLidA">
+              아니요. 덮개를 닫거나 운영체제가 절전에 들어가는 것은 웹페이지가 막을 수 없습니다. Wakeup은 화면이 스스로 꺼지거나 잠기는 것만 늦춥니다.
+            </dd>
+          </div>
+          <div class="faq-item">
+            <dt data-i18n="faqScreenOffQ">화면은 끄고 컴퓨터만 깨어 있게 할 수 있나요?</dt>
+            <dd data-i18n="faqScreenOffA">
+              아니요. 브라우저가 제공하는 것은 화면 잠금 방지뿐입니다. 화면을 끈 채로 다운로드나 작업을 계속하려면 운영체제의 전원 설정을 사용하세요.
+            </dd>
+          </div>
+          <div class="faq-item">
+            <dt data-i18n="faqPrivacyQ">사용 기록이나 개인정보를 수집하나요?</dt>
+            <dd data-i18n="faqPrivacyA">
+              아니요. 쿠키, 사용자 설정 저장, 분석 코드가 없습니다. 오프라인 실행에 필요한 앱 파일만 브라우저에 캐시됩니다.
+            </dd>
+          </div>
+        </dl>
+      </section>
 
       <footer class="site-footer">
         <a

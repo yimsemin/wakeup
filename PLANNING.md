@@ -59,8 +59,13 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 ### 3.6 검색 기본 정보
 
 - 서비스명은 `Wakeup`, 한 줄 설명은 한국어 `브라우저에서 화면이 잠들지 않게.`, 영어 `Keep your screen awake in the browser.`를 사용한다.
-- 검색 기본 정보는 설명적인 문서 제목, 메타 설명, 배포 주소의 canonical URL과 의미 있는 단일 `h1`까지만 제공한다.
-- 한 페이지 정적 도구의 현재 범위에서는 키워드 메타 태그, 구조화 데이터, 사이트맵과 별도 SEO 도구를 추가하지 않는다.
+- 검색 기본 정보는 설명적인 문서 제목, 메타 설명, 배포 주소의 canonical URL, 의미 있는 단일 `h1`에 더해 다음을 제공한다.
+  - `index.html <head>`의 Open Graph·Twitter Card 메타. `og:image`는 `icons/icon-512.png`를 절대 URL로 쓴다.
+  - `?lang=ko`·`?lang=en`·`x-default`를 가리키는 `<link rel="alternate" hreflang>`.
+  - `application/ld+json` 구조화 데이터: `WebApplication`(무료 `Offer`, `applicationCategory: UtilityApplication`, 운영체제)과 열린 FAQ 섹션과 문구가 일치하는 `FAQPage`. `_headers`의 CSP `default-src 'self'`는 ld+json을 실행 스크립트로 보지 않으므로 그대로 허용된다.
+  - 루트의 `robots.txt`(전체 허용 + `Sitemap:` 경로), `sitemap.xml`(배포 URL + ko/en/x-default 대체 링크). 두 파일은 실제 정적 파일로 서빙되므로 `_redirects`·`_headers` 수정이 필요 없고, Service Worker `APP_SHELL`에는 넣지 않는다.
+- 위 목록 밖으로 SEO를 더 확장하지 않는다. 키워드 메타 태그, 분석·추적 코드, 외부 SEO 서비스·위젯, 프레임워크·CDN·외부 폰트는 도입하지 않는다.
+- 사용자에게 보이는 새 SEO 문구(FAQ 등)도 `app.js`의 `COPY` 사전 한 곳에서 ko/en을 함께 관리한다. 구조화 데이터의 FAQ 문구는 기본 언어(한국어) 렌더링과 일치시킨다.
 
 ## 4. 화면 구성
 
@@ -72,11 +77,12 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 4. Wakeup을 별도의 작은 창으로 여는 보조 버튼 (팝업 창이나 설치된 앱에서는 숨김)
 5. 타이머 즉시 선택 버튼과 필요 시 직접 입력 영역
 6. 접힌 상태의 `작동 방식 및 제한 사항` 상세 설명
-7. 프로젝트 저장소(GitHub)로 나가는 링크
+7. 항상 펼쳐진 `자주 묻는 질문`(FAQ) 섹션 — 질문/답변 목록, 구조화 데이터(`FAQPage`)와 문구 일치
+8. 프로젝트 저장소(GitHub)로 나가는 링크
 
 제한 사항은 기본적으로 접어 두되, 표준 `details`/`summary` 요소로 키보드와 보조기기에서도 접근할 수 있게 한다.
 
-7번처럼 다른 사이트로 나가는 링크는 자원을 불러오지 않으므로 외부 네트워크 의존성이 아니다. 새 탭으로 열고 `rel="noopener"`를 붙인다. 4번은 같은 페이지를 새 브라우징 컨텍스트로 여는 것이며 외부 자원을 부르지 않는다.
+8번처럼 다른 사이트로 나가는 링크는 자원을 불러오지 않으므로 외부 네트워크 의존성이 아니다. 새 탭으로 열고 `rel="noopener"`를 붙인다. 4번은 같은 페이지를 새 브라우징 컨텍스트로 여는 것이며 외부 자원을 부르지 않는다.
 
 ## 5. 상태 정의
 
@@ -103,6 +109,8 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 ├── .gitignore
 ├── _headers
 ├── _redirects
+├── robots.txt
+├── sitemap.xml
 ├── index.html
 ├── styles.css
 ├── app.js
