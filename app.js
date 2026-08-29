@@ -25,6 +25,9 @@
       timerGroup: "타이머 선택",
       elapsedLabel: "절전 방지 시간",
       remainingLabel: "남은 시간",
+      endTimeLabel: "종료 예정",
+      interruptionLabel: "중단",
+      popout: "작은 창으로 열기",
       timerTitle: "타이머 설정",
       currentTimerLabel: "현재",
       unlimited: "제한 없음",
@@ -41,6 +44,9 @@
       retry: "다시 시도",
       limitationsSummary: "작동 방식 및 제한 사항",
       limitationsIntro: "Wakeup은 설치 없이 브라우저의 표준 Screen Wake Lock 기능으로 화면이 꺼지지 않도록 요청합니다.",
+      useCases: "요리하면서 레시피를 볼 때, 발표나 화면 공유, 긴 문서 읽기, 다운로드나 대시보드를 지켜볼 때처럼 화면을 계속 봐야 하는 상황에 사용하세요.",
+      controlNote: "키보드 Space 키로 절전 방지를 시작하거나 중지할 수 있습니다. 다른 창에서 작업할 때는 ‘작은 창으로 열기’ 버튼으로 Wakeup을 작은 창에 띄워 두면 편리합니다.",
+      principlesNote: "Wakeup은 가짜 마우스 입력이나 무음 영상 재생 같은 우회 기법을 쓰지 않고 브라우저 표준 Screen Wake Lock 기능만 사용합니다. 실제로 화면 잠금이 걸려 있던 시간만 절전 방지 시간으로 표시합니다.",
       limitationVisible: "Wakeup 탭이 화면에 보일 때만 작동합니다. 다른 탭으로 이동하거나 창을 최소화하면 절전 방지가 멈추고, 이 탭으로 돌아오면 자동으로 다시 시작합니다. macOS에서는 Wakeup 창이 다른 데스크톱(스페이스)에 있거나 다른 창에 완전히 가려져 있을 때도 보이지 않는 것으로 처리되어 멈춥니다.",
       limitationWindow: "다른 창에서 작업하면서 계속 켜 두려면 Wakeup을 별도 창으로 열고, 지금 보고 있는 데스크톱에 그 창이 보이도록 두세요. 창에 포커스가 없어도 되지만, 최소화하거나 다른 창으로 완전히 가리거나 다른 데스크톱으로 보내면 멈춥니다.",
       limitationSystem: "저전력 모드, 배터리 상태, 운영체제 정책이나 닫힌 노트북 덮개는 웹페이지가 제어할 수 없습니다.",
@@ -69,6 +75,9 @@
       timerGroup: "Timer selection",
       elapsedLabel: "Wake lock active",
       remainingLabel: "Time remaining",
+      endTimeLabel: "Ends around",
+      interruptionLabel: "Interruptions",
+      popout: "Open in a small window",
       timerTitle: "Set a timer",
       currentTimerLabel: "Current",
       unlimited: "No limit",
@@ -85,6 +94,9 @@
       retry: "Try again",
       limitationsSummary: "How it works and limitations",
       limitationsIntro: "Wakeup uses the browser's standard Screen Wake Lock feature to keep your screen on, with nothing to install.",
+      useCases: "Use it whenever you need to keep looking at the screen — following a recipe while cooking, giving a presentation or sharing your screen, reading a long document, or watching a download or a dashboard.",
+      controlNote: "Press the Space key to start or stop keeping the screen awake. When you work in another window, the “Open in a small window” button puts Wakeup in a compact window you can keep visible.",
+      principlesNote: "Wakeup uses only the browser's standard Screen Wake Lock feature — no fake mouse input or silent video tricks. It counts only the time a screen wake lock was actually held.",
       limitationVisible: "Wakeup works only while its tab is visible on screen. Switching to another tab or minimizing the window pauses it; returning to this tab starts it again automatically. On macOS, the Wakeup window also counts as hidden — and pauses — while it sits on another desktop (Space) or is fully covered by other windows.",
       limitationWindow: "To keep it on while you work in another window, open Wakeup in its own window and keep that window visible on the desktop you are currently viewing. It does not need focus, but it pauses if you minimize it, fully cover it with other windows, or move it to another desktop.",
       limitationSystem: "A web page cannot override low-power mode, battery restrictions, operating system policies, or a closed laptop lid.",
@@ -113,7 +125,12 @@
     elapsed: document.querySelector("#elapsed-time"),
     remainingGroup: document.querySelector("#remaining-group"),
     remaining: document.querySelector("#remaining-time"),
+    endTimeGroup: document.querySelector("#endtime-group"),
+    endTime: document.querySelector("#end-time"),
+    interruptionGroup: document.querySelector("#interruption-group"),
+    interruptionCount: document.querySelector("#interruption-count"),
     action: document.querySelector("#action-button"),
+    popout: document.querySelector("#popout-button"),
     currentTimer: document.querySelector("#current-timer"),
     timerButtons: document.querySelectorAll("[data-duration]"),
     customForm: document.querySelector("#custom-duration"),
@@ -128,6 +145,8 @@
   let requestInProgress = false;
   let shouldStayAwake = true;
   let timerExpired = false;
+  let interruptionCount = 0;
+  let audioContext = null;
 
   let selectedDurationKey = "unlimited";
   let selectedDurationMs = null;
@@ -143,6 +162,41 @@
     const requested = new URL(window.location.href).searchParams.get("lang");
     if (requested === "ko" || requested === "en") return requested;
     return navigator.language.toLowerCase().startsWith("en") ? "en" : "ko";
+  }
+
+  // 타이머 종료 알림음. 외부 오디오 파일 없이 Web Audio로 만든 짧은 두 음.
+  // AudioContext는 자동재생 정책을 피하려고 사용자 조작(버튼 클릭) 때 만든다.
+  function ensureAudio() {
+    if (audioContext) return;
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    try {
+      audioContext = new Ctx();
+    } catch {
+      audioContext = null;
+    }
+  }
+
+  function playChime() {
+    if (!audioContext) return;
+    try {
+      if (audioContext.state === "suspended") void audioContext.resume();
+      const start = audioContext.currentTime;
+      [[0, 660], [0.18, 880]].forEach(([offset, frequency]) => {
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        oscillator.type = "sine";
+        oscillator.frequency.value = frequency;
+        gain.gain.setValueAtTime(0.0001, start + offset);
+        gain.gain.exponentialRampToValueAtTime(0.13, start + offset + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + offset + 0.5);
+        oscillator.connect(gain).connect(audioContext.destination);
+        oscillator.start(start + offset);
+        oscillator.stop(start + offset + 0.5);
+      });
+    } catch {
+      // 재생이 차단되면 조용히 무시한다.
+    }
   }
 
   function translatePage() {
@@ -164,6 +218,7 @@
     elements.customMinutes.setCustomValidity("");
     renderTimerSetting();
     renderState();
+    renderClock();
   }
 
   function setLanguage(nextLanguage) {
@@ -339,6 +394,10 @@
         else {
           setState("suspended");
           if (document.visibilityState === "visible") {
+            // 페이지가 보이는데도 잠금이 풀린 경우만 '중단'으로 센다.
+            // 사용자가 탭·창을 전환해 멈춘 것은 여기서 세지 않는다.
+            interruptionCount += 1;
+            renderClock();
             window.setTimeout(() => void requestWakeLock(), 0);
           }
         }
@@ -372,6 +431,7 @@
     timerStartedAt = null;
     timerExpired = false;
     shouldStayAwake = true;
+    interruptionCount = 0;
     renderClock();
     await requestWakeLock(true);
   }
@@ -391,27 +451,63 @@
     await releaseWakeLock();
     setState("expired");
     renderClock();
+    playChime();
   }
 
   function renderClock() {
     elements.elapsed.textContent = formatTime(getActiveElapsed());
+
+    elements.interruptionGroup.hidden = interruptionCount === 0;
+    elements.interruptionCount.textContent = language === "ko"
+      ? `${interruptionCount}회`
+      : String(interruptionCount);
+
     const remaining = getTimerRemaining();
     elements.remainingGroup.hidden = remaining === null;
+    // 남은 시간은 잠금이 실제로 잡힌 동안에만 흐르므로, 예상 종료 시각도
+    // 현재 진행 중(active)일 때만 의미가 있다.
+    elements.endTimeGroup.hidden = remaining === null || state !== "active";
     if (remaining === null) return;
 
     elements.remaining.textContent = formatTime(remaining, true);
+    if (state === "active") {
+      elements.endTime.textContent = new Date(Date.now() + remaining)
+        .toLocaleTimeString(language === "ko" ? "ko-KR" : "en-US", {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+    }
     if (remaining <= 0 && !timerExpired) void expireTimer();
   }
 
   elements.action.addEventListener("click", () => {
+    ensureAudio();
     const shouldStop = shouldStayAwake && (state === "active" || state === "requesting");
     if (shouldStop) void stopWakeLock();
     else if (shouldStayAwake) void requestWakeLock(true);
     else void startNewSession();
   });
 
+  elements.popout.addEventListener("click", () => {
+    window.open(
+      window.location.href,
+      "wakeup-window",
+      "width=380,height=520,menubar=no,toolbar=no,location=no,status=no"
+    );
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.code !== "Space" || event.repeat) return;
+    if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+    if (event.target instanceof Element &&
+        event.target.closest("input, button, summary, a, [contenteditable]")) return;
+    event.preventDefault();
+    elements.action.click();
+  });
+
   elements.timerButtons.forEach((button) => {
     button.addEventListener("click", () => {
+      ensureAudio();
       // 이전 입력 오류가 남아 있으면 유효한 값도 다시 적용되지 않으므로 먼저 지운다.
       elements.customHours.setCustomValidity("");
       elements.customMinutes.setCustomValidity("");
@@ -431,6 +527,7 @@
 
   elements.customForm.addEventListener("submit", (event) => {
     event.preventDefault();
+    ensureAudio();
     const hours = Number(elements.customHours.value);
     const minutes = Number(elements.customMinutes.value);
     const invalid =
@@ -472,6 +569,11 @@
       setState("suspended");
     }
   });
+
+  // 팝업 창이나 설치된 앱에서는 이미 별도 창이므로 '작은 창으로 열기'를 숨긴다.
+  if (window.opener !== null || window.matchMedia("(display-mode: standalone)").matches) {
+    elements.popout.hidden = true;
+  }
 
   translatePage();
   renderClock();
