@@ -33,7 +33,6 @@
       chimeLabel: "종료 알림음",
       chimePreview: "미리 듣기",
       timerTitle: "타이머 설정",
-      currentTimerLabel: "현재",
       unlimited: "제한 없음",
       minutes15: "15분",
       minutes30: "30분",
@@ -102,7 +101,6 @@
       chimeLabel: "Timer chime",
       chimePreview: "Preview",
       timerTitle: "Set a timer",
-      currentTimerLabel: "Current",
       unlimited: "No limit",
       minutes15: "15 minutes",
       minutes30: "30 minutes",
@@ -174,10 +172,10 @@
     ambientClock: document.querySelector("#ambient-clock"),
     ambientRemaining: document.querySelector("#ambient-remaining"),
     ambientRemainingTime: document.querySelector("#ambient-remaining-time"),
+    chimeControl: document.querySelector(".chime-control"),
     chimeVolume: document.querySelector("#chime-volume"),
     chimeVolumeValue: document.querySelector("#chime-volume-value"),
     chimePreview: document.querySelector("#chime-preview"),
-    currentTimer: document.querySelector("#current-timer"),
     timerButtons: document.querySelectorAll("[data-duration]"),
     customForm: document.querySelector("#custom-duration"),
     customHours: document.querySelector("#custom-hours"),
@@ -250,6 +248,8 @@
   }
 
   function renderChimeSetting() {
+    // 알림음은 타이머가 끝날 때만 울리므로 '제한 없음'이면 설정을 숨긴다.
+    elements.chimeControl.hidden = selectedDurationMs === null;
     const percent = Math.round(chimeLevel * 100);
     elements.chimeVolume.value = String(percent);
     elements.chimeVolumeValue.textContent = `${percent}%`;
@@ -399,42 +399,14 @@
       .join(":");
   }
 
-  function getSelectedTimerLabel() {
-    const copy = COPY[language];
-    if (selectedDurationKey !== "custom") {
-      return copy[{
-        unlimited: "unlimited",
-        15: "minutes15",
-        30: "minutes30",
-        60: "hour1",
-        120: "hours2"
-      }[selectedDurationKey]];
-    }
-    if (language === "ko") {
-      return [
-        selectedCustomHours > 0 ? `${selectedCustomHours}시간` : "",
-        selectedCustomMinutes > 0 ? `${selectedCustomMinutes}분` : ""
-      ].filter(Boolean).join(" ");
-    }
-
-    return [
-      selectedCustomHours > 0
-        ? `${selectedCustomHours} ${selectedCustomHours === 1 ? "hour" : "hours"}`
-        : "",
-      selectedCustomMinutes > 0
-        ? `${selectedCustomMinutes} ${selectedCustomMinutes === 1 ? "minute" : "minutes"}`
-        : ""
-    ].filter(Boolean).join(" ");
-  }
-
   function renderTimerSetting() {
-    elements.currentTimer.textContent = getSelectedTimerLabel();
     elements.timerButtons.forEach((button) => {
       button.setAttribute("aria-pressed", String(button.dataset.duration === selectedDurationKey));
       if (button.dataset.duration === "custom") {
         button.setAttribute("aria-expanded", String(!elements.customForm.hidden));
       }
     });
+    renderChimeSetting();
   }
 
   function setTimer(durationMs, key, customHours, customMinutes) {
@@ -454,44 +426,72 @@
 
   const TIMER_KEYS = ["unlimited", "15", "30", "60", "120", "custom"];
 
-  // '작은 창으로 열기'는 opener와 새 창이 postMessage로 타이머·언어 설정만 주고받는다.
-  // 창이 열릴 때 opener → 새 창으로, 새 창이 닫힐 때 새 창 → opener로 전달한다.
-  // 저장소를 쓰지 않고 같은 출처끼리만 통신한다.
-  function collectSettings() {
+  // '작은 창으로 열기'는 opener와 새 창이 postMessage로 타이머·언어와 진행 상황을
+  // 주고받는다. 창이 열릴 때 opener → 새 창으로, 새 창이 닫힐 때 새 창 → opener로
+  // 전달한다. 저장소를 쓰지 않고 같은 출처끼리만 통신한다.
+  function collectState() {
     return {
       type: "wakeup:settings",
       language,
       timerKey: selectedDurationKey,
       customHours: selectedCustomHours,
-      customMinutes: selectedCustomMinutes
+      customMinutes: selectedCustomMinutes,
+      durationMs: selectedDurationMs,
+      remainingMs: getTimerRemaining(),
+      elapsedMs: getActiveElapsed(),
+      timerExpired
     };
   }
 
-  function applySettings(data) {
+  function applyPeerState(data) {
     if ((data.language === "ko" || data.language === "en") && data.language !== language) {
       setLanguage(data.language);
     }
     if (!TIMER_KEYS.includes(data.timerKey)) return;
+
+    // 타이머 선택값(버튼 상태)
     if (data.timerKey === "custom") {
       const hours = Number(data.customHours);
       const minutes = Number(data.customMinutes);
       if (!Number.isInteger(hours) || !Number.isInteger(minutes) ||
           hours < 0 || hours > 999 || minutes < 0 || minutes > 59 ||
           hours + minutes === 0) return;
+      selectedCustomHours = hours;
+      selectedCustomMinutes = minutes;
+      selectedDurationKey = "custom";
       elements.customHours.value = String(hours);
       elements.customMinutes.value = String(minutes);
       elements.customForm.hidden = false;
-      setTimer((hours * 60 + minutes) * 60 * 1000, "custom", hours, minutes);
     } else {
+      selectedDurationKey = data.timerKey;
       elements.customForm.hidden = true;
-      const duration = data.timerKey === "unlimited" ? null : Number(data.timerKey) * 60 * 1000;
-      setTimer(duration, data.timerKey);
     }
+    selectedDurationMs = typeof data.durationMs === "number" ? data.durationMs : null;
+
+    // 진행 중인 남은 시간·절전 방지 시간 이어받기
+    if ("elapsedMs" in data || "remainingMs" in data) {
+      pauseActiveTiming();
+      activeElapsedMs = Math.max(0, Number(data.elapsedMs) || 0);
+      activeStartedAt = null;
+      timerRemainingMs = typeof data.remainingMs === "number" ? Math.max(0, data.remainingMs) : null;
+      timerStartedAt = null;
+      timerExpired = Boolean(data.timerExpired);
+      if (timerExpired) {
+        shouldStayAwake = false;
+        void releaseWakeLock();
+        setState("expired");
+      } else if (wakeLock && !wakeLock.released && document.visibilityState === "visible") {
+        startActiveTiming();
+        setState("active");
+      }
+    }
+
     renderTimerSetting();
+    renderClock();
   }
 
   function postToPeer(target) {
-    if (target && !target.closed) target.postMessage(collectSettings(), window.location.origin);
+    if (target && !target.closed) target.postMessage(collectState(), window.location.origin);
   }
 
   function startActiveTiming() {
@@ -675,10 +675,10 @@
     const data = event.data;
     if (!data || typeof data !== "object") return;
     if (data.type === "wakeup:hello") {
-      // 새로 열린 창의 요청. 현재 설정을 그 창으로 보낸다.
-      if (event.source) event.source.postMessage(collectSettings(), window.location.origin);
+      // 새로 열린 창의 요청. 현재 설정과 진행 상황을 그 창으로 보낸다.
+      if (event.source) event.source.postMessage(collectState(), window.location.origin);
     } else if (data.type === "wakeup:settings") {
-      applySettings(data);
+      applyPeerState(data);
     }
   });
 
@@ -792,7 +792,6 @@
   }
 
   translatePage();
-  renderChimeSetting();
   renderClock();
   window.setInterval(renderClock, 1000);
   void requestWakeLock();

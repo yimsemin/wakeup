@@ -203,13 +203,7 @@
       </button>
 
       <section class="timer-section" aria-labelledby="timer-title">
-        <div class="section-heading">
-          <h2 id="timer-title" data-i18n="timerTitle">타이머 설정</h2>
-          <p class="current-timer">
-            <span data-i18n="currentTimerLabel">현재</span>
-            <strong id="current-timer">제한 없음</strong>
-          </p>
-        </div>
+        <h2 id="timer-title" class="section-title" data-i18n="timerTitle">타이머 설정</h2>
 
         <div
           class="timer-options"
@@ -264,7 +258,7 @@
           <button class="apply-timer" type="submit" data-i18n="applyTimer">적용</button>
         </form>
 
-        <div class="chime-control">
+        <div class="chime-control" hidden>
           <label for="chime-volume" data-i18n="chimeLabel">종료 알림음</label>
           <input
             id="chime-volume"
