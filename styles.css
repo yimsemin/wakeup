@@ -15,7 +15,9 @@ body {
   min-height: 100vh;
   margin: 0;
   display: grid;
-  place-items: center;
+  /* 세로는 위 정렬로 고정한다. 가운데 정렬이면 타이머·알림음 영역이
+     나타나고 사라질 때 카드 전체가 재중앙정렬되며 버튼이 위아래로 흔들린다. */
+  place-items: start center;
   padding: 2rem 1.25rem;
   background: #f4f6f5;
   /* 한글은 음절이 아니라 단어(띄어쓰기) 단위로 줄바꿈한다. */
@@ -453,7 +455,6 @@ input {
 
 @media (max-width: 560px) {
   body {
-    align-items: start;
     padding: 0;
   }
 
