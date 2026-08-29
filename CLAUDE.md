@@ -37,6 +37,10 @@ python3 -m http.server 8000
 - 활성 시간·남은 시간은 tick 카운트가 아니라 `Date.now()` 차이를 누적하며,
   wakeLock이 실제로 잡힌 구간(`startActiveTiming`/`pauseActiveTiming`)에서만 진행한다.
 - 사용자 표시 문구는 `COPY` 사전 한 곳. 새 문구는 ko/en 동시 추가.
+- `interruptionCount`는 페이지가 보이는 동안 `release` 이벤트가 온 경우(자기도 모르게 잠금이 풀린 경우)에만 +1 한다. 탭 전환은 안 센다. `startNewSession`에서 0으로 초기화.
+- 예상 종료 시각(`#endtime-group`)은 `state === "active"`일 때만 표시한다. 남은 시간이 멈춘 상태에서는 의미가 없기 때문.
+- `playChime()`은 외부 파일 없이 Web Audio 오실레이터로 만든 두 음. `ensureAudio()`는 시작·타이머 버튼 클릭 등 사용자 조작에서만 AudioContext를 만든다(자동재생 정책).
+- ‘작은 창으로 열기’(`#popout-button`)는 `window.opener`가 있거나 `display-mode: standalone`이면 숨긴다.
 
 ## 자주 실수하는 지점
 
