@@ -57,7 +57,7 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 ### 3.6 검색 기본 정보
 
 - 서비스명은 `Wakeup`, 한 줄 설명은 한국어 `브라우저에서 화면이 잠들지 않게.`, 영어 `Keep your screen awake in the browser.`를 사용한다.
-- 검색 기본 정보는 설명적인 문서 제목, 메타 설명, 실제 배포 예정 주소의 canonical URL과 의미 있는 단일 `h1`까지만 제공한다.
+- 검색 기본 정보는 설명적인 문서 제목, 메타 설명, 배포 주소의 canonical URL과 의미 있는 단일 `h1`까지만 제공한다.
 - 한 페이지 정적 도구의 현재 범위에서는 키워드 메타 태그, 구조화 데이터, 사이트맵과 별도 SEO 도구를 추가하지 않는다.
 
 ## 4. 화면 구성
@@ -69,8 +69,11 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 3. 시작 또는 중지 버튼
 4. 타이머 즉시 선택 버튼과 필요 시 직접 입력 영역
 5. 접힌 상태의 `작동 방식 및 제한 사항` 상세 설명
+6. 프로젝트 저장소(GitHub)로 나가는 링크
 
 제한 사항은 기본적으로 접어 두되, 표준 `details`/`summary` 요소로 키보드와 보조기기에서도 접근할 수 있게 한다.
+
+6번처럼 다른 사이트로 나가는 링크는 자원을 불러오지 않으므로 외부 네트워크 의존성이 아니다. 새 탭으로 열고 `rel="noopener"`를 붙인다.
 
 ## 5. 상태 정의
 
@@ -91,6 +94,9 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 /
 ├── .editorconfig
 ├── .gitattributes
+├── .github/
+│   └── workflows/
+│       └── checks.yml
 ├── .gitignore
 ├── _headers
 ├── _redirects
@@ -99,21 +105,24 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 ├── app.js
 ├── sw.js
 ├── manifest.webmanifest
+├── favicon.svg
 ├── icons/
+├── LICENSE
 ├── README.md
 ├── PLANNING.md
-└── AGENTS.md
+├── AGENTS.md
+└── CLAUDE.md
 ```
 
-- 순수 HTML, CSS, JavaScript만 사용한다.
 - 번역 문구는 `app.js`의 단일 사전에서 관리한다.
-- 시스템 기본 글꼴을 사용하며 모든 사용자 표시 글자의 최소 크기는 14pt로 한다.
-- 장식용 이미지나 아이콘 라이브러리는 사용하지 않는다.
+- 시스템 기본 글꼴을 사용하고, 장식용 이미지나 아이콘 라이브러리는 두지 않는다.
 - 캐시 이름에는 버전을 포함하고, 새 버전 활성화 시 이전 앱 캐시만 정리한다.
 - 텍스트 파일은 UTF-8과 LF로 통일해 Windows와 macOS에서 같은 형식을 유지한다.
 - 저장소에는 비밀정보, 개인 로컬 경로, 운영체제와 편집기의 로컬 파일을 포함하지 않는다.
 - `_headers`에는 Cloudflare Pages에서 필요한 최소 보안 헤더와 Service Worker의 재검증 정책만 둔다.
 - `_redirects`에는 존재하지 않는 경로를 `index.html` 본문과 `404` 상태로 응답하는 규칙 한 줄만 둔다.
+- `.github/workflows/checks.yml`는 정적 검사(문법·manifest JSON·공백)만 실행한다. 빌드·배포 단계는 없고 실제 브라우저 검증은 사람이 한다.
+- 배포물은 MIT 라이선스로 공개하고 `LICENSE`를 저장소 루트에 둔다.
 
 ## 7. 브라우저 제약
 
