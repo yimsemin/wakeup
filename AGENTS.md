@@ -53,6 +53,7 @@ Wakeup은 데스크톱 브라우저에서 Screen Wake Lock을 이용해 화면 �
 - 공개되어도 문제가 없도록 비밀정보, 개인 식별 정보, 개인 로컬 경로와 실제 환경 설정 파일을 커밋하지 않는다.
 - 텍스트 파일은 UTF-8과 LF를 사용하고 `.gitattributes`와 `.editorconfig`를 기준으로 Windows와 macOS에서 같은 형식을 유지한다.
 - 운영체제, 편집기와 에이전트가 만든 로컬 파일은 `.gitignore`에만 최소한으로 추가한다.
+- 커밋 메시지와 PR 본문에 AI 생성 표식이나 도구 co-author 트레일러(`Co-authored-by: Claude …`, `🤖 Generated with …` 등)를 넣지 않는다. `git config core.hooksPath .githooks`로 활성화되는 `.githooks/commit-msg`가 모든 커밋 경로에서 해당 줄을 제거한다. 새 클론에서 한 번 실행해 둔다.
 - `_headers`는 정적 보안 헤더와 Service Worker 갱신 정책만, `_redirects`는 존재하지 않는 경로의 `404` 응답 한 줄만 담당한다. 서버 기능이나 별도 배포 계층을 만들지 않는다.
 - main에 push하면 Cloudflare Pages가 자동 배포한다. 릴리스는 git 태그(`vMAJOR.MINOR.PATCH`)로만 표시하며, 1.0 전에는 사용자에게 보이는 동작이 바뀌면 MINOR, 수정만이면 PATCH를 올린다. CHANGELOG 파일이나 코드 내 버전 문자열은 두지 않고, `sw.js`의 `CACHE_NAME`은 릴리스와 무관한 캐시 무효화 카운터다.
 
