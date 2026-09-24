@@ -21,7 +21,7 @@ python3 -m http.server 8000
 
 - `http://localhost:8000` — `localhost`는 보안 컨텍스트라 Wake Lock/SW가 동작한다. `file://`로 열지 말 것.
 - 린트·유닛 테스트는 없다. CI는 `.github/workflows/checks.yml` 하나로, 푸시·PR마다 아래를 실행한다. 로컬에서도 변경 후 최소한 같은 것을 확인한다:
-  - `node --check app.js && node --check sw.js`
+  - `node --check app.js && node --check sw.js` (커밋 제목 형식은 `.githooks/commit-msg`와 CI가 검사)
   - `node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest'))"`
   - `git diff --check`
 - Wake Lock 실동작·오프라인·PWA는 **실제 브라우저에서 사람이** 확인한다(자동화 불가).
@@ -40,21 +40,23 @@ python3 -m http.server 8000
 - `interruptionCount`는 페이지가 보이는 동안 `release` 이벤트가 온 경우(자기도 모르게 잠금이 풀린 경우)에만 +1 한다. 탭 전환은 안 센다. `startNewSession`에서 0으로 초기화.
 - 예상 종료 시각(`#endtime-group`)은 `state === "active"`일 때만 표시한다. 남은 시간이 멈춘 상태에서는 의미가 없기 때문.
 - `playChime()`은 외부 파일 없이 Web Audio 오실레이터로 만든 두 음. `ensureAudio()`는 시작·타이머 버튼·미리듣기 클릭 등 사용자 조작에서만 AudioContext를 만든다(자동재생 정책). 크기 `chimeLevel`(0~1)은 슬라이더로만 바뀌고 저장하지 않는다. 0이면 재생 안 함. `renderChimeSetting()`이 `selectedDurationMs === null`(제한 없음)이면 `.chime-control`을 숨긴다 — `renderTimerSetting()`에서 호출.
-- ‘작은 창으로 열기’(`#popout-button`)는 `window.opener`가 있거나 `display-mode: standalone`이면 숨긴다. 새 창은 로드 시 `wakeup:hello`를 opener로 보내고, opener가 `wakeup:settings`(`collectState`: 타이머 선택·`durationMs`·`remainingMs`·`elapsedMs`·언어)로 답한다. 새 창은 `pagehide`에서 자기 상태를 opener로 되돌려 보낸다. `applyPeerState`가 양쪽에서 같은 코드로 반영 — 진행 시간은 `pauseActiveTiming` 후 재앵커. 모두 `event.origin` 확인 후 처리.
+- ‘작은 창으로 열기’(`#popout-button`, 숨길 때는 설명까지 묶은 `#popout-item`)는 `window.opener`가 있거나 `display-mode: standalone`이면 숨긴다. 새 창은 로드 시 `wakeup:hello`를 opener로 보내고, opener가 `wakeup:settings`(`collectState`: 타이머 선택·`durationMs`·`remainingMs`·`elapsedMs`·언어)로 답한다. 새 창은 `pagehide`에서 자기 상태를 opener로 되돌려 보낸다. `applyPeerState`가 양쪽에서 같은 코드로 반영 — 진행 시간은 `pauseActiveTiming` 후 재앵커. 모두 `event.origin` 확인 후 처리.
 - 앰비언트(`#ambient`)는 `<main>` 밖 body 직속 오버레이. `openAmbient`/`closeAmbient`가 `hidden` 토글 + Fullscreen API + `<main>`의 `inert`를 관리한다. 브라우저가 전체 화면을 나가면 `fullscreenchange`로 닫힌다. `renderAmbient`는 `renderClock`(1초 간격)에서 호출되고 오버레이가 숨겨져 있으면 즉시 반환한다. 저장하는 값 없음. `.ambient-note`는 전체 화면이 별도 데스크톱으로 열려 다른 화면을 보면 절전이 멈춘다는 안내(항상 표시, 커서와 함께 숨지 않음).
+- 테마 버튼은 `aria-pressed`로 상태를 표시하고 라벨은 고정("다크 모드"). 작은 창 핸드오프(`collectState`/`applyPeerState`)에 선택값(`theme`)도 실린다.
+- 테마: `<html data-theme>`(`light`/`dark`)가 있으면 그 값이, 없으면 `prefers-color-scheme`이 우선한다. 저장하지 않는다. `styles.css`의 다크 규칙은 미디어쿼리용(`:root:not([data-theme="light"])`)과 명시 선택용(`:root[data-theme="dark"]`) 두 벌이라 색을 바꿀 때 양쪽을 함께 고친다. 버튼 문구는 `renderTheme`.
 - 번역 대상 속성: `data-i18n`(textContent), `data-i18n-content`(meta content), `data-i18n-aria`(aria-label). `<head>`의 og/twitter/description도 `data-i18n-content`로 언어를 따른다.
 
 ## 자주 실수하는 지점
 
 - 앱 셸 파일(`index.html`/`styles.css`/`app.js`/`manifest`/아이콘) 내용을 바꾸면
   `sw.js`의 `CACHE_NAME` 버전을 반드시 올린다. 안 올리면 재방문자가 구버전을 본다.
-- 자산 파일명에 해시가 없다. SW 캐시 무효화는 위 버전 규율에만 의존한다.
+  단, 편집할 때마다 올리지 않는다. 앱 셸 파일이 들어가는 커밋을 만들 때 그 커밋에서 한 번만(+1) 올린다.
+  문서·워크플로·`_headers`/`_redirects`만 바뀌는 커밋은 올리지 않는다.
 - `_headers`/`_redirects`는 로컬 python 서버에서는 적용되지 않는다. 헤더·404 확인은 배포 환경에서.
 
 ## 배포
 
-빌드 없음. Cloudflare Pages를 GitHub 리포에 연결하면 루트의 정적 파일, `_headers`(보안 헤더), `_redirects`(미존재 경로 → `index.html` 본문 + 404)가 그대로 적용된다. main에 push하면 자동 배포된다.
-`wrangler.toml` 등 빌드/배포 설정 파일은 추가하지 않는다 — 대시보드 Git 연동만 사용한다.
+main에 push하면 Cloudflare Pages가 자동 배포한다(대시보드 Git 연동만 사용, `wrangler.toml` 등은 두지 않는다).
 
 CF 대시보드 쪽 설정(존별): Web Analytics 비활성(추적 코드 금지 원칙), SSL/TLS에서 HSTS, 필요 시 Browser Cache TTL을 "Respect Existing Headers"로 두어 `_headers`가 권위를 갖게 한다. 방문 통계가 필요하면 존 수준(엣지) 집계만 본다 — 페이지에 코드를 넣지 않는다.
 
