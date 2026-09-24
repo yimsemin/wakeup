@@ -147,7 +147,7 @@
           <p class="tagline" data-i18n="tagline">브라우저에서 화면이 잠들지 않게.</p>
         </div>
         <div class="topbar-controls">
-        <button type="button" class="theme-toggle" id="theme-toggle"></button>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">다크 모드</button>
         <div
           class="language-switch"
           role="group"
@@ -198,13 +198,7 @@
         절전 방지 중지
       </button>
 
-      <button class="secondary-action" id="popout-button" type="button" data-i18n="popout">
-        작은 창으로 열기
-      </button>
-
-      <button class="secondary-action" id="ambient-button" type="button" data-i18n="ambientButton">
-        큰 화면으로 보기
-      </button>
+      <p class="action-hint" data-i18n="keyHint">Space 키로도 시작·중지할 수 있습니다.</p>
 
       <section class="timer-section" aria-labelledby="timer-title">
         <h2 id="timer-title" class="section-title" data-i18n="timerTitle">타이머 설정</h2>
@@ -276,6 +270,21 @@
           <button type="button" id="chime-preview" data-i18n="chimePreview">미리 듣기</button>
         </div>
       </section>
+
+      <div class="utility-actions">
+        <div class="utility-item" id="popout-item">
+          <button class="secondary-action" id="popout-button" type="button" data-i18n="popout">
+            작은 창으로 열기
+          </button>
+          <p class="action-hint" data-i18n="popoutHint">다른 창에서 작업할 때 작은 창으로 띄워 두세요.</p>
+        </div>
+        <div class="utility-item">
+          <button class="secondary-action" id="ambient-button" type="button" data-i18n="ambientButton">
+            전체 화면 시계로 보기
+          </button>
+          <p class="action-hint" data-i18n="ambientDesc">큰 시계와 남은 시간을 전체 화면으로 봅니다.</p>
+        </div>
+      </div>
 
       <details class="limitations">
         <summary data-i18n="limitationsSummary">작동 방식 및 제한 사항</summary>
@@ -379,7 +388,7 @@
       id="ambient"
       role="dialog"
       aria-modal="true"
-      aria-label="큰 화면으로 보기"
+      aria-label="전체 화면 시계로 보기"
       data-i18n-aria="ambientButton"
       tabindex="-1"
       hidden
