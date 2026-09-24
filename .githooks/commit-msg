@@ -3,6 +3,7 @@
 # 권고가 아니라 하드 게이트다. commit -m / 에디터 / amend / cherry-pick / revert
 # 등 모든 경로에서 실행된다(--no-verify 로만 우회). 줄 전체가 트레일러일 때만
 # 지우고, 본문에서 이 문자열을 예시로 언급하는 줄은 건드리지 않는다.
+# 트레일러 제거 뒤 제목이 `type: 설명` 형식(72자 이내)인지 검사해 어기면 거부한다.
 # 활성화: git config core.hooksPath .githooks
 msg_file="$1"
 [ -f "$msg_file" ] || exit 0
@@ -20,4 +21,19 @@ awk '
   }
 ' "$tmp" > "$msg_file"
 rm -f "$tmp"
+
+subject="$(grep -vE '^[[:space:]]*#' "$msg_file" | sed -n '/[^[:space:]]/{p;q;}')"
+case "$subject" in
+  'Merge '*|'Revert "'*|'fixup! '*|'squash! '*) exit 0 ;;
+esac
+if ! printf '%s\n' "$subject" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert): [^ ].*[^.]$'; then
+  echo "commit-msg: 제목은 'type: 간결한 한글 설명' 형식이어야 하며 마침표로 끝나면 안 된다." >&2
+  echo "  type: feat fix docs style refactor perf test build ci chore revert" >&2
+  echo "  현재: $subject" >&2
+  exit 1
+fi
+if [ "$(printf '%s' "$subject" | wc -m | tr -d '[:space:]')" -gt 72 ]; then
+  echo "commit-msg: 제목이 72자를 넘는다." >&2
+  exit 1
+fi
 exit 0
