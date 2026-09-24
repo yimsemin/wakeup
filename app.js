@@ -21,6 +21,8 @@
       homeLabel: "Wakeup 홈",
       tagline: "브라우저에서 화면이 잠들지 않게.",
       languageGroup: "언어 선택",
+      themeToDark: "다크 모드",
+      themeToLight: "라이트 모드",
       timeGroup: "절전 방지 시간 정보",
       timerGroup: "타이머 선택",
       elapsedLabel: "절전 방지 시간",
@@ -90,6 +92,8 @@
       homeLabel: "Wakeup home",
       tagline: "Keep your screen awake in the browser.",
       languageGroup: "Language selection",
+      themeToDark: "Dark mode",
+      themeToLight: "Light mode",
       timeGroup: "Wake lock time information",
       timerGroup: "Timer selection",
       elapsedLabel: "Wake lock active",
@@ -182,7 +186,8 @@
     customForm: document.querySelector("#custom-duration"),
     customHours: document.querySelector("#custom-hours"),
     customMinutes: document.querySelector("#custom-minutes"),
-    languageButtons: document.querySelectorAll("[data-language]")
+    languageButtons: document.querySelectorAll("[data-language]"),
+    themeToggle: document.querySelector("#theme-toggle")
   };
 
   let language = getInitialLanguage();
@@ -352,6 +357,25 @@
     renderTimerSetting();
     renderState();
     renderClock();
+    renderTheme();
+  }
+
+  // 테마: 기본은 시스템 설정. 버튼으로 바꾼 값은 저장하지 않으므로 새로 열면 시스템 설정으로 돌아간다.
+  const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+  function isDark() {
+    const override = document.documentElement.dataset.theme;
+    return override ? override === "dark" : darkQuery.matches;
+  }
+
+  function renderTheme() {
+    const copy = COPY[language];
+    elements.themeToggle.textContent = isDark() ? copy.themeToLight : copy.themeToDark;
+  }
+
+  function toggleTheme() {
+    document.documentElement.dataset.theme = isDark() ? "light" : "dark";
+    renderTheme();
   }
 
   function setLanguage(nextLanguage) {
@@ -771,6 +795,9 @@
   elements.languageButtons.forEach((button) => {
     button.addEventListener("click", () => setLanguage(button.dataset.language));
   });
+
+  elements.themeToggle.addEventListener("click", toggleTheme);
+  darkQuery.addEventListener("change", renderTheme);
 
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible" && shouldStayAwake && !timerExpired) {

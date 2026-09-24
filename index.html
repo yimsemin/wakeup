@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#145c4b">
+    <meta name="theme-color" content="#145c4b" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0d1211" media="(prefers-color-scheme: dark)">
     <meta
       name="description"
       data-i18n-content="seoDescription"
@@ -145,6 +146,8 @@
           </h1>
           <p class="tagline" data-i18n="tagline">브라우저에서 화면이 잠들지 않게.</p>
         </div>
+        <div class="topbar-controls">
+        <button type="button" class="theme-toggle" id="theme-toggle"></button>
         <div
           class="language-switch"
           role="group"
@@ -153,6 +156,7 @@
         >
           <button type="button" data-language="ko" aria-pressed="true">한국어</button>
           <button type="button" data-language="en" aria-pressed="false">English</button>
+        </div>
         </div>
       </header>
 
