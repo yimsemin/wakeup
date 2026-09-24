@@ -117,7 +117,9 @@ a:focus-visible {
   background: transparent;
 }
 
-.language-switch button[aria-pressed="true"] {
+.language-switch button[aria-pressed="true"],
+
+.theme-toggle[aria-pressed="true"] {
   background: #dfece7;
   color: #0d4c3f;
   font-weight: 750;
@@ -222,13 +224,26 @@ label {
 .secondary-action {
   width: 100%;
   min-height: 2.9rem;
-  margin-top: 0.6rem;
   padding: 0.6rem 1rem;
   border: 1px solid #cdd8d4;
   border-radius: 0.75rem;
   background: #ffffff;
   color: #244039;
   font-weight: 700;
+}
+
+.action-hint {
+  margin: 0.5rem 0 0;
+  color: inherit;
+  line-height: 1.45;
+  opacity: 0.72;
+}
+
+.utility-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1rem 0.75rem;
+  margin-top: 2.5rem;
 }
 
 .timer-section {
@@ -520,7 +535,9 @@ input {
       background: #232c29;
     }
 
-  :root:not([data-theme="light"]) .language-switch button[aria-pressed="true"] {
+  :root:not([data-theme="light"]) .language-switch button[aria-pressed="true"],
+
+  :root:not([data-theme="light"]) .theme-toggle[aria-pressed="true"] {
       background: #2f4a41;
       color: #cfeee2;
     }
@@ -642,7 +659,9 @@ input {
     background: #232c29;
   }
 
-:root[data-theme="dark"] .language-switch button[aria-pressed="true"] {
+:root[data-theme="dark"] .language-switch button[aria-pressed="true"],
+
+:root[data-theme="dark"] .theme-toggle[aria-pressed="true"] {
     background: #2f4a41;
     color: #cfeee2;
   }

@@ -21,8 +21,7 @@
       homeLabel: "Wakeup 홈",
       tagline: "브라우저에서 화면이 잠들지 않게.",
       languageGroup: "언어 선택",
-      themeToDark: "다크 모드",
-      themeToLight: "라이트 모드",
+      theme: "다크 모드",
       timeGroup: "절전 방지 시간 정보",
       timerGroup: "타이머 선택",
       elapsedLabel: "절전 방지 시간",
@@ -30,7 +29,10 @@
       endTimeLabel: "종료 예정",
       interruptionLabel: "중단",
       popout: "작은 창으로 열기",
-      ambientButton: "큰 화면으로 보기",
+      ambientButton: "전체 화면 시계로 보기",
+      ambientDesc: "큰 시계와 남은 시간을 전체 화면으로 봅니다.",
+      popoutHint: "다른 창에서 작업할 때 작은 창으로 띄워 두세요.",
+      keyHint: "Space 키로도 시작·중지할 수 있습니다.",
       ambientHint: "ESC 또는 클릭하면 돌아갑니다",
       ambientNote: "이 화면을 보고 있을 때만 절전이 막힙니다. 다른 디스플레이나 데스크톱을 보면 멈췄다가, 이 화면으로 돌아오면 다시 시작합니다.",
       chimeLabel: "종료 알림음",
@@ -78,7 +80,7 @@
       states: {
         requesting: ["절전 방지를 시작하는 중", "브라우저에 화면 잠금 방지를 요청하고 있습니다."],
         prompt: ["절전 방지를 시작하려면 버튼을 누르세요", "이 브라우저에서는 사용자가 직접 시작해야 화면 잠금 방지가 허용됩니다. 아래 ‘절전 방지 시작’을 누르면 시작됩니다."],
-        active: ["절전 방지 중", "이 페이지가 보이는 동안 화면이 켜진 상태를 유지합니다."],
+        active: ["절전 방지 중", "이 페이지가 보이는 동안 화면이 켜진 상태를 유지합니다. 다른 탭으로 옮기거나 창을 최소화하면 멈춥니다."],
         idle: ["절전 방지 꺼짐", "컴퓨터가 시스템 설정에 따라 절전 모드로 들어갈 수 있습니다."],
         suspended: ["절전 방지가 일시 중단됨", "이 탭이 화면에 보이지 않는 동안에는 절전 방지가 멈추고, 다시 보이면 자동으로 시작합니다. 다른 창에서 작업하려면 Wakeup을 별도 창으로 열어 지금 보고 있는 데스크톱에 보이도록 두세요. 최소화하거나 다른 데스크톱(스페이스)에 두면 멈춥니다."],
         expired: ["타이머 종료", "이제 컴퓨터가 시스템 설정에 따라 절전 모드로 들어갈 수 있습니다."],
@@ -92,16 +94,18 @@
       homeLabel: "Wakeup home",
       tagline: "Keep your screen awake in the browser.",
       languageGroup: "Language selection",
-      themeToDark: "Dark mode",
-      themeToLight: "Light mode",
-      timeGroup: "Wake lock time information",
+      theme: "Dark mode",
+      timeGroup: "Screen-awake time information",
       timerGroup: "Timer selection",
-      elapsedLabel: "Wake lock active",
+      elapsedLabel: "Time kept awake",
       remainingLabel: "Time remaining",
       endTimeLabel: "Ends around",
       interruptionLabel: "Interruptions",
       popout: "Open in a small window",
-      ambientButton: "Show on a large screen",
+      ambientButton: "Show full-screen clock",
+      ambientDesc: "Shows a large clock and the time remaining in full screen.",
+      popoutHint: "Keep it visible in a compact window while you work elsewhere.",
+      keyHint: "You can also press Space to start or stop.",
       ambientHint: "Press ESC or click to return",
       ambientNote: "The screen stays awake only while you are looking at this one. It pauses if you turn to another display or desktop, and resumes when you return.",
       chimeLabel: "Timer chime",
@@ -123,7 +127,7 @@
       limitationsIntro: "Wakeup uses the browser's standard Screen Wake Lock feature to keep your screen on, with nothing to install.",
       useCases: "Use it whenever you need to keep looking at the screen — following a recipe while cooking, giving a presentation or sharing your screen, reading a long document, or watching a download or a dashboard.",
       controlNote: "Press the Space key to start or stop keeping the screen awake. When you work in another window, the “Open in a small window” button puts Wakeup in a compact window you can keep visible.",
-      principlesNote: "Wakeup uses only the browser's standard Screen Wake Lock feature — no fake mouse input or silent video tricks. It counts only the time a screen wake lock was actually held.",
+      principlesNote: "Wakeup uses only the browser's standard Screen Wake Lock feature — no fake mouse input or silent video tricks. It counts only the time the screen was actually kept awake.",
       limitationVisible: "Wakeup works only while its tab is visible on screen. Switching to another tab or minimizing the window pauses it; returning to this tab starts it again automatically. On macOS, the Wakeup window also counts as hidden — and pauses — while it sits on another desktop (Space) or is fully covered by other windows.",
       limitationWindow: "To keep it on while you work in another window, open Wakeup in its own window and keep that window visible on the desktop you are currently viewing. It does not need focus, but it pauses if you minimize it, fully cover it with other windows, or move it to another desktop.",
       limitationSystem: "A web page cannot override low-power mode, battery restrictions, operating system policies, or a closed laptop lid.",
@@ -132,7 +136,7 @@
       sourceLink: "View the project on GitHub",
       faqTitle: "Frequently asked questions",
       faqTabQ: "What happens when I switch to another tab or window?",
-      faqTabA: "Keeping the screen awake pauses, then resumes automatically when you return to the Wakeup tab. The wake lock time shown counts only the time a lock was actually held.",
+      faqTabA: "Keeping the screen awake pauses, then resumes automatically when you return to the Wakeup tab. The time shown counts only the time the screen was actually being kept awake.",
       faqBatteryQ: "Does it drain the battery faster?",
       faqBatteryA: "Keeping the display on uses more power than letting it turn off. Wakeup itself does no background work, and a laptop's low-power policy may override the browser request.",
       faqInstallQ: "Do I need to install anything?",
@@ -147,14 +151,14 @@
       faqPrivacyA: "No. There are no cookies, no stored preferences, and no analytics. Only the app files needed for offline use are cached by the browser.",
       invalidDuration: "Enter a total duration of at least 1 minute.",
       states: {
-        requesting: ["Starting wake lock", "Requesting permission from the browser to keep the screen awake."],
+        requesting: ["Starting to keep the screen awake", "Asking the browser to keep the screen awake."],
         prompt: ["Press the button to start", "This browser only allows screen wake lock after you start it yourself. Press “Start keeping awake” below to begin."],
-        active: ["Keeping screen awake", "The screen will stay on while this page remains visible."],
-        idle: ["Wake lock is off", "The computer may sleep according to its system settings."],
+        active: ["Keeping screen awake", "The screen will stay on while this page remains visible. Switching tabs or minimizing the window pauses it."],
+        idle: ["Keeping awake is off", "The computer may sleep according to its system settings."],
         suspended: ["Keeping awake is paused", "Staying awake pauses while this tab is not visible and resumes automatically when it is shown again. To work in another window, open Wakeup in its own window and keep it visible on the desktop you are currently viewing. Minimizing it or moving it to another desktop (Space) pauses it."],
         expired: ["Timer finished", "The computer may now sleep according to its system settings."],
-        unsupported: ["Browser not supported", "This browser does not provide the screen wake lock feature."],
-        error: ["Could not start wake lock", "The browser or system rejected the request. You can try again below."]
+        unsupported: ["Browser not supported", "This browser cannot keep the screen awake."],
+        error: ["Could not keep the screen awake", "The browser or system rejected the request. You can try again below."]
       }
     }
   };
@@ -187,7 +191,8 @@
     customHours: document.querySelector("#custom-hours"),
     customMinutes: document.querySelector("#custom-minutes"),
     languageButtons: document.querySelectorAll("[data-language]"),
-    themeToggle: document.querySelector("#theme-toggle")
+    themeToggle: document.querySelector("#theme-toggle"),
+    popoutItem: document.querySelector("#popout-item")
   };
 
   let language = getInitialLanguage();
@@ -370,7 +375,8 @@
 
   function renderTheme() {
     const copy = COPY[language];
-    elements.themeToggle.textContent = isDark() ? copy.themeToLight : copy.themeToDark;
+    elements.themeToggle.textContent = copy.theme;
+    elements.themeToggle.setAttribute("aria-pressed", String(isDark()));
   }
 
   function toggleTheme() {
@@ -465,13 +471,18 @@
       durationMs: selectedDurationMs,
       remainingMs: getTimerRemaining(),
       elapsedMs: getActiveElapsed(),
-      timerExpired
+      timerExpired,
+      theme: document.documentElement.dataset.theme || null
     };
   }
 
   function applyPeerState(data) {
     if ((data.language === "ko" || data.language === "en") && data.language !== language) {
       setLanguage(data.language);
+    }
+    if (data.theme === "light" || data.theme === "dark") {
+      document.documentElement.dataset.theme = data.theme;
+      renderTheme();
     }
     if (!TIMER_KEYS.includes(data.timerKey)) return;
 
@@ -811,7 +822,7 @@
   // 팝업 창이나 설치된 앱에서는 이미 별도 창이므로 '작은 창으로 열기'를 숨긴다.
   const openedFromPeer = window.opener !== null && !window.opener.closed;
   if (window.opener !== null || window.matchMedia("(display-mode: standalone)").matches) {
-    elements.popout.hidden = true;
+    elements.popoutItem.hidden = true;
   }
 
   if (openedFromPeer) {
