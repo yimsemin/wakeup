@@ -16,9 +16,10 @@ Windows와 macOS의 지원 브라우저에서 화면 꺼짐과 잠금을 방지�
 - 타이머 종료 시 짧은 알림음 (크기 조절·미리 듣기)
 - 페이지가 보이는 동안 예기치 않게 잠금이 풀린 횟수를 `중단`으로 표시
 - Space 키 단축키, 타이머 진행 상황·언어가 이어지는 별도 작은 창 열기
-- 전체 화면에 큰 시계와 남은 시간을 보여주는 `큰 화면으로 보기`(앰비언트) 모드
+- 전체 화면에 큰 시계와 남은 시간을 보여주는 `전체 화면 시계로 보기`(앰비언트) 모드
 - 열린 FAQ 섹션과 검색 엔진용 구조화 데이터
 - 한국어와 영어 지원 (`?lang=ko`, `?lang=en`)
+- 다크 모드: 시스템 설정을 따르고, 버튼으로 세션 동안만 바꿀 수 있음(저장 안 함)
 - 최초 방문 후 오프라인 실행 및 PWA 설치 지원
 - 쿠키, 사용자 설정 저장, 분석 코드 및 외부 런타임 의존성 없음
 - 가짜 마우스 입력이나 무음 영상 같은 우회 기법 없이 표준 Screen Wake Lock만 사용
@@ -36,7 +37,7 @@ python3 -m http.server 8000
 ## 구조
 
 - `index.html`: 단일 화면의 의미 구조
-- `styles.css`: 레이아웃과 상태 스타일
+- `styles.css`: 레이아웃, 상태·테마 스타일
 - `app.js`: Wake Lock, 타이머 및 번역
 - `sw.js`: 앱 셸 오프라인 캐시
 - `manifest.webmanifest`: 설치형 웹앱 정보
@@ -45,7 +46,8 @@ python3 -m http.server 8000
 - `_redirects`: 존재하지 않는 경로의 404 응답 규칙
 - `robots.txt`, `sitemap.xml`: 크롤러 허용과 사이트맵 (ko/en 대체 링크 포함)
 - `.gitattributes`, `.editorconfig`, `.gitignore`: 운영체제와 무관한 편집·형식 규칙
-- `.github/workflows/checks.yml`: 푸시·PR마다 도는 정적 검사 (문법·manifest JSON·공백)
+- `.githooks/commit-msg`: 커밋 제목 형식 검사와 AI 표식 트레일러 제거 (`git config core.hooksPath .githooks`)
+- `.github/workflows/checks.yml`: 푸시·PR마다 도는 정적 검사 (문법·manifest JSON·공백·커밋 제목 형식)
 - `LICENSE`: MIT 라이선스
 - `PLANNING.md`: 제품 범위와 완료 기준
 - `AGENTS.md`: 이후 작업자가 따라야 할 프로젝트 규칙
