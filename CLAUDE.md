@@ -20,6 +20,7 @@ python3 -m http.server 8000
 ```
 
 - `http://localhost:8000` — `localhost`는 보안 컨텍스트라 Wake Lock/SW가 동작한다. `file://`로 열지 말 것.
+- Node는 `node --check` 용도로만 쓰며 버전은 `.node-version` 한 곳(CI의 `setup-node`도 이 파일을 읽는다). 어떤 버전 관리자든 되고, mise는 선택: 전역 설정에서 `mise settings add idiomatic_version_file_enable_tools node` 후 `mise install`.
 - 린트·유닛 테스트는 없다. CI는 `.github/workflows/checks.yml` 하나로, 푸시·PR마다 아래를 실행한다. 로컬에서도 변경 후 최소한 같은 것을 확인한다:
   - `node --check app.js && node --check sw.js` (커밋 제목 형식은 `.githooks/commit-msg`와 CI가 검사)
   - `node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest'))"`
