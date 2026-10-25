@@ -28,6 +28,8 @@
       remainingLabel: "남은 시간",
       endTimeLabel: "종료 예정",
       interruptionLabel: "중단",
+      interruptionHint: "페이지가 보이는데도 잠금이 풀린 횟수입니다. 저전력·배터리 절약 모드나 시스템 정책이 흔한 원인이며, 풀리면 자동으로 다시 요청합니다.",
+      errorDeniedHint: "브라우저 또는 시스템이 요청을 거부했습니다. 저전력·배터리 절약 모드나 전원 정책이 원인일 수 있으니 꺼 보거나 Wakeup 탭이 보이는 상태에서 다시 시도하세요.",
       popout: "작은 창으로 열기",
       ambientButton: "전체 화면 시계로 보기",
       ambientDesc: "큰 시계와 남은 시간을 전체 화면으로 봅니다.",
@@ -101,6 +103,8 @@
       remainingLabel: "Time remaining",
       endTimeLabel: "Ends around",
       interruptionLabel: "Interruptions",
+      interruptionHint: "Times the lock was released while this page was visible. Low-power or battery-saver mode and system policy are common causes; Wakeup requests it again automatically.",
+      errorDeniedHint: "The browser or system denied the request. Low-power or battery-saver mode and power policy may be the cause; turn them off, or try again while the Wakeup tab is visible.",
       popout: "Open in a small window",
       ambientButton: "Show full-screen clock",
       ambientDesc: "Shows a large clock and the time remaining in full screen.",
@@ -202,6 +206,7 @@
   let shouldStayAwake = true;
   let timerExpired = false;
   let interruptionCount = 0;
+  let lastErrorName = "";
   let audioContext = null;
   let cursorHideTimer = null;
   // 알림음 크기(0~1). 저장하지 않으므로 새로 열면 기본값으로 돌아간다.
@@ -402,7 +407,12 @@
     const [title, description] = copy.states[state];
     elements.statusPanel.dataset.state = state;
     elements.statusTitle.textContent = title;
-    elements.statusDescription.textContent = description;
+    elements.statusDescription.textContent =
+      state === "error" && lastErrorName === "NotAllowedError"
+        ? copy.errorDeniedHint
+        : interruptionCount > 0 && state === "active"
+          ? `${description} ${copy.interruptionHint}`
+          : description;
     // 탭이 백그라운드일 때도 사용자가 탭 제목만으로 알 수 있도록,
     // 주의가 필요한 상태(일시 중단·타이머 종료·오류)는 상태 제목을 탭 제목에 노출한다.
     const titleShowsStatus =
@@ -612,9 +622,11 @@
           }
         }
       }, { once: true });
+      lastErrorName = "";
       startActiveTiming();
       setState("active");
-    } catch {
+    } catch (error) {
+      lastErrorName = error && error.name ? error.name : "";
       wakeLock = null;
       pauseActiveTiming();
       if (document.visibilityState !== "visible") setState("suspended");
