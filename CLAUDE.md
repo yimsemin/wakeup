@@ -9,7 +9,7 @@
 ## 프로젝트 한 줄 요약
 
 데스크톱 브라우저에서 Screen Wake Lock으로 화면 꺼짐을 막는 단일 페이지 정적 웹앱.
-빌드·서버·의존성·계정 없음. GitHub `yimsemin/wakeup` → Cloudflare Pages → `wakeup.subproject.kr`.
+서버·의존성·계정 없음. 변환 없는 빌드(`npm run build`가 배포 파일을 `dist/`로 복사)만 Cloudflare Pages 표준용으로 둔다. GitHub `yimsemin/wakeup` → Cloudflare Pages → `wakeup.subproject.kr`.
 
 파일 구조는 `PLANNING.md` 6절의 트리를 기준으로 한다. `app.js`는 단일 IIFE다.
 
@@ -20,7 +20,8 @@ python3 -m http.server 8000
 ```
 
 - `http://localhost:8000` — `localhost`는 보안 컨텍스트라 Wake Lock/SW가 동작한다. `file://`로 열지 말 것.
-- Node는 `node --check` 용도로만 쓰며 버전은 `.node-version` 한 곳(CI의 `setup-node`도 이 파일을 읽는다). 어떤 버전 관리자든 되고, mise는 선택: 전역 설정에서 `mise settings add idiomatic_version_file_enable_tools node` 후 `mise install`.
+- Node는 `node --check`와 `npm run build`(`scripts/build.mjs`, 내장 모듈만) 용도로만 쓰며 버전은 `.node-version` 한 곳(CI의 `setup-node`도 이 파일을 읽는다). 어떤 버전 관리자든 되고, mise는 선택: 전역 설정에서 `mise settings add idiomatic_version_file_enable_tools node` 후 `mise install`.
+- 개발 중에는 `dist/` 없이 루트를 그대로 서빙한다. `dist/`는 `.gitignore` 대상이며, 배포 파일 목록을 바꾸면 `scripts/build.mjs`의 복사 목록도 고치고 `npm run build` 후 `dist`와 원본이 같은지 확인한다.
 - 린트·유닛 테스트는 없다. CI는 `.github/workflows/checks.yml` 하나로, 푸시·PR마다 아래를 실행한다. 로컬에서도 변경 후 최소한 같은 것을 확인한다:
   - `node --check app.js && node --check sw.js` (커밋 제목 형식은 `.githooks/commit-msg`와 CI가 검사)
   - `node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest'))"`
