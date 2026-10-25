@@ -52,11 +52,14 @@ Wakeup은 데스크톱 브라우저에서 Screen Wake Lock을 이용해 화면 �
 - 텍스트 파일은 UTF-8과 LF를 사용하고 `.gitattributes`와 `.editorconfig`를 기준으로 Windows와 macOS에서 같은 형식을 유지한다.
 - 운영체제, 편집기와 에이전트가 만든 로컬 파일은 `.gitignore`에만 최소한으로 추가한다.
 - 커밋 메시지와 PR 본문에 AI 생성 표식이나 도구 co-author 트레일러(`Co-authored-by: Claude …`, `🤖 Generated with …` 등)를 넣지 않는다. `git config core.hooksPath .githooks`로 활성화되는 `.githooks/commit-msg`가 모든 커밋 경로에서 해당 줄을 제거한다. 새 클론에서 한 번 실행해 둔다.
+- 브랜치 흐름: `main`은 배포 브랜치, `develop`은 통합 브랜치다. 모든 작업은 `develop`에서 딴 작업 브랜치(`feat/` `fix/` `docs/` `chore/` + kebab-case)에서 하고, 작업 브랜치 → `develop` PR 병합 → `develop` → `main` PR 병합 순서로 반영한다. `main`과 `develop`에는 직접 커밋·push하지 않는다. 병렬 작업은 브랜치마다 `git worktree`로 분리한다.
+- 병합 방식: 저장소가 squash merge만 허용하므로 작업 브랜치 → `develop`와 `develop` → `main` 모두 squash로 병합한다. `develop`을 `main`에 병합하고 나면 `develop`이 자동 삭제되거나 `main`과 이력이 갈라지므로, 그때마다 `develop`을 `main`의 최신 커밋에서 다시 만든다(`gh api repos/yimsemin/wakeup/git/refs -f ref=refs/heads/develop -f sha=<main 커밋>`). 병합이 끝난 작업 브랜치는 로컬·원격 모두 지운다(저장소 설정 "병합 후 브랜치 자동 삭제"가 켜져 있다).
+- PR 제목은 커밋 제목 형식을 따르고, 본문은 `.github/pull_request_template.md`(요약·확인한 방법·남은 결정)를 쓴다. 이전 승인은 이후 PR 생성·병합으로 이어지지 않는다.
 - 커밋 제목은 `type: 간결한 한글 설명` 형식으로 쓰고 마침표를 붙이지 않는다. type은 `feat`(사용자 기능 추가), `fix`(오류 수정), `docs`, `style`(동작 불변 UI·서식), `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`다. 형식은 `commit-msg` 훅이 검사하고, 훅을 우회한 커밋은 CI가 push 범위에서 다시 검사한다.
-- push는 사용자가 그 시점에 명시적으로 승인한 경우에만 한다. 이전 승인은 이후 push로 이어지지 않는다. 기본 작업은 로컬 커밋까지다.
-- 커밋은 작업 단위로 자유롭게 나누되, push 전에 원격에 없는 커밋(`origin/main..HEAD`)을 검토해 같은 목적의 커밋은 의미 단위로 squash하고, 정리한 목록을 사용자에게 보여 승인받은 뒤 push한다. 아직 push하지 않은 커밋만 다시 쓰며, 정리 전에는 백업 브랜치를 만든다.
+- push·PR 생성·병합은 사용자가 그 시점에 명시적으로 승인한 경우에만 한다. 이전 승인은 이후 push로 이어지지 않는다. 기본 작업은 로컬 커밋까지다.
+- 커밋은 작업 단위로 자유롭게 나누되, push 전에 원격에 없는 커밋(`origin/develop..HEAD` 등 작업 브랜치의 기준 대비)을 검토해 같은 목적의 커밋은 의미 단위로 squash하고, 정리한 목록을 사용자에게 보여 승인받은 뒤 push한다. 아직 push하지 않은 커밋만 다시 쓰며, 정리 전에는 백업 브랜치를 만든다.
 - 이미 push된 원격 히스토리는 사용자의 명시적 승인 없이 force-push하거나 다시 쓰지 않는다.
-- main에 push하면 Cloudflare Pages가 자동 배포한다. 릴리스는 git 태그(`vMAJOR.MINOR.PATCH`)로만 표시하며, 1.0 전에는 사용자에게 보이는 동작이 바뀌면 MINOR, 수정만이면 PATCH를 올린다. CHANGELOG 파일이나 코드 내 버전 문자열은 두지 않고, `sw.js`의 `CACHE_NAME`은 릴리스와 무관한 캐시 무효화 카운터다.
+- `main`에 병합되면 Cloudflare Pages가 자동 배포한다(`develop`은 미리보기 배포). 릴리스는 git 태그(`vMAJOR.MINOR.PATCH`)로만 표시하며, 1.0 전에는 사용자에게 보이는 동작이 바뀌면 MINOR, 수정만이면 PATCH를 올린다. CHANGELOG 파일이나 코드 내 버전 문자열은 두지 않고, `sw.js`의 `CACHE_NAME`은 릴리스와 무관한 캐시 무효화 카운터다.
 
 ## 검증
 

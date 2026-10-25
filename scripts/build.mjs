@@ -15,8 +15,7 @@ const files = [
   "favicon.svg",
   "robots.txt",
   "sitemap.xml",
-  "_headers",
-  "_redirects"
+  "_headers"
 ];
 
 rmSync(out, { recursive: true, force: true });

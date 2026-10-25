@@ -53,12 +53,12 @@ python3 -m http.server 8000
 - 앱 셸 파일(`index.html`/`styles.css`/`app.js`/`manifest`/아이콘) 내용을 바꾸면
   `sw.js`의 `CACHE_NAME` 버전을 반드시 올린다. 안 올리면 재방문자가 구버전을 본다.
   단, 편집할 때마다 올리지 않는다. 앱 셸 파일이 들어가는 커밋을 만들 때 그 커밋에서 한 번만(+1) 올린다.
-  문서·워크플로·`_headers`/`_redirects`만 바뀌는 커밋은 올리지 않는다.
-- `_headers`/`_redirects`는 로컬 python 서버에서는 적용되지 않는다. 헤더·404 확인은 배포 환경에서.
+  문서·워크플로·`_headers`만 바뀌는 커밋은 올리지 않는다.
+- `_headers`는 로컬 python 서버에서는 적용되지 않는다. 헤더 확인은 배포 환경에서.
 
 ## 배포
 
-main에 push하면 Cloudflare Pages가 자동 배포한다(대시보드 Git 연동만 사용, `wrangler.toml` 등은 두지 않는다).
+`main` 병합 시 Cloudflare Pages가 자동 배포하고 `develop`은 미리보기 배포다(대시보드 Git 연동만 사용, `wrangler.toml` 등은 두지 않는다).
 
 CF 대시보드 쪽 설정(존별): Web Analytics 비활성(추적 코드 금지 원칙), SSL/TLS에서 HSTS, 필요 시 Browser Cache TTL을 "Respect Existing Headers"로 두어 `_headers`가 권위를 갖게 한다. 방문 통계가 필요하면 존 수준(엣지) 집계만 본다 — 페이지에 코드를 넣지 않는다.
 
