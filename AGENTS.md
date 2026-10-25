@@ -59,7 +59,7 @@ Wakeup은 데스크톱 브라우저에서 Screen Wake Lock을 이용해 화면 �
 - push·PR 생성·병합은 사용자가 그 시점에 명시적으로 승인한 경우에만 한다. 이전 승인은 이후 push로 이어지지 않는다. 기본 작업은 로컬 커밋까지다.
 - 커밋은 작업 단위로 자유롭게 나누되, push 전에 원격에 없는 커밋(`origin/develop..HEAD` 등 작업 브랜치의 기준 대비)을 검토해 같은 목적의 커밋은 의미 단위로 squash하고, 정리한 목록을 사용자에게 보여 승인받은 뒤 push한다. 아직 push하지 않은 커밋만 다시 쓰며, 정리 전에는 백업 브랜치를 만든다.
 - 이미 push된 원격 히스토리는 사용자의 명시적 승인 없이 force-push하거나 다시 쓰지 않는다.
-- `main`에 병합되면 Cloudflare Pages가 자동 배포한다(`develop`은 미리보기 배포). 릴리스는 git 태그(`vMAJOR.MINOR.PATCH`)로만 표시하며, 1.0 전에는 사용자에게 보이는 동작이 바뀌면 MINOR, 수정만이면 PATCH를 올린다. CHANGELOG 파일이나 코드 내 버전 문자열은 두지 않고, `sw.js`의 `CACHE_NAME`은 릴리스와 무관한 캐시 무효화 카운터다.
+- `main`에 병합되면 Cloudflare Pages가 자동 배포한다(`develop`은 미리보기 배포). 버전 태그, GitHub 릴리스, CHANGELOG 파일, 코드 내 버전 문자열은 두지 않는다. `sw.js`의 `CACHE_NAME`은 캐시 무효화 카운터일 뿐 버전이 아니다.
 
 ## 검증
 
