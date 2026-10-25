@@ -55,7 +55,7 @@ python3 -m http.server 8000
 
 ## 배포
 
-빌드 과정 없이 저장소의 정적 파일을 그대로 Cloudflare Pages에 배포한다. `_headers`의 보안 정책과 `_redirects`의 404 규칙이 함께 적용된다. 현재 `wakeup.subproject.kr`에 연결되어 있다.
+변환 없이 저장소의 정적 파일을 그대로 Cloudflare Pages에 배포한다(`npm run build`가 `dist/`로 복사, 출력 폴더 `dist`). `_headers`의 보안 정책과 `_redirects`의 404 규칙이 함께 적용된다. 현재 `wakeup.subproject.kr`에 연결되어 있다.
 
 ## 알려진 제약
 
