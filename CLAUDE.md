@@ -53,8 +53,8 @@ python3 -m http.server 8000
 - 앱 셸 파일(`index.html`/`styles.css`/`app.js`/`manifest`/아이콘) 내용을 바꾸면
   `sw.js`의 `CACHE_NAME` 버전을 반드시 올린다. 안 올리면 재방문자가 구버전을 본다.
   단, 편집할 때마다 올리지 않는다. 앱 셸 파일이 들어가는 커밋을 만들 때 그 커밋에서 한 번만(+1) 올린다.
-  문서·워크플로·`_headers`/`_redirects`만 바뀌는 커밋은 올리지 않는다.
-- `_headers`/`_redirects`는 로컬 python 서버에서는 적용되지 않는다. 헤더·404 확인은 배포 환경에서.
+  문서·워크플로·`_headers`만 바뀌는 커밋은 올리지 않는다.
+- `_headers`는 로컬 python 서버에서는 적용되지 않는다. 헤더 확인은 배포 환경에서.
 
 ## 배포
 

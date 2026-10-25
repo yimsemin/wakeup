@@ -43,7 +43,6 @@ python3 -m http.server 8000
 - `manifest.webmanifest`: 설치형 웹앱 정보
 - `favicon.svg`, `icons/`: 파비콘과 PWA 아이콘
 - `_headers`: Cloudflare Pages 보안 및 캐시 응답 헤더
-- `_redirects`: 존재하지 않는 경로의 404 응답 규칙
 - `robots.txt`, `sitemap.xml`: 크롤러 허용과 사이트맵 (ko/en 대체 링크 포함)
 - `.gitattributes`, `.editorconfig`, `.gitignore`: 운영체제와 무관한 편집·형식 규칙
 - `.githooks/commit-msg`: 커밋 제목 형식 검사와 AI 표식 트레일러 제거 (`git config core.hooksPath .githooks`)
@@ -55,7 +54,7 @@ python3 -m http.server 8000
 
 ## 배포
 
-변환 없이 저장소의 정적 파일을 그대로 Cloudflare Pages에 배포한다(`npm run build`가 `dist/`로 복사, 출력 폴더 `dist`). `_headers`의 보안 정책과 `_redirects`의 404 규칙이 함께 적용된다. 현재 `wakeup.subproject.kr`에 연결되어 있다.
+변환 없이 저장소의 정적 파일을 그대로 Cloudflare Pages에 배포한다(`npm run build`가 `dist/`로 복사, 출력 폴더 `dist`). `_headers`의 보안 정책이 함께 적용된다. 현재 `wakeup.subproject.kr`에 연결되어 있다.
 
 ## 알려진 제약
 

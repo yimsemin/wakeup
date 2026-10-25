@@ -119,7 +119,6 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 │       └── checks.yml
 ├── .gitignore
 ├── _headers
-├── _redirects
 ├── robots.txt
 ├── sitemap.xml
 ├── index.html
@@ -142,7 +141,6 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 - 텍스트 파일은 UTF-8과 LF로 통일해 Windows와 macOS에서 같은 형식을 유지한다.
 - 저장소에는 비밀정보, 개인 로컬 경로, 운영체제와 편집기의 로컬 파일을 포함하지 않는다.
 - `_headers`에는 Cloudflare Pages에서 필요한 최소 보안 헤더와 Service Worker의 재검증 정책만 둔다.
-- `_redirects`에는 존재하지 않는 경로를 `index.html` 본문과 `404` 상태로 응답하는 규칙 한 줄만 둔다.
 - `.github/workflows/checks.yml`는 정적 검사(문법·manifest JSON·공백·커밋 제목 형식)만 실행한다. 배포 단계는 없고 실제 브라우저 검증은 사람이 한다.
 - 배포물은 MIT 라이선스로 공개하고 `LICENSE`를 저장소 루트에 둔다.
 
