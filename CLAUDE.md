@@ -58,7 +58,7 @@ python3 -m http.server 8000
 
 ## 배포
 
-main에 push하면 Cloudflare Pages가 자동 배포한다(대시보드 Git 연동만 사용, `wrangler.toml` 등은 두지 않는다).
+`main` 병합 시 Cloudflare Pages가 자동 배포하고 `develop`은 미리보기 배포다(대시보드 Git 연동만 사용, `wrangler.toml` 등은 두지 않는다).
 
 CF 대시보드 쪽 설정(존별): Web Analytics 비활성(추적 코드 금지 원칙), SSL/TLS에서 HSTS, 필요 시 Browser Cache TTL을 "Respect Existing Headers"로 두어 `_headers`가 권위를 갖게 한다. 방문 통계가 필요하면 존 수준(엣지) 집계만 본다 — 페이지에 코드를 넣지 않는다.
 
