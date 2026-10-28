@@ -34,11 +34,13 @@
       ambientButton: "전체 화면 시계로 보기",
       ambientDesc: "큰 시계와 남은 시간을 전체 화면으로 봅니다.",
       popoutHint: "다른 창에서 작업할 때 작은 창으로 띄워 두세요.",
+      popoutBlocked: "브라우저가 새 창을 막았습니다. 이 사이트의 팝업을 허용한 뒤 다시 눌러 주세요.",
       keyHint: "Space 키로도 시작·중지할 수 있습니다.",
       ambientHint: "ESC 또는 클릭하면 돌아갑니다",
       ambientNote: "절전 방지는 이 화면이 열려 있을 때만 작동합니다. 다른 디스플레이나 데스크톱으로 옮기면 멈추고, 돌아오면 다시 작동합니다.",
       chimeLabel: "종료 알림음",
       chimePreview: "미리 듣기",
+      chimeNeedsClick: "화면을 한 번 클릭하면 종료 알림음이 켜집니다.",
       timerTitle: "타이머 설정",
       unlimited: "제한 없음",
       minutes15: "15분",
@@ -109,11 +111,13 @@
       ambientButton: "Show full-screen clock",
       ambientDesc: "Shows a large clock and the time remaining in full screen.",
       popoutHint: "Keep it visible in a compact window while you work elsewhere.",
+      popoutBlocked: "The browser blocked the new window. Allow pop-ups for this site and try again.",
       keyHint: "You can also press Space to start or stop.",
       ambientHint: "Press ESC or click to return",
       ambientNote: "Keeping the screen awake works only while this screen is open. It pauses if you move to another display or desktop, and resumes when you return.",
       chimeLabel: "Timer chime",
       chimePreview: "Preview",
+      chimeNeedsClick: "Click anywhere on the page once to turn on the timer chime.",
       timerTitle: "Set a timer",
       unlimited: "No limit",
       minutes15: "15 minutes",
@@ -167,6 +171,8 @@
     }
   };
 
+  const CANONICAL_ORIGIN = "https://wakeup.subproject.kr";
+
   const elements = {
     statusPanel: document.querySelector("#status-panel"),
     statusTitle: document.querySelector("#status-title"),
@@ -190,6 +196,8 @@
     chimeVolume: document.querySelector("#chime-volume"),
     chimeVolumeValue: document.querySelector("#chime-volume-value"),
     chimePreview: document.querySelector("#chime-preview"),
+    chimeHint: document.querySelector("#chime-hint"),
+    popoutBlocked: document.querySelector("#popout-blocked"),
     timerButtons: document.querySelectorAll("[data-duration]"),
     customForm: document.querySelector("#custom-duration"),
     customHours: document.querySelector("#custom-hours"),
@@ -207,6 +215,11 @@
   let timerExpired = false;
   let interruptionCount = 0;
   let lastErrorName = "";
+  // 잠금을 얻자마자 반복해서 풀리는 환경에서 재요청이 끝없이 이어지지 않도록 센다.
+  const RAPID_RELEASE_MS = 2000;
+  const RAPID_RELEASE_LIMIT = 3;
+  let lockAcquiredAt = 0;
+  let rapidReleaseCount = 0;
   let audioContext = null;
   let cursorHideTimer = null;
   // 알림음 크기(0~1). 저장하지 않으므로 새로 열면 기본값으로 돌아간다.
@@ -239,6 +252,7 @@
     } catch {
       audioContext = null;
     }
+    renderChimeSetting();
   }
 
   function playChime() {
@@ -270,6 +284,9 @@
     const percent = Math.round(chimeLevel * 100);
     elements.chimeVolume.value = String(percent);
     elements.chimeVolumeValue.textContent = `${percent}%`;
+    // 작은 창처럼 클릭 없이 타이머를 넘겨받은 창은 AudioContext가 없어 소리가 나지 않으므로
+    // 사용자 조작이 한 번 있어야 알림음이 켜진다는 점을 알려 준다.
+    elements.chimeHint.hidden = audioContext !== null || !(window.AudioContext || window.webkitAudioContext);
   }
 
   // 앰비언트(큰 화면) 보기. Fullscreen API로 전체 화면에 현재 시각과, 타이머가
@@ -348,6 +365,15 @@
   function translatePage() {
     const copy = COPY[language];
     document.documentElement.lang = language;
+
+    // ?lang= 주소는 hreflang 대체 주소이므로 canonical도 자기 자신을 가리킨다.
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) {
+      const hasLangParam = new URL(window.location.href).searchParams.has("lang");
+      canonical.href = hasLangParam
+        ? `${CANONICAL_ORIGIN}/?lang=${language}`
+        : `${CANONICAL_ORIGIN}/`;
+    }
 
     document.querySelectorAll("[data-i18n]").forEach((element) => {
       element.textContent = copy[element.dataset.i18n];
@@ -576,6 +602,7 @@
   }
 
   async function requestWakeLock(fromUserGesture = false) {
+    if (fromUserGesture) rapidReleaseCount = 0;
     if (!("wakeLock" in navigator)) {
       shouldStayAwake = false;
       pauseActiveTiming();
@@ -605,6 +632,7 @@
       }
 
       wakeLock = requestedLock;
+      lockAcquiredAt = Date.now();
       requestedLock.addEventListener("release", () => {
         if (wakeLock !== requestedLock) return;
         wakeLock = null;
@@ -618,7 +646,12 @@
             // 사용자가 탭·창을 전환해 멈춘 것은 여기서 세지 않는다.
             interruptionCount += 1;
             renderClock();
-            window.setTimeout(() => void requestWakeLock(), 0);
+            rapidReleaseCount = Date.now() - lockAcquiredAt < RAPID_RELEASE_MS
+              ? rapidReleaseCount + 1
+              : 0;
+            // 얻자마자 연달아 풀리면 자동 재요청을 멈추고 사용자가 직접 다시 시작하게 한다.
+            if (rapidReleaseCount >= RAPID_RELEASE_LIMIT) setState("prompt");
+            else window.setTimeout(() => void requestWakeLock(), 0);
           }
         }
       }, { once: true });
@@ -704,7 +737,6 @@
   }
 
   elements.action.addEventListener("click", () => {
-    ensureAudio();
     const shouldStop = shouldStayAwake && (state === "active" || state === "requesting");
     if (shouldStop) void stopWakeLock();
     else if (shouldStayAwake) void requestWakeLock(true);
@@ -712,11 +744,12 @@
   });
 
   elements.popout.addEventListener("click", () => {
-    window.open(
+    const popup = window.open(
       window.location.href,
       "wakeup-window",
       "width=380,height=520,menubar=no,toolbar=no,location=no,status=no"
     );
+    elements.popoutBlocked.hidden = popup !== null;
   });
 
   window.addEventListener("message", (event) => {
@@ -736,8 +769,21 @@
     renderChimeSetting();
   });
 
-  elements.chimePreview.addEventListener("click", () => {
+  // 첫 사용자 조작에서 AudioContext를 만들어 종료 알림음을 준비한다.
+  // Esc는 사용자 활성화로 치지 않아 컨텍스트가 suspended로 남을 수 있으므로 건너뛴다.
+  function prepareAudio(event) {
+    if (event.type === "keydown" && event.key === "Escape") return;
     ensureAudio();
+    if (!audioContext) return;
+    ["pointerdown", "keydown"].forEach((type) => {
+      document.removeEventListener(type, prepareAudio, true);
+    });
+  }
+  ["pointerdown", "keydown"].forEach((type) => {
+    document.addEventListener(type, prepareAudio, true);
+  });
+
+  elements.chimePreview.addEventListener("click", () => {
     playChime();
   });
 
@@ -765,7 +811,6 @@
 
   elements.timerButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      ensureAudio();
       // 이전 입력 오류가 남아 있으면 유효한 값도 다시 적용되지 않으므로 먼저 지운다.
       elements.customHours.setCustomValidity("");
       elements.customMinutes.setCustomValidity("");
@@ -785,7 +830,6 @@
 
   elements.customForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    ensureAudio();
     const hours = Number(elements.customHours.value);
     const minutes = Number(elements.customMinutes.value);
     const invalid =

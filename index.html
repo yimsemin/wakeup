@@ -172,19 +172,19 @@
         <div class="status-times" aria-label="시간 정보" data-i18n-aria="timeGroup">
           <div class="time-item">
             <span class="time-label" data-i18n="elapsedLabel">절전 방지 시간</span>
-            <output class="time-value" id="elapsed-time">00:00:00</output>
+            <span class="time-value" id="elapsed-time" role="timer">00:00:00</span>
           </div>
           <div class="time-item" id="remaining-group" hidden>
             <span class="time-label" data-i18n="remainingLabel">남은 시간</span>
-            <output class="time-value" id="remaining-time">00:00:00</output>
+            <span class="time-value" id="remaining-time" role="timer">00:00:00</span>
           </div>
           <div class="time-item" id="endtime-group" hidden>
             <span class="time-label" data-i18n="endTimeLabel">종료 예정</span>
-            <output class="time-value" id="end-time">--:--</output>
+            <span class="time-value" id="end-time" role="timer">--:--</span>
           </div>
           <div class="time-item" id="interruption-group" hidden>
             <span class="time-label" data-i18n="interruptionLabel">중단</span>
-            <output class="time-value" id="interruption-count">0</output>
+            <span class="time-value" id="interruption-count" role="timer">0</span>
           </div>
         </div>
       </section>
@@ -268,6 +268,7 @@
           >
           <output id="chime-volume-value" for="chime-volume">40%</output>
           <button type="button" id="chime-preview" data-i18n="chimePreview">미리 듣기</button>
+          <p class="action-hint chime-hint" id="chime-hint" data-i18n="chimeNeedsClick" hidden>화면을 한 번 클릭하면 종료 알림음이 켜집니다.</p>
         </div>
       </section>
 
@@ -277,6 +278,7 @@
             작은 창으로 열기
           </button>
           <p class="action-hint" data-i18n="popoutHint">다른 창에서 작업할 때 작은 창으로 띄워 두세요.</p>
+          <p class="action-hint" id="popout-blocked" role="status" data-i18n="popoutBlocked" hidden>브라우저가 새 창을 막았습니다. 이 사이트의 팝업을 허용한 뒤 다시 눌러 주세요.</p>
         </div>
         <div class="utility-item">
           <button class="secondary-action" id="ambient-button" type="button" data-i18n="ambientButton">
