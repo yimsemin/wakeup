@@ -34,11 +34,13 @@
       ambientButton: "전체 화면 시계로 보기",
       ambientDesc: "큰 시계와 남은 시간을 전체 화면으로 봅니다.",
       popoutHint: "다른 창에서 작업할 때 작은 창으로 띄워 두세요.",
+      popoutBlocked: "브라우저가 새 창을 막았습니다. 이 사이트의 팝업을 허용한 뒤 다시 눌러 주세요.",
       keyHint: "Space 키로도 시작·중지할 수 있습니다.",
       ambientHint: "ESC 또는 클릭하면 돌아갑니다",
       ambientNote: "절전 방지는 이 화면이 열려 있을 때만 작동합니다. 다른 디스플레이나 데스크톱으로 옮기면 멈추고, 돌아오면 다시 작동합니다.",
       chimeLabel: "종료 알림음",
       chimePreview: "미리 듣기",
+      chimeNeedsClick: "화면을 한 번 클릭하면 종료 알림음이 켜집니다.",
       timerTitle: "타이머 설정",
       unlimited: "제한 없음",
       minutes15: "15분",
@@ -52,32 +54,18 @@
       stop: "절전 방지 중지",
       start: "절전 방지 시작",
       retry: "다시 시도",
-      limitationsSummary: "작동 방식 및 제한 사항",
-      limitationsIntro: "Wakeup은 설치 없이 브라우저의 표준 Screen Wake Lock 기능으로 화면이 꺼지지 않도록 요청합니다.",
-      useCases: "요리하면서 레시피를 볼 때, 발표나 화면 공유, 긴 문서 읽기, 다운로드나 대시보드를 지켜볼 때처럼 화면을 계속 봐야 하는 상황에 사용하세요.",
-      controlNote: "키보드 Space 키로 절전 방지를 시작하거나 중지할 수 있습니다. 다른 창에서 작업할 때는 ‘작은 창으로 열기’ 버튼으로 Wakeup을 작은 창에 띄워 두면 편리합니다.",
-      principlesNote: "Wakeup은 가짜 마우스 입력이나 무음 영상 재생 같은 우회 기법을 쓰지 않고 브라우저 표준 Screen Wake Lock 기능만 사용합니다. 실제로 화면 잠금이 걸려 있던 시간만 절전 방지 시간으로 표시합니다.",
-      limitationVisible: "Wakeup 탭이 화면에 보일 때만 작동합니다. 다른 탭으로 이동하거나 창을 최소화하면 절전 방지가 멈추고, 이 탭으로 돌아오면 자동으로 다시 시작합니다. macOS에서는 Wakeup 창이 다른 데스크톱(스페이스)에 있거나 다른 창에 완전히 가려져 있을 때도 보이지 않는 것으로 처리되어 멈춥니다.",
-      limitationWindow: "다른 창에서 작업하면서 계속 켜 두려면 Wakeup을 별도 창으로 열고, 지금 보고 있는 데스크톱에 그 창이 보이도록 두세요. 창에 포커스가 없어도 되지만, 최소화하거나 다른 창으로 완전히 가리거나 다른 데스크톱으로 보내면 멈춥니다.",
-      limitationSystem: "저전력 모드, 배터리 상태, 운영체제 정책이나 닫힌 노트북 덮개는 웹페이지가 제어할 수 없습니다.",
-      limitationScreen: "화면 꺼짐 방지 기능이며, 화면을 끈 채 컴퓨터만 깨워 두는 기능은 아닙니다.",
-      privacyNote: "사용자 설정이나 이용 기록은 저장하지 않습니다. 오프라인 실행에 필요한 앱 파일만 브라우저에 캐시됩니다.",
       sourceLink: "GitHub에서 프로젝트 보기",
       faqTitle: "자주 묻는 질문",
-      faqTabQ: "다른 탭이나 창으로 전환하면 어떻게 되나요?",
-      faqTabA: "절전 방지가 잠시 멈췄다가 Wakeup 탭으로 돌아오면 자동으로 다시 시작합니다. 화면에 표시되는 절전 방지 시간은 잠금이 실제로 걸려 있던 시간만 셉니다.",
+      faqStopQ: "언제 멈추나요?",
+      faqStopA: "Wakeup 창이 화면에 보일 때만 작동합니다. 다른 탭으로 이동하거나 창을 최소화하면 멈추고, 돌아오면 자동으로 다시 시작합니다. macOS에서는 다른 데스크톱(스페이스)에 있거나 다른 창에 완전히 가려져도 멈춥니다. 다른 창에서 작업하며 켜 두려면 ‘작은 창으로 열기’로 별도 창을 띄워 보이는 곳에 두세요. 포커스는 없어도 됩니다.",
+      faqSystemQ: "노트북 덮개를 닫거나, 화면만 끄고 컴퓨터를 깨워 둘 수 있나요?",
+      faqSystemA: "아니요. 덮개 닫힘, 운영체제 절전, 저전력 모드는 웹페이지가 막을 수 없고, 브라우저가 제공하는 것은 화면 꺼짐 방지뿐입니다. 화면을 끈 채 다운로드나 작업을 계속하려면 운영체제의 전원 설정을 사용하세요.",
       faqBatteryQ: "배터리가 더 빨리 닳나요?",
-      faqBatteryA: "화면을 켜 두는 동안에는 화면이 꺼질 때보다 전력을 더 씁니다. Wakeup 자체는 배경에서 아무 작업도 하지 않으며, 노트북의 저전력 정책이 브라우저 요청을 무시할 수도 있습니다.",
-      faqInstallQ: "설치해야 하나요?",
-      faqInstallA: "아니요. 브라우저에서 페이지를 열기만 하면 됩니다. 원하면 설치형 앱으로 추가할 수 있고, 한 번 열어 두면 다음부터는 오프라인에서도 실행됩니다.",
-      faqBrowserQ: "어떤 브라우저에서 작동하나요?",
-      faqBrowserA: "표준 Screen Wake Lock 기능을 지원하는 최신 데스크톱 브라우저에서 작동합니다. 대부분의 최신 Chrome, Edge, Safari, Firefox가 여기에 해당하며, 지원하지 않는 브라우저에서는 ‘지원되지 않는 브라우저’라고 안내합니다.",
-      faqLidQ: "노트북 덮개를 닫아도 화면이 켜져 있나요?",
-      faqLidA: "아니요. 덮개를 닫거나 운영체제가 절전에 들어가는 것은 웹페이지가 막을 수 없습니다. Wakeup은 화면이 스스로 꺼지거나 잠기는 것만 늦춥니다.",
-      faqScreenOffQ: "화면은 끄고 컴퓨터만 깨어 있게 할 수 있나요?",
-      faqScreenOffA: "아니요. 브라우저가 제공하는 것은 화면 잠금 방지뿐입니다. 화면을 끈 채로 다운로드나 작업을 계속하려면 운영체제의 전원 설정을 사용하세요.",
+      faqBatteryA: "화면을 켜 두는 동안에는 꺼질 때보다 전력을 더 씁니다. Wakeup은 표준 Screen Wake Lock만 사용하며 가짜 입력 같은 배경 작업은 하지 않습니다.",
+      faqInstallQ: "설치해야 하나요? 어떤 브라우저에서 되나요?",
+      faqInstallA: "설치 없이 브라우저에서 열기만 하면 되고, 한 번 열어 두면 오프라인에서도 실행됩니다. 표준 Screen Wake Lock을 지원하는 최신 데스크톱 브라우저(Chrome, Edge, Safari, Firefox 등)에서 작동하며, 지원하지 않으면 ‘지원되지 않는 브라우저’라고 안내합니다.",
       faqPrivacyQ: "사용 기록이나 개인정보를 수집하나요?",
-      faqPrivacyA: "아니요. 쿠키, 사용자 설정 저장, 분석 코드가 없습니다. 오프라인 실행에 필요한 앱 파일만 브라우저에 캐시됩니다.",
+      faqPrivacyA: "아니요. 쿠키, 설정·이용 기록 저장, 분석 코드가 없습니다. 오프라인 실행에 필요한 앱 파일만 브라우저에 캐시됩니다.",
       invalidDuration: "시간과 분을 합쳐 1분 이상 입력하세요.",
       states: {
         requesting: ["절전 방지를 시작하는 중", "브라우저에 화면 잠금 방지를 요청하고 있습니다."],
@@ -109,11 +97,13 @@
       ambientButton: "Show full-screen clock",
       ambientDesc: "Shows a large clock and the time remaining in full screen.",
       popoutHint: "Keep it visible in a compact window while you work elsewhere.",
+      popoutBlocked: "The browser blocked the new window. Allow pop-ups for this site and try again.",
       keyHint: "You can also press Space to start or stop.",
       ambientHint: "Press ESC or click to return",
       ambientNote: "Keeping the screen awake works only while this screen is open. It pauses if you move to another display or desktop, and resumes when you return.",
       chimeLabel: "Timer chime",
       chimePreview: "Preview",
+      chimeNeedsClick: "Click anywhere on the page once to turn on the timer chime.",
       timerTitle: "Set a timer",
       unlimited: "No limit",
       minutes15: "15 minutes",
@@ -127,32 +117,18 @@
       stop: "Stop keeping awake",
       start: "Start keeping awake",
       retry: "Try again",
-      limitationsSummary: "How it works and limitations",
-      limitationsIntro: "Wakeup uses the browser's standard Screen Wake Lock feature to keep your screen on, with nothing to install.",
-      useCases: "Use it whenever you need to keep looking at the screen — following a recipe while cooking, giving a presentation or sharing your screen, reading a long document, or watching a download or a dashboard.",
-      controlNote: "Press the Space key to start or stop keeping the screen awake. When you work in another window, the “Open in a small window” button puts Wakeup in a compact window you can keep visible.",
-      principlesNote: "Wakeup uses only the browser's standard Screen Wake Lock feature — no fake mouse input or silent video tricks. It counts only the time the screen was actually kept awake.",
-      limitationVisible: "Wakeup works only while its tab is visible on screen. Switching to another tab or minimizing the window pauses it; returning to this tab starts it again automatically. On macOS, the Wakeup window also counts as hidden — and pauses — while it sits on another desktop (Space) or is fully covered by other windows.",
-      limitationWindow: "To keep it on while you work in another window, open Wakeup in its own window and keep that window visible on the desktop you are currently viewing. It does not need focus, but it pauses if you minimize it, fully cover it with other windows, or move it to another desktop.",
-      limitationSystem: "A web page cannot override low-power mode, battery restrictions, operating system policies, or a closed laptop lid.",
-      limitationScreen: "This keeps the screen on; it cannot keep only the computer awake while the screen is off.",
-      privacyNote: "No preferences or usage history are saved. Only the app files required for offline use are cached by the browser.",
       sourceLink: "View the project on GitHub",
       faqTitle: "Frequently asked questions",
-      faqTabQ: "What happens when I switch to another tab or window?",
-      faqTabA: "Keeping the screen awake pauses, then resumes automatically when you return to the Wakeup tab. The time shown counts only the time the screen was actually being kept awake.",
+      faqStopQ: "When does it pause?",
+      faqStopA: "Wakeup works only while its window is visible. Switching to another tab or minimizing it pauses it, and it resumes automatically when you return. On macOS it also pauses while the window is on another desktop (Space) or fully covered by other windows. To keep it on while you work elsewhere, use “Open in a small window” and keep that window visible. It does not need focus.",
+      faqSystemQ: "Does it work with the lid closed, or keep the computer awake with the screen off?",
+      faqSystemA: "No. A web page cannot override a closed lid, operating system sleep, or low-power mode, and the browser only offers a screen wake lock. To keep downloads or tasks running with the display off, use your operating system's power settings.",
       faqBatteryQ: "Does it drain the battery faster?",
-      faqBatteryA: "Keeping the display on uses more power than letting it turn off. Wakeup itself does no background work, and a laptop's low-power policy may override the browser request.",
-      faqInstallQ: "Do I need to install anything?",
-      faqInstallA: "No. Just open the page in your browser. You can optionally add it as an installed app, and once loaded it also runs offline.",
-      faqBrowserQ: "Which browsers does it work in?",
-      faqBrowserA: "It works in modern desktop browsers that support the standard Screen Wake Lock feature — most current versions of Chrome, Edge, Safari, and Firefox. Browsers without it show a “not supported” notice.",
-      faqLidQ: "Does it keep the screen on when I close the laptop lid?",
-      faqLidA: "No. A web page cannot stop the lid closing or the operating system going to sleep. Wakeup only holds off the screen turning off or locking on its own.",
-      faqScreenOffQ: "Can it keep the computer awake with the screen off?",
-      faqScreenOffA: "No. The browser only offers a screen wake lock. To keep downloads or tasks running with the display off, use your operating system's power settings.",
+      faqBatteryA: "Keeping the display on uses more power than letting it turn off. Wakeup uses only the standard Screen Wake Lock and does no background work such as fake input.",
+      faqInstallQ: "Do I need to install it? Which browsers work?",
+      faqInstallA: "No install is needed; just open it in your browser, and once loaded it also runs offline. It works in modern desktop browsers that support the standard Screen Wake Lock feature (Chrome, Edge, Safari, Firefox, and others); other browsers show a “not supported” notice.",
       faqPrivacyQ: "Does it collect any usage data or personal information?",
-      faqPrivacyA: "No. There are no cookies, no stored preferences, and no analytics. Only the app files needed for offline use are cached by the browser.",
+      faqPrivacyA: "No. There are no cookies, no stored preferences or usage history, and no analytics. Only the app files needed for offline use are cached by the browser.",
       invalidDuration: "Enter a total duration of at least 1 minute.",
       states: {
         requesting: ["Starting to keep the screen awake", "Asking the browser to keep the screen awake."],
@@ -166,6 +142,8 @@
       }
     }
   };
+
+  const CANONICAL_ORIGIN = "https://wakeup.subproject.kr";
 
   const elements = {
     statusPanel: document.querySelector("#status-panel"),
@@ -190,6 +168,8 @@
     chimeVolume: document.querySelector("#chime-volume"),
     chimeVolumeValue: document.querySelector("#chime-volume-value"),
     chimePreview: document.querySelector("#chime-preview"),
+    chimeHint: document.querySelector("#chime-hint"),
+    popoutBlocked: document.querySelector("#popout-blocked"),
     timerButtons: document.querySelectorAll("[data-duration]"),
     customForm: document.querySelector("#custom-duration"),
     customHours: document.querySelector("#custom-hours"),
@@ -207,6 +187,11 @@
   let timerExpired = false;
   let interruptionCount = 0;
   let lastErrorName = "";
+  // 잠금을 얻자마자 반복해서 풀리는 환경에서 재요청이 끝없이 이어지지 않도록 센다.
+  const RAPID_RELEASE_MS = 2000;
+  const RAPID_RELEASE_LIMIT = 3;
+  let lockAcquiredAt = 0;
+  let rapidReleaseCount = 0;
   let audioContext = null;
   let cursorHideTimer = null;
   // 알림음 크기(0~1). 저장하지 않으므로 새로 열면 기본값으로 돌아간다.
@@ -239,6 +224,7 @@
     } catch {
       audioContext = null;
     }
+    renderChimeSetting();
   }
 
   function playChime() {
@@ -270,6 +256,9 @@
     const percent = Math.round(chimeLevel * 100);
     elements.chimeVolume.value = String(percent);
     elements.chimeVolumeValue.textContent = `${percent}%`;
+    // 작은 창처럼 클릭 없이 타이머를 넘겨받은 창은 AudioContext가 없어 소리가 나지 않으므로
+    // 사용자 조작이 한 번 있어야 알림음이 켜진다는 점을 알려 준다.
+    elements.chimeHint.hidden = audioContext !== null || !(window.AudioContext || window.webkitAudioContext);
   }
 
   // 앰비언트(큰 화면) 보기. Fullscreen API로 전체 화면에 현재 시각과, 타이머가
@@ -348,6 +337,15 @@
   function translatePage() {
     const copy = COPY[language];
     document.documentElement.lang = language;
+
+    // ?lang= 주소는 hreflang 대체 주소이므로 canonical도 자기 자신을 가리킨다.
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) {
+      const hasLangParam = new URL(window.location.href).searchParams.has("lang");
+      canonical.href = hasLangParam
+        ? `${CANONICAL_ORIGIN}/?lang=${language}`
+        : `${CANONICAL_ORIGIN}/`;
+    }
 
     document.querySelectorAll("[data-i18n]").forEach((element) => {
       element.textContent = copy[element.dataset.i18n];
@@ -576,6 +574,7 @@
   }
 
   async function requestWakeLock(fromUserGesture = false) {
+    if (fromUserGesture) rapidReleaseCount = 0;
     if (!("wakeLock" in navigator)) {
       shouldStayAwake = false;
       pauseActiveTiming();
@@ -605,6 +604,7 @@
       }
 
       wakeLock = requestedLock;
+      lockAcquiredAt = Date.now();
       requestedLock.addEventListener("release", () => {
         if (wakeLock !== requestedLock) return;
         wakeLock = null;
@@ -618,7 +618,12 @@
             // 사용자가 탭·창을 전환해 멈춘 것은 여기서 세지 않는다.
             interruptionCount += 1;
             renderClock();
-            window.setTimeout(() => void requestWakeLock(), 0);
+            rapidReleaseCount = Date.now() - lockAcquiredAt < RAPID_RELEASE_MS
+              ? rapidReleaseCount + 1
+              : 0;
+            // 얻자마자 연달아 풀리면 자동 재요청을 멈추고 사용자가 직접 다시 시작하게 한다.
+            if (rapidReleaseCount >= RAPID_RELEASE_LIMIT) setState("prompt");
+            else window.setTimeout(() => void requestWakeLock(), 0);
           }
         }
       }, { once: true });
@@ -704,7 +709,6 @@
   }
 
   elements.action.addEventListener("click", () => {
-    ensureAudio();
     const shouldStop = shouldStayAwake && (state === "active" || state === "requesting");
     if (shouldStop) void stopWakeLock();
     else if (shouldStayAwake) void requestWakeLock(true);
@@ -712,11 +716,12 @@
   });
 
   elements.popout.addEventListener("click", () => {
-    window.open(
+    const popup = window.open(
       window.location.href,
       "wakeup-window",
       "width=380,height=520,menubar=no,toolbar=no,location=no,status=no"
     );
+    elements.popoutBlocked.hidden = popup !== null;
   });
 
   window.addEventListener("message", (event) => {
@@ -736,8 +741,21 @@
     renderChimeSetting();
   });
 
-  elements.chimePreview.addEventListener("click", () => {
+  // 첫 사용자 조작에서 AudioContext를 만들어 종료 알림음을 준비한다.
+  // Esc는 사용자 활성화로 치지 않아 컨텍스트가 suspended로 남을 수 있으므로 건너뛴다.
+  function prepareAudio(event) {
+    if (event.type === "keydown" && event.key === "Escape") return;
     ensureAudio();
+    if (!audioContext) return;
+    ["pointerdown", "keydown"].forEach((type) => {
+      document.removeEventListener(type, prepareAudio, true);
+    });
+  }
+  ["pointerdown", "keydown"].forEach((type) => {
+    document.addEventListener(type, prepareAudio, true);
+  });
+
+  elements.chimePreview.addEventListener("click", () => {
     playChime();
   });
 
@@ -765,7 +783,6 @@
 
   elements.timerButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      ensureAudio();
       // 이전 입력 오류가 남아 있으면 유효한 값도 다시 적용되지 않으므로 먼저 지운다.
       elements.customHours.setCustomValidity("");
       elements.customMinutes.setCustomValidity("");
@@ -785,7 +802,6 @@
 
   elements.customForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    ensureAudio();
     const hours = Number(elements.customHours.value);
     const minutes = Number(elements.customMinutes.value);
     const invalid =

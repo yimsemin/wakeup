@@ -345,28 +345,6 @@ input {
   font-weight: 700;
 }
 
-.limitations {
-  margin-top: 3.25rem;
-}
-
-.limitations summary {
-  color: #52605c;
-  font-weight: 750;
-}
-
-.limitations-body {
-  color: #4f5d59;
-  line-height: 1.65;
-}
-
-.limitations-body ul {
-  padding-left: 1.4rem;
-}
-
-.limitations-body li + li {
-  margin-top: 0.45rem;
-}
-
 .faq {
   margin-top: 3.25rem;
 }
@@ -521,12 +499,10 @@ input {
     }
 
   :root:not([data-theme="light"]) .status-copy p,
-  :root:not([data-theme="light"]) .limitations-body,
   :root:not([data-theme="light"]) .faq-item dd {
       color: #b4c1bc;
     }
 
-  :root:not([data-theme="light"]) .limitations summary,
   :root:not([data-theme="light"]) .site-footer a {
       color: #a9b8b2;
     }
@@ -645,12 +621,10 @@ input {
   }
 
 :root[data-theme="dark"] .status-copy p,
-:root[data-theme="dark"] .limitations-body,
 :root[data-theme="dark"] .faq-item dd {
     color: #b4c1bc;
   }
 
-:root[data-theme="dark"] .limitations summary,
 :root[data-theme="dark"] .site-footer a {
     color: #a9b8b2;
   }

@@ -35,13 +35,14 @@ python3 -m http.server 8000
 
 - 상태 `state`는 `PLANNING.md` 5절의 값만 가진다(`requesting`/`prompt`/`active`/`idle`/`suspended`/`expired`/`unsupported`/`error`).
 - 전이를 결정하는 세 불리언: `shouldStayAwake`(사용자 의도), `timerExpired`, `requestInProgress`.
+- `rapidReleaseCount`: 얻은 직후 `release`가 `RAPID_RELEASE_*` 기준으로 연달으면 자동 재요청 대신 `prompt`로 둔다. 사용자 조작 요청에서 0으로 초기화.
 - `requestWakeLock(fromUserGesture)`: 자동 요청(로드·가시성 복귀·해제 후 재요청)이 거부되면 `prompt`, 사용자 조작에서 나온 요청이 거부되면 `error`. Safari는 사용자 조작 없는 요청을 항상 거부한다.
 - 활성 시간·남은 시간은 tick 카운트가 아니라 `Date.now()` 차이를 누적하며,
   wakeLock이 실제로 잡힌 구간(`startActiveTiming`/`pauseActiveTiming`)에서만 진행한다.
 - 사용자 표시 문구는 `COPY` 사전 한 곳. 새 문구는 ko/en 동시 추가.
 - `interruptionCount`는 페이지가 보이는 동안 `release` 이벤트가 온 경우(자기도 모르게 잠금이 풀린 경우)에만 +1 한다. 탭 전환은 안 센다. `startNewSession`에서 0으로 초기화.
 - 예상 종료 시각(`#endtime-group`)은 `state === "active"`일 때만 표시한다. 남은 시간이 멈춘 상태에서는 의미가 없기 때문.
-- `playChime()`은 외부 파일 없이 Web Audio 오실레이터로 만든 두 음. `ensureAudio()`는 시작·타이머 버튼·미리듣기 클릭 등 사용자 조작에서만 AudioContext를 만든다(자동재생 정책). 크기 `chimeLevel`(0~1)은 슬라이더로만 바뀌고 저장하지 않는다. 0이면 재생 안 함. `renderChimeSetting()`이 `selectedDurationMs === null`(제한 없음)이면 `.chime-control`을 숨긴다 — `renderTimerSetting()`에서 호출.
+- `playChime()`은 외부 파일 없이 Web Audio 오실레이터로 만든 두 음. `ensureAudio()`는 첫 사용자 조작(pointerdown/keydown, Esc 제외)에서만 AudioContext를 만든다(자동재생 정책). 클릭 없이 타이머를 넘겨받은 작은 창은 `audioContext`가 없으므로 `#chime-hint`가 안내한다. 크기 `chimeLevel`(0~1)은 슬라이더로만 바뀌고 저장하지 않는다. 0이면 재생 안 함. `renderChimeSetting()`이 `selectedDurationMs === null`(제한 없음)이면 `.chime-control`을 숨긴다 — `renderTimerSetting()`에서 호출.
 - ‘작은 창으로 열기’(`#popout-button`, 숨길 때는 설명까지 묶은 `#popout-item`)는 `window.opener`가 있거나 `display-mode: standalone`이면 숨긴다. 새 창은 로드 시 `wakeup:hello`를 opener로 보내고, opener가 `wakeup:settings`(`collectState`: 타이머 선택·`durationMs`·`remainingMs`·`elapsedMs`·언어)로 답한다. 새 창은 `pagehide`에서 자기 상태를 opener로 되돌려 보낸다. `applyPeerState`가 양쪽에서 같은 코드로 반영 — 진행 시간은 `pauseActiveTiming` 후 재앵커. 모두 `event.origin` 확인 후 처리.
 - 앰비언트(`#ambient`)는 `<main>` 밖 body 직속 오버레이. `openAmbient`/`closeAmbient`가 `hidden` 토글 + Fullscreen API + `<main>`의 `inert`를 관리한다. 브라우저가 전체 화면을 나가면 `fullscreenchange`로 닫힌다. `renderAmbient`는 `renderClock`(1초 간격)에서 호출되고 오버레이가 숨겨져 있으면 즉시 반환한다. 저장하는 값 없음. `.ambient-note`는 전체 화면이 별도 데스크톱으로 열려 다른 화면을 보면 절전이 멈춘다는 안내(항상 표시, 커서와 함께 숨지 않음).
 - 테마 버튼은 `aria-pressed`로 상태를 표시하고 라벨은 고정("다크 모드"). 작은 창 핸드오프(`collectState`/`applyPeerState`)에 선택값(`theme`)도 실린다.
@@ -51,7 +52,7 @@ python3 -m http.server 8000
 ## 자주 실수하는 지점
 
 - 앱 셸 파일(`index.html`/`styles.css`/`app.js`/`manifest`/아이콘) 내용을 바꾸면
-  `sw.js`의 `CACHE_NAME` 버전을 반드시 올린다. 안 올리면 재방문자가 구버전을 본다.
+  `sw.js`의 `CACHE_NAME` 버전을 반드시 올린다. 안 올리면 재방문자가 구버전을 본다(CI가 기준 커밋과 비교해 검사한다).
   단, 편집할 때마다 올리지 않는다. 앱 셸 파일이 들어가는 커밋을 만들 때 그 커밋에서 한 번만(+1) 올린다.
   문서·워크플로·`_headers`만 바뀌는 커밋은 올리지 않는다.
 - `_headers`는 로컬 python 서버에서는 적용되지 않는다. 헤더 확인은 배포 환경에서.

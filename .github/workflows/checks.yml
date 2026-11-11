@@ -24,6 +24,33 @@ jobs:
           node --check sw.js
       - name: Manifest is valid JSON
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest', 'utf8'))"
+      - name: Build output covers the service worker app shell
+        run: |
+          npm run build
+          node -e "
+            const fs = require('fs');
+            const sw = fs.readFileSync('sw.js', 'utf8');
+            const list = sw.match(/APP_SHELL = \[([\s\S]*?)\]/)[1];
+            const missing = (list.match(/\"([^\"]+)\"/g) || [])
+              .map((item) => item.slice(1, -1))
+              .filter((file) => file !== './' && !fs.existsSync('dist/' + file));
+            if (missing.length) { console.error('dist에 없는 앱 셸 파일: ' + missing.join(', ')); process.exit(1); }
+          "
+      - name: Cache version is bumped when app shell changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [[ -z "$BASE_SHA" || "$BASE_SHA" =~ ^0+$ ]]; then
+            echo "비교할 기준 커밋이 없어 건너뜁니다."
+            exit 0
+          fi
+          shell='^(index\.html|styles\.css|app\.js|manifest\.webmanifest|favicon\.svg|icons/)'
+          changed="$(git diff --name-only "$BASE_SHA" HEAD | grep -E "$shell" || true)"
+          if [[ -n "$changed" ]] && ! git diff "$BASE_SHA" HEAD -- sw.js | grep -qE '^[+-].*CACHE_NAME'; then
+            echo "앱 셸 파일이 바뀌었지만 sw.js의 CACHE_NAME이 그대로입니다:"
+            echo "$changed"
+            exit 1
+          fi
       - name: Whitespace and newline errors
         run: git diff --check "$(git hash-object -t tree /dev/null)" HEAD
       - name: Commit message format
