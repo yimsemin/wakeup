@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "wakeup-app-v21";
+const CACHE_NAME = "wakeup-app-v22";
 const APP_SHELL = [
   "./",
   "./index.html",
