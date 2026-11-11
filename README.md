@@ -58,7 +58,7 @@ python3 -m http.server 8000
 
 ## 알려진 제약
 
-Screen Wake Lock은 페이지가 보이는 상태에서만 보장된다. 다른 탭으로 전환하거나 창을 최소화하면 해제될 수 있고, 운영체제의 전원 정책에 따라 요청이 거부될 수도 있다.
+Screen Wake Lock은 페이지가 보이는 동안에만 보장된다. 자세한 제약은 [배포 사이트의 FAQ](https://wakeup.subproject.kr/)에서 설명한다.
 
 ## 라이선스
 
