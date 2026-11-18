@@ -61,4 +61,4 @@ python3 -m http.server 8000
 
 `main` 병합 시 Cloudflare Pages가 자동 배포하고 작업 브랜치 미리보기는 대시보드 설정을 따른다(대시보드 Git 연동만 사용, `wrangler.toml` 등은 두지 않는다).
 
-CF 대시보드 쪽 설정(존별): Web Analytics 비활성(추적 코드 금지 원칙), SSL/TLS에서 HSTS, 필요 시 Browser Cache TTL을 "Respect Existing Headers"로 두어 `_headers`가 권위를 갖게 한다. 방문 통계가 필요하면 존 수준(엣지) 집계만 본다 — 페이지에 코드를 넣지 않는다.
+CF 대시보드 쪽 설정(존별): Web Analytics 비활성(추적 코드 금지 원칙). HSTS는 존 설정이 아니라 `_headers`로 이 사이트에만 건다(`includeSubDomains`·`preload` 없음). 존의 Browser Cache TTL(기본 4시간)이 JS·CSS·이미지의 `Cache-Control`을 덮어쓰지만, `sw.js` 설치가 `cache: "reload"`로 받으므로 앱 갱신에는 영향이 없다. 방문 통계가 필요하면 존 수준(엣지) 집계만 본다 — 페이지에 코드를 넣지 않는다.
