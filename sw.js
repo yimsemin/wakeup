@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "wakeup-app-v22";
+const CACHE_NAME = "wakeup-app-v23";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -16,7 +16,8 @@ const APP_SHELL = [
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL))
+      // 브라우저 HTTP 캐시에 남은 옛 파일이 새 캐시에 담기지 않도록 서버에서 다시 받는다.
+      .then((cache) => cache.addAll(APP_SHELL.map((url) => new Request(url, { cache: "reload" }))))
       .then(() => self.skipWaiting())
   );
 });
