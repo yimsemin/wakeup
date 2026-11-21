@@ -22,11 +22,12 @@ python3 -m http.server 8000
 ```
 
 - `http://localhost:8000` — `localhost`는 보안 컨텍스트라 Wake Lock/SW가 동작한다. `file://`로 열지 말 것.
-- Node는 `node --check`와 `npm run build`(`scripts/build.mjs`, 내장 모듈만) 용도로만 쓰며 버전은 `.node-version` 한 곳(CI의 `setup-node`도 이 파일을 읽는다). 어떤 버전 관리자든 되고, mise는 선택: 전역 설정에서 `mise settings add idiomatic_version_file_enable_tools node` 후 `mise install`.
+- Node는 로컬 검사와 `npm run build`(`scripts/build.mjs`, 내장 모듈만)에 쓰며 버전은 `.node-version` 한 곳에서 관리한다. CI의 `setup-node`도 이 파일을 읽는다. 어떤 버전 관리자든 되고, mise는 선택: 전역 설정에서 `mise settings add idiomatic_version_file_enable_tools node` 후 `mise install`.
 - 개발 중에는 `dist/` 없이 루트를 그대로 서빙한다. `dist/`는 `.gitignore` 대상이며, 배포 파일 목록을 바꾸면 `scripts/build.mjs`의 복사 목록도 고치고 `npm run build` 후 `dist`와 원본이 같은지 확인한다.
 - 린트·유닛 테스트는 없다. CI는 `.github/workflows/checks.yml`에서 PR과 `main` 푸시에 아래 검사를 실행한다. `main` 푸시에는 `.githooks/commit-msg`로 제목 형식도 검사한다. 변경 후 로컬에서도 같은 항목을 확인한다.
   - `node --check app.js && node --check sw.js`
   - `node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest'))"`
+  - `node scripts/check-copy.mjs` (한·영 카탈로그, 초기 한국어 HTML·FAQ 구조화 데이터 대조)
   - `npm run build`와 `dist/`의 앱 셸 파일 확인
   - 앱 셸 변경 시 `CACHE_NAME` 갱신 확인
   - `git diff --check`
@@ -46,8 +47,8 @@ python3 -m http.server 8000
 - 사용자 표시 문구는 `COPY` 사전 한 곳. 새 문구는 ko/en 동시 추가.
 - `interruptionCount`는 페이지가 보이는 동안 `release` 이벤트가 온 경우(자기도 모르게 잠금이 풀린 경우)에만 +1 한다. 탭 전환은 안 센다. `startNewSession`에서 0으로 초기화.
 - 예상 종료 시각(`#endtime-group`)은 `state === "active"`일 때만 표시한다. 남은 시간이 멈춘 상태에서는 의미가 없기 때문.
-- `playChime()`은 외부 파일 없이 Web Audio 오실레이터로 만든 두 음. `ensureAudio()`는 첫 사용자 조작(pointerdown/keydown, Esc 제외)에서만 AudioContext를 만든다(자동재생 정책). 클릭 없이 타이머를 넘겨받은 작은 창은 `audioContext`가 없으므로 `#chime-hint`가 안내한다. 크기 `chimeLevel`(0~1)은 슬라이더로만 바뀌고 저장하지 않는다. 0이면 재생 안 함. `renderChimeSetting()`이 `selectedDurationMs === null`(제한 없음)이면 `.chime-control`을 숨긴다 — `renderTimerSetting()`에서 호출.
-- ‘작은 창으로 열기’(`#popout-button`, 숨길 때는 설명까지 묶은 `#popout-item`)는 `window.opener`가 있거나 `display-mode: standalone`이면 숨긴다. 새 창은 로드 시 `wakeup:hello`를 opener로 보내고, opener가 `wakeup:settings`(`collectState`: 타이머 선택·`durationMs`·`remainingMs`·`elapsedMs`·언어)로 답한다. 새 창은 `pagehide`에서 자기 상태를 opener로 되돌려 보낸다. `applyPeerState`가 양쪽에서 같은 코드로 반영 — 진행 시간은 `pauseActiveTiming` 후 재앵커. 모두 `event.origin` 확인 후 처리.
+- `playChime()`은 외부 파일 없이 Web Audio 오실레이터로 만든 두 음이다. `ensureAudio()`는 첫 사용자 조작(pointerdown/keydown, Esc 제외)에서 AudioContext를 만든다. `renderChimeSetting()`은 볼륨, 오디오 지원, 활성화 여부에 맞춰 미리 듣기와 `#chime-hint`를 갱신한다.
+- ‘작은 창으로 열기’(`#popout-button`, 숨길 때는 설명까지 묶은 `#popout-item`)는 `window.opener`가 있거나 `display-mode: standalone`이면 숨긴다. 새 창은 `wakeup:hello`를 보내고 `wakeup:settings`를 받은 뒤 절전 방지를 요청한다. 중지 상태는 `shouldStayAwake`로 전달하며, 응답이 없으면 수동 시작을 안내한다. 새 창은 `pagehide`에서 자기 상태를 opener로 되돌려 보낸다. `applyPeerState`가 양쪽에서 반영하고 진행 시간은 `pauseActiveTiming` 후 이어서 센다. 모두 `event.origin` 확인 후 처리한다.
 - 앰비언트(`#ambient`)는 `<main>` 밖 body 직속 오버레이. `openAmbient`/`closeAmbient`가 `hidden` 토글 + Fullscreen API + `<main>`의 `inert`를 관리한다. 브라우저가 전체 화면을 나가면 `fullscreenchange`로 닫힌다. `renderAmbient`는 `renderClock`(1초 간격)에서 호출되고 오버레이가 숨겨져 있으면 즉시 반환한다. 저장하는 값 없음. `.ambient-note`는 전체 화면이 별도 데스크톱으로 열려 다른 화면을 보면 절전이 멈춘다는 안내(항상 표시, 커서와 함께 숨지 않음).
 - 테마 버튼은 `aria-pressed`로 상태를 표시하고 라벨은 고정("다크 모드"). 작은 창 핸드오프(`collectState`/`applyPeerState`)에 선택값(`theme`)도 실린다.
 - 테마: `<html data-theme>`(`light`/`dark`)가 있으면 그 값이, 없으면 `prefers-color-scheme`이 우선한다. 저장하지 않는다. `styles.css`의 다크 규칙은 미디어쿼리용(`:root:not([data-theme="light"])`)과 명시 선택용(`:root[data-theme="dark"]`) 두 벌이라 색을 바꿀 때 양쪽을 함께 고친다. 버튼 문구는 `renderTheme`.

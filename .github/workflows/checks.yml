@@ -24,6 +24,8 @@ jobs:
           node --check sw.js
       - name: Manifest is valid JSON
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest', 'utf8'))"
+      - name: Korean and English copy
+        run: node scripts/check-copy.mjs
       - name: Build output covers the service worker app shell
         run: |
           npm run build

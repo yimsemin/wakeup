@@ -2,7 +2,7 @@
   "use strict";
 
   // 상태 기계 개요
-  // `state`는 화면에 표시되는 상태이며 PLANNING.md 5절의 값만 가진다.
+  // `state`는 화면에 표시되는 상태이며 docs/PLANNING.md 5절의 값만 가진다.
   // 세 불리언이 전이를 결정한다.
   //   shouldStayAwake: 사용자가 절전 방지를 원하는지. stop/expire/unsupported 시 false.
   //   timerExpired:     설정한 타이머가 끝났는지. 끝나면 가시성 변경으로 재시작하지 않는다.
@@ -26,21 +26,25 @@
       timerGroup: "타이머 선택",
       elapsedLabel: "절전 방지 시간",
       remainingLabel: "남은 시간",
+      nextTimerLabel: "다음 타이머",
+      nextTimerHint: "‘{start}’을 누르면 설정한 시간으로 타이머가 시작됩니다.",
       endTimeLabel: "종료 예정",
-      interruptionLabel: "중단",
-      interruptionHint: "페이지가 보이는데도 잠금이 풀린 횟수입니다. 저전력·배터리 절약 모드나 시스템 정책이 흔한 원인이며, 풀리면 자동으로 다시 요청합니다.",
-      errorDeniedHint: "브라우저 또는 시스템이 요청을 거부했습니다. 저전력·배터리 절약 모드나 전원 정책이 원인일 수 있으니 꺼 보거나 Wakeup 탭이 보이는 상태에서 다시 시도하세요.",
+      interruptionLabel: "중단 횟수",
+      interruptionHint: "이 페이지가 보이는 동안 화면을 켜 둡니다. 중단 횟수는 페이지가 보이는데도 절전 방지가 멈춘 횟수입니다. 저전력 모드, 배터리 절약 모드 또는 시스템 정책이 원인일 수 있습니다.",
+      errorDeniedHint: "브라우저 또는 시스템이 요청을 거부했습니다. 저전력 모드, 배터리 절약 모드 또는 전원 정책이 원인일 수 있습니다. 절약 모드가 켜져 있다면 끄고, Wakeup 탭이 보이는 상태에서 다시 시도하세요.",
       popout: "작은 창으로 열기",
       ambientButton: "전체 화면 시계로 보기",
-      ambientDesc: "큰 시계와 남은 시간을 전체 화면으로 봅니다.",
+      ambientDesc: "현재 시각을 크게 표시합니다. 타이머를 설정하면 남은 시간이나 다음 타이머도 표시합니다.",
       popoutHint: "다른 창에서 작업할 때 작은 창으로 띄워 두세요.",
       popoutBlocked: "브라우저가 새 창을 막았습니다. 이 사이트의 팝업을 허용한 뒤 다시 눌러 주세요.",
       keyHint: "Space 키로도 시작·중지할 수 있습니다.",
-      ambientHint: "ESC 또는 클릭하면 돌아갑니다",
-      ambientNote: "절전 방지는 이 화면이 열려 있을 때만 작동합니다. 다른 디스플레이나 데스크톱으로 옮기면 멈추고, 돌아오면 다시 작동합니다.",
+      ambientHint: "Esc 키를 누르거나 화면을 클릭해 돌아가세요.",
+      ambientNote: "절전 방지 중에 Wakeup 화면이 가려지면 일시 중단됩니다. 타이머가 끝나기 전에 화면이 다시 보이면 절전 방지를 다시 요청합니다.",
       chimeLabel: "종료 알림음",
       chimePreview: "미리 듣기",
-      chimeNeedsClick: "화면을 한 번 클릭하면 종료 알림음이 켜집니다.",
+      chimeNeedsClick: "종료 알림음을 켜려면 화면을 클릭하거나 Esc 이외의 키를 누르세요.",
+      chimeMutedHint: "알림음이 꺼져 있습니다. 볼륨을 올리면 미리 들을 수 있습니다.",
+      chimeUnavailableHint: "이 브라우저에서는 종료 알림음을 재생할 수 없습니다.",
       timerTitle: "타이머 설정",
       unlimited: "제한 없음",
       minutes15: "15분",
@@ -57,24 +61,29 @@
       sourceLink: "GitHub에서 프로젝트 보기",
       faqTitle: "자주 묻는 질문",
       faqStopQ: "언제 멈추나요?",
-      faqStopA: "Wakeup 창이 화면에 보일 때만 작동합니다. 다른 탭으로 이동하거나 창을 최소화하면 멈추고, 돌아오면 자동으로 다시 시작합니다. macOS에서는 다른 데스크톱(스페이스)에 있거나 다른 창에 완전히 가려져도 멈춥니다. 다른 창에서 작업하며 켜 두려면 ‘작은 창으로 열기’로 별도 창을 띄워 보이는 곳에 두세요. 포커스는 없어도 됩니다.",
+      faqStopA: "다른 탭으로 이동하거나 창을 최소화하면 절전 방지가 일시 중단됩니다. 직접 중지했거나 타이머가 끝난 경우를 제외하면, 창이 다시 보일 때 절전 방지를 다시 요청합니다. macOS에서는 다른 데스크톱(스페이스)에 있거나 다른 창에 완전히 가려져도 중단될 수 있습니다. 다른 창에서 작업할 때는 Wakeup을 작은 창으로 열어 화면에 보이게 두세요.",
       faqSystemQ: "노트북 덮개를 닫거나, 화면만 끄고 컴퓨터를 깨워 둘 수 있나요?",
-      faqSystemA: "아니요. 덮개 닫힘, 운영체제 절전, 저전력 모드는 웹페이지가 막을 수 없고, 브라우저가 제공하는 것은 화면 꺼짐 방지뿐입니다. 화면을 끈 채 다운로드나 작업을 계속하려면 운영체제의 전원 설정을 사용하세요.",
+      faqSystemA: "아니요. Wakeup은 화면이 꺼지는 것만 막을 수 있습니다. 덮개를 닫거나 운영체제가 절전 모드 또는 저전력 모드를 적용하면 이 기능이 제한될 수 있습니다. 화면을 끈 채 다운로드나 작업을 계속하려면 운영체제의 전원 설정을 사용하세요.",
       faqBatteryQ: "배터리가 더 빨리 닳나요?",
-      faqBatteryA: "화면을 켜 두는 동안에는 꺼질 때보다 전력을 더 씁니다. Wakeup은 표준 Screen Wake Lock만 사용하며 가짜 입력 같은 배경 작업은 하지 않습니다.",
+      faqBatteryA: "화면을 켜 두면 꺼져 있을 때보다 전력을 더 씁니다. Wakeup은 표준 Screen Wake Lock 기능을 사용합니다.",
       faqInstallQ: "설치해야 하나요? 어떤 브라우저에서 되나요?",
-      faqInstallA: "설치 없이 브라우저에서 열기만 하면 되고, 한 번 열어 두면 오프라인에서도 실행됩니다. 표준 Screen Wake Lock을 지원하는 최신 데스크톱 브라우저(Chrome, Edge, Safari, Firefox 등)에서 작동하며, 지원하지 않으면 ‘지원되지 않는 브라우저’라고 안내합니다.",
+      faqInstallA: "설치 없이 브라우저에서 열면 됩니다. 온라인에서 앱 파일을 불러와 브라우저에 저장한 뒤에는 오프라인에서도 열 수 있습니다. 표준 Screen Wake Lock 기능을 지원하는 데스크톱 브라우저가 필요합니다.",
       faqPrivacyQ: "사용 기록이나 개인정보를 수집하나요?",
       faqPrivacyA: "아니요. 쿠키, 설정·이용 기록 저장, 분석 코드가 없습니다. 오프라인 실행에 필요한 앱 파일만 브라우저에 캐시됩니다.",
       invalidDuration: "시간과 분을 합쳐 1분 이상 입력하세요.",
+      invalidHours: "시간을 0에서 999 사이의 정수로 입력하세요.",
+      invalidMinutes: "분을 0에서 59 사이의 정수로 입력하세요.",
+      interruptionCount: "{count}회",
+      rapidReleaseHint: "절전 방지가 시작되자마자 {count}번 연속 중단됐습니다. 아래 버튼을 눌러 다시 시작하세요.",
+      statusDocumentTitle: "{status} · Wakeup",
       states: {
-        requesting: ["절전 방지를 시작하는 중", "브라우저에 화면 잠금 방지를 요청하고 있습니다."],
-        prompt: ["절전 방지를 시작하려면 버튼을 누르세요", "이 브라우저에서는 사용자가 직접 시작해야 화면 잠금 방지가 허용됩니다. 아래 ‘절전 방지 시작’을 누르면 시작됩니다."],
-        active: ["절전 방지 중", "이 페이지가 보이는 동안 화면이 켜진 상태를 유지합니다. 다른 탭으로 옮기거나 창을 최소화하면 멈춥니다."],
-        idle: ["절전 방지 꺼짐", "컴퓨터가 시스템 설정에 따라 절전 모드로 들어갈 수 있습니다."],
-        suspended: ["절전 방지가 일시 중단됨", "이 탭이 화면에 보이지 않는 동안에는 절전 방지가 멈추고, 다시 보이면 자동으로 시작합니다. 다른 창에서 작업하려면 Wakeup을 별도 창으로 열어 지금 보고 있는 데스크톱에 보이도록 두세요. 최소화하거나 다른 데스크톱(스페이스)에 두면 멈춥니다."],
-        expired: ["타이머 종료", "이제 컴퓨터가 시스템 설정에 따라 절전 모드로 들어갈 수 있습니다."],
-        unsupported: ["지원되지 않는 브라우저", "이 브라우저에서는 화면 잠금 방지 기능을 사용할 수 없습니다."],
+        requesting: ["절전 방지를 시작하는 중", "화면이 꺼지지 않도록 브라우저에 요청하고 있습니다."],
+        prompt: ["절전 방지 대기 중", "절전 방지를 시작하려면 아래 버튼을 누르세요."],
+        active: ["절전 방지 중", "이 페이지가 보이는 동안 화면을 켜 둡니다. 다른 탭으로 옮기거나 창을 최소화하면 절전 방지가 일시 중단됩니다."],
+        idle: ["절전 방지 꺼짐", "시스템 설정에 따라 화면이 꺼질 수 있습니다."],
+        suspended: ["절전 방지가 일시 중단됨", "Wakeup 창이 다시 보이면 절전 방지를 다시 요청합니다."],
+        expired: ["타이머 종료", "이제 시스템 설정에 따라 화면이 꺼질 수 있습니다."],
+        unsupported: ["지원되지 않는 브라우저", "절전 방지를 사용하려면 Wakeup을 다른 데스크톱 브라우저에서 열어 보세요."],
         error: ["절전 방지를 시작하지 못함", "브라우저 또는 시스템이 요청을 허용하지 않았습니다. 아래 버튼으로 다시 시도할 수 있습니다."]
       }
     },
@@ -85,25 +94,29 @@
       tagline: "Keep your screen awake in the browser.",
       languageGroup: "Language selection",
       theme: "Dark mode",
-      timeGroup: "Screen-awake time information",
+      timeGroup: "Screen-awake time",
       timerGroup: "Timer selection",
-      elapsedLabel: "Time kept awake",
+      elapsedLabel: "Time the screen was kept awake",
       remainingLabel: "Time remaining",
+      nextTimerLabel: "Next timer",
+      nextTimerHint: "Select “{start}” to start the timer with the duration you set.",
       endTimeLabel: "Ends around",
       interruptionLabel: "Interruptions",
-      interruptionHint: "Times the lock was released while this page was visible. Low-power or battery-saver mode and system policy are common causes; Wakeup requests it again automatically.",
-      errorDeniedHint: "The browser or system denied the request. Low-power or battery-saver mode and power policy may be the cause; turn them off, or try again while the Wakeup tab is visible.",
+      interruptionHint: "Wakeup keeps the screen on while this page is visible. Interruptions count the times it paused while the page was visible. Low-power mode, battery saver, or system policies can cause interruptions.",
+      errorDeniedHint: "The browser or system denied the request. Low-power mode, battery saver, or power policies may be the cause. If a power-saving mode is on, turn it off, then try again with the Wakeup tab visible.",
       popout: "Open in a small window",
       ambientButton: "Show full-screen clock",
-      ambientDesc: "Shows a large clock and the time remaining in full screen.",
+      ambientDesc: "Shows a large clock. If you set a timer, it also shows the time remaining or the next timer duration.",
       popoutHint: "Keep it visible in a compact window while you work elsewhere.",
       popoutBlocked: "The browser blocked the new window. Allow pop-ups for this site and try again.",
       keyHint: "You can also press Space to start or stop.",
-      ambientHint: "Press ESC or click to return",
-      ambientNote: "Keeping the screen awake works only while this screen is open. It pauses if you move to another display or desktop, and resumes when you return.",
+      ambientHint: "Press Esc or click the screen to go back.",
+      ambientNote: "Keeping the screen awake pauses when Wakeup is hidden. If Wakeup becomes visible again before the timer ends, it asks the browser to keep the screen awake again.",
       chimeLabel: "Timer chime",
       chimePreview: "Preview",
-      chimeNeedsClick: "Click anywhere on the page once to turn on the timer chime.",
+      chimeNeedsClick: "Click the page or press a key other than Esc to enable the timer chime.",
+      chimeMutedHint: "The timer chime is muted. Raise the volume to preview it.",
+      chimeUnavailableHint: "This browser cannot play the timer chime.",
       timerTitle: "Set a timer",
       unlimited: "No limit",
       minutes15: "15 minutes",
@@ -114,30 +127,35 @@
       customHoursLabel: "Hours",
       customMinutesLabel: "Minutes",
       applyTimer: "Apply",
-      stop: "Stop keeping awake",
-      start: "Start keeping awake",
+      stop: "Stop keeping the screen awake",
+      start: "Keep the screen awake",
       retry: "Try again",
       sourceLink: "View the project on GitHub",
       faqTitle: "Frequently asked questions",
       faqStopQ: "When does it pause?",
-      faqStopA: "Wakeup works only while its window is visible. Switching to another tab or minimizing it pauses it, and it resumes automatically when you return. On macOS it also pauses while the window is on another desktop (Space) or fully covered by other windows. To keep it on while you work elsewhere, use “Open in a small window” and keep that window visible. It does not need focus.",
+      faqStopA: "Switching tabs or minimizing the window pauses Wakeup. When its window is visible again, Wakeup asks the browser to keep the screen awake again unless you stopped it or the timer ended. On macOS, Wakeup can also pause on another desktop (Space) or when other windows cover it completely. While working elsewhere, open Wakeup in a small window and keep it visible.",
       faqSystemQ: "Does it work with the lid closed, or keep the computer awake with the screen off?",
-      faqSystemA: "No. A web page cannot override a closed lid, operating system sleep, or low-power mode, and the browser only offers a screen wake lock. To keep downloads or tasks running with the display off, use your operating system's power settings.",
+      faqSystemA: "No. Wakeup can only keep the screen awake. Closing the lid, putting the computer to sleep, or using low-power mode can limit this feature. To keep downloads or other tasks running with the screen off, use your operating system’s power settings.",
       faqBatteryQ: "Does it drain the battery faster?",
-      faqBatteryA: "Keeping the display on uses more power than letting it turn off. Wakeup uses only the standard Screen Wake Lock and does no background work such as fake input.",
+      faqBatteryA: "Keeping the screen on uses more power than letting it turn off. Wakeup uses the standard Screen Wake Lock feature.",
       faqInstallQ: "Do I need to install it? Which browsers work?",
-      faqInstallA: "No install is needed; just open it in your browser, and once loaded it also runs offline. It works in modern desktop browsers that support the standard Screen Wake Lock feature (Chrome, Edge, Safari, Firefox, and others); other browsers show a “not supported” notice.",
+      faqInstallA: "Open Wakeup in your browser without installing it. Once the browser has saved the app files after an online visit, you can open it offline. You need a desktop browser that supports the standard Screen Wake Lock feature.",
       faqPrivacyQ: "Does it collect any usage data or personal information?",
       faqPrivacyA: "No. There are no cookies, no stored preferences or usage history, and no analytics. Only the app files needed for offline use are cached by the browser.",
       invalidDuration: "Enter a total duration of at least 1 minute.",
+      invalidHours: "Enter a whole number from 0 to 999 for hours.",
+      invalidMinutes: "Enter a whole number from 0 to 59 for minutes.",
+      interruptionCount: "{count}",
+      rapidReleaseHint: "Wakeup stopped keeping the screen awake right after starting {count} times in a row. Press the button below to try again.",
+      statusDocumentTitle: "{status} · Wakeup",
       states: {
         requesting: ["Starting to keep the screen awake", "Asking the browser to keep the screen awake."],
-        prompt: ["Press the button to start", "This browser only allows screen wake lock after you start it yourself. Press “Start keeping awake” below to begin."],
-        active: ["Keeping screen awake", "The screen will stay on while this page remains visible. Switching tabs or minimizing the window pauses it."],
-        idle: ["Keeping awake is off", "The computer may sleep according to its system settings."],
-        suspended: ["Keeping awake is paused", "Staying awake pauses while this tab is not visible and resumes automatically when it is shown again. To work in another window, open Wakeup in its own window and keep it visible on the desktop you are currently viewing. Minimizing it or moving it to another desktop (Space) pauses it."],
-        expired: ["Timer finished", "The computer may now sleep according to its system settings."],
-        unsupported: ["Browser not supported", "This browser cannot keep the screen awake."],
+        prompt: ["Waiting to start", "Press the button below to keep the screen awake."],
+        active: ["Keeping the screen awake", "Wakeup keeps the screen on while this page is visible. Switching tabs or minimizing the window pauses it."],
+        idle: ["Wakeup is off", "The screen may turn off according to your system settings."],
+        suspended: ["Keeping the screen awake is paused", "Wakeup will ask the browser to keep the screen awake again when its window is visible."],
+        expired: ["Timer finished", "The screen may now turn off according to your system settings."],
+        unsupported: ["Browser not supported", "To keep the screen awake, try opening Wakeup in another desktop browser."],
         error: ["Could not keep the screen awake", "The browser or system rejected the request. You can try again below."]
       }
     }
@@ -149,27 +167,33 @@
     statusPanel: document.querySelector("#status-panel"),
     statusTitle: document.querySelector("#status-title"),
     statusDescription: document.querySelector("#status-description"),
+    statusTimes: document.querySelector(".status-times"),
     elapsed: document.querySelector("#elapsed-time"),
     remainingGroup: document.querySelector("#remaining-group"),
+    remainingLabel: document.querySelector("#remaining-label"),
     remaining: document.querySelector("#remaining-time"),
     endTimeGroup: document.querySelector("#endtime-group"),
     endTime: document.querySelector("#end-time"),
     interruptionGroup: document.querySelector("#interruption-group"),
     interruptionCount: document.querySelector("#interruption-count"),
     action: document.querySelector("#action-button"),
+    keyHint: document.querySelector("#key-hint"),
     popout: document.querySelector("#popout-button"),
     appMain: document.querySelector("main.app"),
     ambientButton: document.querySelector("#ambient-button"),
     ambient: document.querySelector("#ambient"),
     ambientClock: document.querySelector("#ambient-clock"),
     ambientRemaining: document.querySelector("#ambient-remaining"),
+    ambientRemainingLabel: document.querySelector("#ambient-remaining-label"),
     ambientRemainingTime: document.querySelector("#ambient-remaining-time"),
+    ambientNote: document.querySelector(".ambient-note"),
     chimeControl: document.querySelector(".chime-control"),
     chimeVolume: document.querySelector("#chime-volume"),
     chimeVolumeValue: document.querySelector("#chime-volume-value"),
     chimePreview: document.querySelector("#chime-preview"),
     chimeHint: document.querySelector("#chime-hint"),
     popoutBlocked: document.querySelector("#popout-blocked"),
+    timerSection: document.querySelector(".timer-section"),
     timerButtons: document.querySelectorAll("[data-duration]"),
     customForm: document.querySelector("#custom-duration"),
     customHours: document.querySelector("#custom-hours"),
@@ -183,6 +207,7 @@
   let state = "requesting";
   let wakeLock = null;
   let requestInProgress = false;
+  let awaitingPeerSettings = false;
   let shouldStayAwake = true;
   let timerExpired = false;
   let interruptionCount = 0;
@@ -256,9 +281,17 @@
     const percent = Math.round(chimeLevel * 100);
     elements.chimeVolume.value = String(percent);
     elements.chimeVolumeValue.textContent = `${percent}%`;
+    const copy = COPY[language];
+    const audioSupported = Boolean(window.AudioContext || window.webkitAudioContext);
+    const muted = chimeLevel === 0;
+    elements.chimeVolume.disabled = !audioSupported;
+    elements.chimePreview.disabled = muted || !audioSupported;
     // 작은 창처럼 클릭 없이 타이머를 넘겨받은 창은 AudioContext가 없어 소리가 나지 않으므로
     // 사용자 조작이 한 번 있어야 알림음이 켜진다는 점을 알려 준다.
-    elements.chimeHint.hidden = audioContext !== null || !(window.AudioContext || window.webkitAudioContext);
+    elements.chimeHint.textContent = !audioSupported
+      ? copy.chimeUnavailableHint
+      : muted ? copy.chimeMutedHint : copy.chimeNeedsClick;
+    elements.chimeHint.hidden = audioSupported && !muted && audioContext !== null;
   }
 
   // 앰비언트(큰 화면) 보기. Fullscreen API로 전체 화면에 현재 시각과, 타이머가
@@ -295,15 +328,16 @@
     }, 3000);
   }
 
-  function renderAmbient() {
+  function renderAmbient(remaining, timerLabel) {
     if (elements.ambient.hidden) return;
     elements.ambientClock.textContent = new Date().toLocaleTimeString(
       language === "ko" ? "ko-KR" : "en-US",
       { hour: "2-digit", minute: "2-digit", second: "2-digit" }
     );
-    const remaining = getTimerRemaining();
+    elements.ambientNote.hidden = !shouldStayAwake;
     elements.ambientRemaining.hidden = remaining === null;
     if (remaining !== null) {
+      elements.ambientRemainingLabel.textContent = timerLabel;
       elements.ambientRemainingTime.textContent = formatTime(remaining, true);
     }
   }
@@ -312,7 +346,7 @@
     if (!elements.ambient.hidden) return;
     elements.appMain.inert = true;
     elements.ambient.hidden = false;
-    renderAmbient();
+    renderClock();
     requestFullscreenOn(elements.ambient);
     elements.ambient.focus();
     scheduleCursorHide();
@@ -405,17 +439,22 @@
     const [title, description] = copy.states[state];
     elements.statusPanel.dataset.state = state;
     elements.statusTitle.textContent = title;
-    elements.statusDescription.textContent =
-      state === "error" && lastErrorName === "NotAllowedError"
-        ? copy.errorDeniedHint
-        : interruptionCount > 0 && state === "active"
-          ? `${description} ${copy.interruptionHint}`
-          : description;
+    let displayedDescription = description;
+    if (state === "error" && lastErrorName === "NotAllowedError") {
+      displayedDescription = copy.errorDeniedHint;
+    } else if (state === "prompt" && rapidReleaseCount >= RAPID_RELEASE_LIMIT) {
+      displayedDescription = copy.rapidReleaseHint.replace("{count}", RAPID_RELEASE_LIMIT);
+    } else if (state === "active" && interruptionCount > 0) {
+      displayedDescription = copy.interruptionHint;
+    } else if (state === "idle" && selectedDurationMs !== null) {
+      displayedDescription = copy.nextTimerHint.replace("{start}", copy.start);
+    }
+    elements.statusDescription.textContent = displayedDescription;
     // 탭이 백그라운드일 때도 사용자가 탭 제목만으로 알 수 있도록,
     // 주의가 필요한 상태(일시 중단·타이머 종료·오류)는 상태 제목을 탭 제목에 노출한다.
     const titleShowsStatus =
       state === "suspended" || state === "expired" || state === "error";
-    document.title = titleShowsStatus ? `${title} · Wakeup` : copy.seoTitle;
+    document.title = titleShowsStatus ? copy.statusDocumentTitle.replace("{status}", title) : copy.seoTitle;
 
     const canStop = shouldStayAwake && (state === "active" || state === "requesting");
     elements.action.dataset.action = canStop ? "stop" : "start";
@@ -424,7 +463,12 @@
       : state === "error" || state === "suspended"
         ? copy.retry
         : copy.start;
-    elements.action.disabled = state === "unsupported";
+    const unsupported = state === "unsupported";
+    elements.action.disabled = unsupported;
+    elements.action.hidden = unsupported;
+    elements.keyHint.hidden = unsupported;
+    elements.statusTimes.hidden = unsupported;
+    elements.timerSection.hidden = unsupported;
   }
 
   function formatTime(milliseconds, roundUp = false) {
@@ -460,6 +504,7 @@
     timerRemainingMs = durationMs;
     timerStartedAt = durationMs !== null && state === "active" ? Date.now() : null;
     timerExpired = false;
+    if (state === "expired" || state === "idle") setState("idle");
     renderTimerSetting();
     renderClock();
   }
@@ -480,6 +525,7 @@
       remainingMs: getTimerRemaining(),
       elapsedMs: getActiveElapsed(),
       timerExpired,
+      shouldStayAwake,
       theme: document.documentElement.dataset.theme || null
     };
   }
@@ -492,7 +538,7 @@
       document.documentElement.dataset.theme = data.theme;
       renderTheme();
     }
-    if (!TIMER_KEYS.includes(data.timerKey)) return;
+    if (state === "unsupported" || !TIMER_KEYS.includes(data.timerKey)) return;
 
     // 타이머 선택값(버튼 상태)
     if (data.timerKey === "custom") {
@@ -521,13 +567,15 @@
       timerRemainingMs = typeof data.remainingMs === "number" ? Math.max(0, data.remainingMs) : null;
       timerStartedAt = null;
       timerExpired = Boolean(data.timerExpired);
-      if (timerExpired) {
+      if (timerExpired || data.shouldStayAwake === false) {
         shouldStayAwake = false;
         void releaseWakeLock();
-        setState("expired");
+        setState(timerExpired ? "expired" : "idle");
       } else if (wakeLock && !wakeLock.released && document.visibilityState === "visible") {
         startActiveTiming();
         setState("active");
+      } else if (state === "expired" || state === "idle") {
+        setState("idle");
       }
     }
 
@@ -574,7 +622,11 @@
   }
 
   async function requestWakeLock(fromUserGesture = false) {
-    if (fromUserGesture) rapidReleaseCount = 0;
+    if (awaitingPeerSettings && !fromUserGesture) return;
+    if (fromUserGesture) {
+      awaitingPeerSettings = false;
+      rapidReleaseCount = 0;
+    }
     if (!("wakeLock" in navigator)) {
       shouldStayAwake = false;
       pauseActiveTiming();
@@ -590,6 +642,7 @@
     if (wakeLock && !wakeLock.released) {
       startActiveTiming();
       setState("active");
+      renderClock();
       return;
     }
 
@@ -630,6 +683,7 @@
       lastErrorName = "";
       startActiveTiming();
       setState("active");
+      renderClock();
     } catch (error) {
       lastErrorName = error && error.name ? error.name : "";
       wakeLock = null;
@@ -666,37 +720,41 @@
   async function stopWakeLock() {
     shouldStayAwake = false;
     timerExpired = false;
-    await releaseWakeLock();
+    const released = releaseWakeLock();
     setState("idle");
     renderClock();
+    await released;
   }
 
   async function expireTimer() {
     if (timerExpired) return;
     timerExpired = true;
     shouldStayAwake = false;
-    await releaseWakeLock();
+    const released = releaseWakeLock();
     setState("expired");
     renderClock();
-    playChime();
+    await released;
+    if (timerExpired) playChime();
   }
 
   function renderClock() {
-    renderAmbient();
+    const copy = COPY[language];
+    const nextTimer = !shouldStayAwake && !timerExpired;
+    const remaining = nextTimer ? selectedDurationMs : getTimerRemaining();
+    const timerLabel = nextTimer ? copy.nextTimerLabel : copy.remainingLabel;
+    renderAmbient(remaining, timerLabel);
     elements.elapsed.textContent = formatTime(getActiveElapsed());
 
     elements.interruptionGroup.hidden = interruptionCount === 0;
-    elements.interruptionCount.textContent = language === "ko"
-      ? `${interruptionCount}회`
-      : String(interruptionCount);
+    elements.interruptionCount.textContent = copy.interruptionCount.replace("{count}", interruptionCount);
 
-    const remaining = getTimerRemaining();
     elements.remainingGroup.hidden = remaining === null;
     // 남은 시간은 잠금이 실제로 잡힌 동안에만 흐르므로, 예상 종료 시각도
     // 현재 진행 중(active)일 때만 의미가 있다.
     elements.endTimeGroup.hidden = remaining === null || state !== "active";
     if (remaining === null) return;
 
+    elements.remainingLabel.textContent = timerLabel;
     elements.remaining.textContent = formatTime(remaining, true);
     if (state === "active") {
       elements.endTime.textContent = new Date(Date.now() + remaining)
@@ -732,7 +790,10 @@
       // 새로 열린 창의 요청. 현재 설정과 진행 상황을 그 창으로 보낸다.
       if (event.source) event.source.postMessage(collectState(), window.location.origin);
     } else if (data.type === "wakeup:settings") {
+      const fromOpener = openedFromPeer && event.source === window.opener;
+      if (fromOpener) awaitingPeerSettings = false;
       applyPeerState(data);
+      if (fromOpener) void requestWakeLock();
     }
   });
 
@@ -802,25 +863,28 @@
 
   elements.customForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    const hours = Number(elements.customHours.value);
-    const minutes = Number(elements.customMinutes.value);
-    const invalid =
-      !Number.isInteger(hours) ||
-      !Number.isInteger(minutes) ||
-      hours < 0 ||
-      hours > 999 ||
-      minutes < 0 ||
-      minutes > 59 ||
-      hours + minutes === 0;
+    const copy = COPY[language];
+    elements.customHours.setCustomValidity("");
+    elements.customMinutes.setCustomValidity("");
+    for (const [field, message] of [
+      [elements.customHours, copy.invalidHours],
+      [elements.customMinutes, copy.invalidMinutes]
+    ]) {
+      if (!field.validity.valid) {
+        field.setCustomValidity(message);
+        field.reportValidity();
+        return;
+      }
+    }
 
-    if (invalid) {
-      elements.customMinutes.setCustomValidity(COPY[language].invalidDuration);
+    const hours = elements.customHours.valueAsNumber;
+    const minutes = elements.customMinutes.valueAsNumber;
+    if (hours + minutes === 0) {
+      elements.customMinutes.setCustomValidity(copy.invalidDuration);
       elements.customMinutes.reportValidity();
       return;
     }
 
-    elements.customHours.setCustomValidity("");
-    elements.customMinutes.setCustomValidity("");
     setTimer((hours * 60 + minutes) * 60 * 1000, "custom", hours, minutes);
   });
 
@@ -839,6 +903,7 @@
   darkQuery.addEventListener("change", renderTheme);
 
   document.addEventListener("visibilitychange", () => {
+    if (awaitingPeerSettings) return;
     if (document.visibilityState === "visible" && shouldStayAwake && !timerExpired) {
       void requestWakeLock();
     } else if (document.visibilityState !== "visible" && shouldStayAwake) {
@@ -855,14 +920,24 @@
 
   if (openedFromPeer) {
     // 연 창에 현재 설정을 요청하고, 이 창이 닫힐 때 마지막 설정을 돌려준다.
+    awaitingPeerSettings = "wakeLock" in navigator;
     window.opener.postMessage({ type: "wakeup:hello" }, window.location.origin);
-    window.addEventListener("pagehide", () => postToPeer(window.opener), { once: true });
+    window.addEventListener("pagehide", () => {
+      if (!awaitingPeerSettings) postToPeer(window.opener);
+    }, { once: true });
   }
 
   translatePage();
   renderClock();
   window.setInterval(renderClock, 1000);
-  void requestWakeLock();
+  if (awaitingPeerSettings) {
+    // 부모 창이 응답하지 않으면 사용자가 작은 창에서 직접 시작할 수 있다.
+    window.setTimeout(() => {
+      if (awaitingPeerSettings && state === "requesting") setState("prompt");
+    }, 1000);
+  } else {
+    void requestWakeLock();
+  }
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {

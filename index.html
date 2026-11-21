@@ -82,7 +82,7 @@
           "name": "언제 멈추나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Wakeup 창이 화면에 보일 때만 작동합니다. 다른 탭으로 이동하거나 창을 최소화하면 멈추고, 돌아오면 자동으로 다시 시작합니다. macOS에서는 다른 데스크톱(스페이스)에 있거나 다른 창에 완전히 가려져도 멈춥니다. 다른 창에서 작업하며 켜 두려면 ‘작은 창으로 열기’로 별도 창을 띄워 보이는 곳에 두세요. 포커스는 없어도 됩니다."
+            "text": "다른 탭으로 이동하거나 창을 최소화하면 절전 방지가 일시 중단됩니다. 직접 중지했거나 타이머가 끝난 경우를 제외하면, 창이 다시 보일 때 절전 방지를 다시 요청합니다. macOS에서는 다른 데스크톱(스페이스)에 있거나 다른 창에 완전히 가려져도 중단될 수 있습니다. 다른 창에서 작업할 때는 Wakeup을 작은 창으로 열어 화면에 보이게 두세요."
           }
         },
         {
@@ -90,7 +90,7 @@
           "name": "노트북 덮개를 닫거나, 화면만 끄고 컴퓨터를 깨워 둘 수 있나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "아니요. 덮개 닫힘, 운영체제 절전, 저전력 모드는 웹페이지가 막을 수 없고, 브라우저가 제공하는 것은 화면 꺼짐 방지뿐입니다. 화면을 끈 채 다운로드나 작업을 계속하려면 운영체제의 전원 설정을 사용하세요."
+            "text": "아니요. Wakeup은 화면이 꺼지는 것만 막을 수 있습니다. 덮개를 닫거나 운영체제가 절전 모드 또는 저전력 모드를 적용하면 이 기능이 제한될 수 있습니다. 화면을 끈 채 다운로드나 작업을 계속하려면 운영체제의 전원 설정을 사용하세요."
           }
         },
         {
@@ -98,7 +98,7 @@
           "name": "배터리가 더 빨리 닳나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "화면을 켜 두는 동안에는 꺼질 때보다 전력을 더 씁니다. Wakeup은 표준 Screen Wake Lock만 사용하며 가짜 입력 같은 배경 작업은 하지 않습니다."
+            "text": "화면을 켜 두면 꺼져 있을 때보다 전력을 더 씁니다. Wakeup은 표준 Screen Wake Lock 기능을 사용합니다."
           }
         },
         {
@@ -106,7 +106,7 @@
           "name": "설치해야 하나요? 어떤 브라우저에서 되나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "설치 없이 브라우저에서 열기만 하면 되고, 한 번 열어 두면 오프라인에서도 실행됩니다. 표준 Screen Wake Lock을 지원하는 최신 데스크톱 브라우저(Chrome, Edge, Safari, Firefox 등)에서 작동하며, 지원하지 않으면 ‘지원되지 않는 브라우저’라고 안내합니다."
+            "text": "설치 없이 브라우저에서 열면 됩니다. 온라인에서 앱 파일을 불러와 브라우저에 저장한 뒤에는 오프라인에서도 열 수 있습니다. 표준 Screen Wake Lock 기능을 지원하는 데스크톱 브라우저가 필요합니다."
           }
         },
         {
@@ -149,17 +149,17 @@
           <span class="status-mark" aria-hidden="true"></span>
           <div class="status-copy" aria-live="polite" aria-atomic="true">
             <h2 id="status-title">절전 방지를 시작하는 중</h2>
-            <p id="status-description">브라우저에 화면 잠금 방지를 요청하고 있습니다.</p>
+            <p id="status-description">화면이 꺼지지 않도록 브라우저에 요청하고 있습니다.</p>
           </div>
         </div>
 
-        <div class="status-times" aria-label="시간 정보" data-i18n-aria="timeGroup">
+        <div class="status-times" aria-label="절전 방지 시간 정보" data-i18n-aria="timeGroup">
           <div class="time-item">
             <span class="time-label" data-i18n="elapsedLabel">절전 방지 시간</span>
             <span class="time-value" id="elapsed-time" role="timer">00:00:00</span>
           </div>
           <div class="time-item" id="remaining-group" hidden>
-            <span class="time-label" data-i18n="remainingLabel">남은 시간</span>
+            <span class="time-label" id="remaining-label" data-i18n="remainingLabel">남은 시간</span>
             <span class="time-value" id="remaining-time" role="timer">00:00:00</span>
           </div>
           <div class="time-item" id="endtime-group" hidden>
@@ -167,7 +167,7 @@
             <span class="time-value" id="end-time" role="timer">--:--</span>
           </div>
           <div class="time-item" id="interruption-group" hidden>
-            <span class="time-label" data-i18n="interruptionLabel">중단</span>
+            <span class="time-label" data-i18n="interruptionLabel">중단 횟수</span>
             <span class="time-value" id="interruption-count" role="timer">0</span>
           </div>
         </div>
@@ -182,7 +182,7 @@
         절전 방지 중지
       </button>
 
-      <p class="action-hint" data-i18n="keyHint">Space 키로도 시작·중지할 수 있습니다.</p>
+      <p class="action-hint" id="key-hint" data-i18n="keyHint">Space 키로도 시작·중지할 수 있습니다.</p>
 
       <section class="timer-section" aria-labelledby="timer-title">
         <h2 id="timer-title" class="section-title" data-i18n="timerTitle">타이머 설정</h2>
@@ -208,7 +208,7 @@
           >직접 입력</button>
         </div>
 
-        <form class="custom-duration" id="custom-duration" hidden>
+        <form class="custom-duration" id="custom-duration" novalidate hidden>
           <div class="field">
             <label for="custom-hours" data-i18n="customHoursLabel">시간</label>
             <input
@@ -252,7 +252,7 @@
           >
           <output id="chime-volume-value" for="chime-volume">40%</output>
           <button type="button" id="chime-preview" data-i18n="chimePreview">미리 듣기</button>
-          <p class="action-hint chime-hint" id="chime-hint" data-i18n="chimeNeedsClick" hidden>화면을 한 번 클릭하면 종료 알림음이 켜집니다.</p>
+          <p class="action-hint chime-hint" id="chime-hint" data-i18n="chimeNeedsClick" hidden>종료 알림음을 켜려면 화면을 클릭하거나 Esc 이외의 키를 누르세요.</p>
         </div>
       </section>
 
@@ -268,7 +268,7 @@
           <button class="secondary-action" id="ambient-button" type="button" data-i18n="ambientButton">
             전체 화면 시계로 보기
           </button>
-          <p class="action-hint" data-i18n="ambientDesc">큰 시계와 남은 시간을 전체 화면으로 봅니다.</p>
+          <p class="action-hint" data-i18n="ambientDesc">현재 시각을 크게 표시합니다. 타이머를 설정하면 남은 시간이나 다음 타이머도 표시합니다.</p>
         </div>
       </div>
 
@@ -278,25 +278,25 @@
           <div class="faq-item">
             <dt data-i18n="faqStopQ">언제 멈추나요?</dt>
             <dd data-i18n="faqStopA">
-              Wakeup 창이 화면에 보일 때만 작동합니다. 다른 탭으로 이동하거나 창을 최소화하면 멈추고, 돌아오면 자동으로 다시 시작합니다. macOS에서는 다른 데스크톱(스페이스)에 있거나 다른 창에 완전히 가려져도 멈춥니다. 다른 창에서 작업하며 켜 두려면 ‘작은 창으로 열기’로 별도 창을 띄워 보이는 곳에 두세요. 포커스는 없어도 됩니다.
+              다른 탭으로 이동하거나 창을 최소화하면 절전 방지가 일시 중단됩니다. 직접 중지했거나 타이머가 끝난 경우를 제외하면, 창이 다시 보일 때 절전 방지를 다시 요청합니다. macOS에서는 다른 데스크톱(스페이스)에 있거나 다른 창에 완전히 가려져도 중단될 수 있습니다. 다른 창에서 작업할 때는 Wakeup을 작은 창으로 열어 화면에 보이게 두세요.
             </dd>
           </div>
           <div class="faq-item">
             <dt data-i18n="faqSystemQ">노트북 덮개를 닫거나, 화면만 끄고 컴퓨터를 깨워 둘 수 있나요?</dt>
             <dd data-i18n="faqSystemA">
-              아니요. 덮개 닫힘, 운영체제 절전, 저전력 모드는 웹페이지가 막을 수 없고, 브라우저가 제공하는 것은 화면 꺼짐 방지뿐입니다. 화면을 끈 채 다운로드나 작업을 계속하려면 운영체제의 전원 설정을 사용하세요.
+              아니요. Wakeup은 화면이 꺼지는 것만 막을 수 있습니다. 덮개를 닫거나 운영체제가 절전 모드 또는 저전력 모드를 적용하면 이 기능이 제한될 수 있습니다. 화면을 끈 채 다운로드나 작업을 계속하려면 운영체제의 전원 설정을 사용하세요.
             </dd>
           </div>
           <div class="faq-item">
             <dt data-i18n="faqBatteryQ">배터리가 더 빨리 닳나요?</dt>
             <dd data-i18n="faqBatteryA">
-              화면을 켜 두는 동안에는 꺼질 때보다 전력을 더 씁니다. Wakeup은 표준 Screen Wake Lock만 사용하며 가짜 입력 같은 배경 작업은 하지 않습니다.
+              화면을 켜 두면 꺼져 있을 때보다 전력을 더 씁니다. Wakeup은 표준 Screen Wake Lock 기능을 사용합니다.
             </dd>
           </div>
           <div class="faq-item">
             <dt data-i18n="faqInstallQ">설치해야 하나요? 어떤 브라우저에서 되나요?</dt>
             <dd data-i18n="faqInstallA">
-              설치 없이 브라우저에서 열기만 하면 되고, 한 번 열어 두면 오프라인에서도 실행됩니다. 표준 Screen Wake Lock을 지원하는 최신 데스크톱 브라우저(Chrome, Edge, Safari, Firefox 등)에서 작동하며, 지원하지 않으면 ‘지원되지 않는 브라우저’라고 안내합니다.
+              설치 없이 브라우저에서 열면 됩니다. 온라인에서 앱 파일을 불러와 브라우저에 저장한 뒤에는 오프라인에서도 열 수 있습니다. 표준 Screen Wake Lock 기능을 지원하는 데스크톱 브라우저가 필요합니다.
             </dd>
           </div>
           <div class="faq-item">
@@ -318,7 +318,10 @@
       </footer>
 
       <noscript>
-        <p class="noscript">이 기능을 사용하려면 JavaScript를 허용해야 합니다.</p>
+        <p class="noscript">
+          <span lang="ko">Wakeup을 사용하려면 JavaScript를 켜세요.</span><br>
+          <span lang="en">Enable JavaScript to use Wakeup.</span>
+        </p>
       </noscript>
     </main>
 
@@ -334,13 +337,13 @@
     >
       <output class="ambient-clock" id="ambient-clock">00:00:00</output>
       <div class="ambient-remaining" id="ambient-remaining" hidden>
-        <span class="ambient-label" data-i18n="remainingLabel">남은 시간</span>
+        <span class="ambient-label" id="ambient-remaining-label" data-i18n="remainingLabel">남은 시간</span>
         <output class="ambient-remaining-time" id="ambient-remaining-time">00:00:00</output>
       </div>
       <p class="ambient-note" data-i18n="ambientNote">
-        절전 방지는 이 화면이 열려 있을 때만 작동합니다. 다른 디스플레이나 데스크톱으로 옮기면 멈추고, 돌아오면 다시 작동합니다.
+        절전 방지 중에 Wakeup 화면이 가려지면 일시 중단됩니다. 타이머가 끝나기 전에 화면이 다시 보이면 절전 방지를 다시 요청합니다.
       </p>
-      <p class="ambient-hint" data-i18n="ambientHint">ESC 또는 클릭하면 돌아갑니다</p>
+      <p class="ambient-hint" data-i18n="ambientHint">Esc 키를 누르거나 화면을 클릭해 돌아가세요.</p>
     </div>
   </body>
 </html>
