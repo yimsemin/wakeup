@@ -1,65 +1,24 @@
 # Wakeup
 
-Windows와 macOS의 지원 브라우저에서 화면 꺼짐과 잠금을 방지하는 작은 정적 웹앱이다.
+Windows와 macOS의 데스크톱 브라우저에서 화면이 꺼지지 않게 하는 정적 웹앱입니다. [Wakeup 열기](https://wakeup.subproject.kr/)
 
-> 브라우저에서 화면이 잠들지 않게.
+*A browser app that keeps your screen awake, with an optional timer and Korean and English interfaces.*
 
-*A small static web app that keeps a PC or Mac screen awake in the browser, with an optional timer. Korean and English UI.*
+- 자동 절전 방지와 타이머. 빠른 시간 선택, 직접 입력, 종료 알림음, 누적 시간을 제공합니다.
+- 작은 창과 전체 화면 시계. 다른 작업을 하면서 Wakeup을 보이는 곳에 둘 수 있습니다.
+- 한국어·영어 전환, 다크 모드, 오프라인 실행과 설치를 지원합니다.
 
-**배포 주소: <https://wakeup.subproject.kr/>**
-
-## 특징
-
-- 페이지 로드 직후 무제한 절전 방지 자동 요청
-- 무제한, 빠른 시간 선택 및 시간·분 직접 입력 타이머
-- 절전 방지가 실제 활성화된 누적 시간, 남은 시간과 예상 종료 시각 표시
-- 타이머 종료 시 짧은 알림음 (크기 조절·미리 듣기)
-- 페이지가 보이는 동안 예기치 않게 잠금이 풀린 횟수를 `중단`으로 표시
-- Space 키 단축키, 타이머 진행 상황·언어가 이어지는 별도 작은 창 열기
-- 전체 화면에 큰 시계와 남은 시간을 보여주는 `전체 화면 시계로 보기`(앰비언트) 모드
-- 열린 FAQ 섹션과 검색 엔진용 구조화 데이터
-- 한국어와 영어 지원 (`?lang=ko`, `?lang=en`)
-- 다크 모드: 시스템 설정을 따르고, 버튼으로 세션 동안만 바꿀 수 있음(저장 안 함)
-- 최초 방문 후 오프라인 실행 및 PWA 설치 지원
-- 쿠키, 사용자 설정 저장, 분석 코드 및 외부 런타임 의존성 없음
-- 가짜 마우스 입력이나 무음 영상 같은 우회 기법 없이 표준 Screen Wake Lock만 사용
+절전 방지는 Wakeup 페이지가 보이는 동안 작동합니다. 브라우저 제약은 [앱의 FAQ](https://wakeup.subproject.kr/)에서 확인할 수 있습니다.
 
 ## 로컬 실행
 
-Wake Lock과 Service Worker는 보안 컨텍스트가 필요하므로 파일을 직접 열지 말고 `localhost`로 실행한다.
+저장소 루트에서 다음 명령을 실행하고 보안 컨텍스트인 [localhost:8000](http://localhost:8000)을 엽니다.
 
 ```sh
 python3 -m http.server 8000
 ```
 
-그다음 `http://localhost:8000`을 연다. `localhost`는 브라우저에서 개발용 보안 컨텍스트로 취급된다.
-
-## 구조
-
-- `index.html`: 단일 화면의 의미 구조
-- `styles.css`: 레이아웃, 상태·테마 스타일
-- `app.js`: Wake Lock, 타이머 및 번역
-- `sw.js`: 앱 셸 오프라인 캐시
-- `manifest.webmanifest`: 설치형 웹앱 정보
-- `favicon.svg`, `icons/`: 파비콘과 PWA 아이콘
-- `_headers`: Cloudflare Pages 보안 및 캐시 응답 헤더
-- `robots.txt`, `sitemap.xml`: 크롤러 허용과 사이트맵 (ko/en 대체 링크 포함)
-- `.gitattributes`, `.editorconfig`, `.gitignore`: 운영체제와 무관한 편집·형식 규칙
-- `.githooks/pre-commit`: 스테이징한 변경에서 비밀 파일과 비밀값 패턴 검사
-- `.githooks/commit-msg`: 커밋 제목 형식 검사와 AI 표식 트레일러 제거 (`git config core.hooksPath .githooks`)
-- `.github/workflows/checks.yml`: PR과 `main` 푸시의 정적 검사. 커밋 제목 검사는 `main` 푸시에서 실행
-- `LICENSE`: MIT 라이선스
-- [`docs/PLANNING.md`](docs/PLANNING.md): 제품 범위와 완료 기준
-- `AGENTS.md`: 이후 작업자가 따라야 할 프로젝트 규칙
-- `CLAUDE.md`: Claude Code로 작업할 때의 실무 메모
-
-## 배포
-
-변환 없이 저장소의 정적 파일을 그대로 Cloudflare Pages에 배포한다(`npm run build`가 `dist/`로 복사, 출력 폴더 `dist`). `_headers`의 보안 정책이 함께 적용된다. 현재 `wakeup.subproject.kr`에 연결되어 있다.
-
-## 알려진 제약
-
-Screen Wake Lock은 페이지가 보이는 동안에만 보장된다. 자세한 제약은 [배포 사이트의 FAQ](https://wakeup.subproject.kr/)에서 설명한다.
+제품 사양은 [기획서](docs/PLANNING.md), 작업 규칙은 [AGENTS.md](AGENTS.md), 로컬 검사는 [CLAUDE.md](CLAUDE.md)를 참고하세요.
 
 ## 라이선스
 
