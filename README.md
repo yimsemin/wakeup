@@ -45,10 +45,11 @@ python3 -m http.server 8000
 - `_headers`: Cloudflare Pages 보안 및 캐시 응답 헤더
 - `robots.txt`, `sitemap.xml`: 크롤러 허용과 사이트맵 (ko/en 대체 링크 포함)
 - `.gitattributes`, `.editorconfig`, `.gitignore`: 운영체제와 무관한 편집·형식 규칙
+- `.githooks/pre-commit`: 스테이징한 변경에서 비밀 파일과 비밀값 패턴 검사
 - `.githooks/commit-msg`: 커밋 제목 형식 검사와 AI 표식 트레일러 제거 (`git config core.hooksPath .githooks`)
-- `.github/workflows/checks.yml`: 푸시·PR마다 도는 정적 검사 (문법·manifest JSON·공백·커밋 제목 형식)
+- `.github/workflows/checks.yml`: PR과 `main` 푸시의 정적 검사. 커밋 제목 검사는 `main` 푸시에서 실행
 - `LICENSE`: MIT 라이선스
-- `PLANNING.md`: 제품 범위와 완료 기준
+- [`docs/PLANNING.md`](docs/PLANNING.md): 제품 범위와 완료 기준
 - `AGENTS.md`: 이후 작업자가 따라야 할 프로젝트 규칙
 - `CLAUDE.md`: Claude Code로 작업할 때의 실무 메모
 

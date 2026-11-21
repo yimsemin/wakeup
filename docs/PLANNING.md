@@ -110,7 +110,8 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 ├── .editorconfig
 ├── .gitattributes
 ├── .githooks/
-│   └── commit-msg
+│   ├── commit-msg
+│   └── pre-commit
 ├── .github/
 │   └── workflows/
 │       └── checks.yml
@@ -127,7 +128,8 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면 꺼짐과 �
 ├── icons/
 ├── LICENSE
 ├── README.md
-├── PLANNING.md
+├── docs/
+│   └── PLANNING.md
 ├── AGENTS.md
 └── CLAUDE.md
 ```

@@ -1,8 +1,10 @@
+@AGENTS.md
+
 # CLAUDE.md
 
 ## 이 문서의 위치
 
-- 제품 범위·확정 동작·완료 기준: `PLANNING.md`
+- 제품 범위·확정 동작·완료 기준: [`docs/PLANNING.md`](docs/PLANNING.md)
 - 작업 규칙(변경 원칙, 기능 안전성, 데이터, UI/번역, 배포, 검증): `AGENTS.md`
 - 이 문서는 위 둘을 **반복하지 않고**, Claude Code로 작업할 때의 실무 정보만 담는다.
 
@@ -11,7 +13,7 @@
 데스크톱 브라우저에서 Screen Wake Lock으로 화면 꺼짐을 막는 단일 페이지 정적 웹앱.
 서버·의존성·계정 없음. 변환 없는 빌드(`npm run build`가 배포 파일을 `dist/`로 복사)만 Cloudflare Pages 표준용으로 둔다. GitHub `yimsemin/wakeup` → Cloudflare Pages → `wakeup.subproject.kr`.
 
-파일 구조는 `PLANNING.md` 6절의 트리를 기준으로 한다. `app.js`는 단일 IIFE다.
+파일 구조는 [`docs/PLANNING.md`](docs/PLANNING.md) 6절의 트리를 기준으로 한다. `app.js`는 단일 IIFE다.
 
 ## 로컬 실행 / 검증
 
@@ -22,9 +24,11 @@ python3 -m http.server 8000
 - `http://localhost:8000` — `localhost`는 보안 컨텍스트라 Wake Lock/SW가 동작한다. `file://`로 열지 말 것.
 - Node는 `node --check`와 `npm run build`(`scripts/build.mjs`, 내장 모듈만) 용도로만 쓰며 버전은 `.node-version` 한 곳(CI의 `setup-node`도 이 파일을 읽는다). 어떤 버전 관리자든 되고, mise는 선택: 전역 설정에서 `mise settings add idiomatic_version_file_enable_tools node` 후 `mise install`.
 - 개발 중에는 `dist/` 없이 루트를 그대로 서빙한다. `dist/`는 `.gitignore` 대상이며, 배포 파일 목록을 바꾸면 `scripts/build.mjs`의 복사 목록도 고치고 `npm run build` 후 `dist`와 원본이 같은지 확인한다.
-- 린트·유닛 테스트는 없다. CI는 `.github/workflows/checks.yml` 하나로, 푸시·PR마다 아래를 실행한다. 로컬에서도 변경 후 최소한 같은 것을 확인한다:
-  - `node --check app.js && node --check sw.js` (커밋 제목 형식은 `.githooks/commit-msg`와 CI가 검사)
+- 린트·유닛 테스트는 없다. CI는 `.github/workflows/checks.yml`에서 PR과 `main` 푸시에 아래 검사를 실행한다. `main` 푸시에는 `.githooks/commit-msg`로 제목 형식도 검사한다. 변경 후 로컬에서도 같은 항목을 확인한다.
+  - `node --check app.js && node --check sw.js`
   - `node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest'))"`
+  - `npm run build`와 `dist/`의 앱 셸 파일 확인
+  - 앱 셸 변경 시 `CACHE_NAME` 갱신 확인
   - `git diff --check`
 - Wake Lock 실동작·오프라인·PWA는 **실제 브라우저에서 사람이** 확인한다(자동화 불가).
   헤드리스/샌드박스 브라우저는 `visibilityState`가 hidden이라 Wake Lock 요청이 거부되고,
@@ -33,7 +37,7 @@ python3 -m http.server 8000
 
 ## app.js 구조 메모
 
-- 상태 `state`는 `PLANNING.md` 5절의 값만 가진다(`requesting`/`prompt`/`active`/`idle`/`suspended`/`expired`/`unsupported`/`error`).
+- 상태 `state`는 [`docs/PLANNING.md`](docs/PLANNING.md) 5절의 값만 가진다(`requesting`/`prompt`/`active`/`idle`/`suspended`/`expired`/`unsupported`/`error`).
 - 전이를 결정하는 세 불리언: `shouldStayAwake`(사용자 의도), `timerExpired`, `requestInProgress`.
 - `rapidReleaseCount`: 얻은 직후 `release`가 `RAPID_RELEASE_*` 기준으로 연달으면 자동 재요청 대신 `prompt`로 둔다. 사용자 조작 요청에서 0으로 초기화.
 - `requestWakeLock(fromUserGesture)`: 자동 요청(로드·가시성 복귀·해제 후 재요청)이 거부되면 `prompt`, 사용자 조작에서 나온 요청이 거부되면 `error`. Safari는 사용자 조작 없는 요청을 항상 거부한다.

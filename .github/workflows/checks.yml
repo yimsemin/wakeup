@@ -59,15 +59,26 @@ jobs:
           BEFORE_SHA: ${{ github.event.before }}
           AFTER_SHA: ${{ github.sha }}
         run: |
-          pattern='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert): .+'
           if [[ "$BEFORE_SHA" =~ ^0+$ ]]; then
-            range="$AFTER_SHA -1"
+            range=("$AFTER_SHA" -1)
           else
-            range="$BEFORE_SHA..$AFTER_SHA"
+            range=("$BEFORE_SHA..$AFTER_SHA")
           fi
-          invalid="$(git log --no-merges --format='%s' $range | grep -Ev "$pattern" || true)"
-          if [[ -n "$invalid" ]]; then
-            echo "다음 커밋 제목이 규칙과 맞지 않습니다:"
-            echo "$invalid"
-            exit 1
-          fi
+          subjects="$(git log --no-merges --format='%s' "${range[@]}")"
+          [[ -n "$subjects" ]] || exit 0
+          message="$(mktemp)"
+          trap 'rm -f "$message"' EXIT
+          while IFS= read -r subject; do
+            case "$subject" in
+              'Merge '*|'Revert "'*|'fixup! '*|'squash! '*|'amend! '*)
+                echo "main 커밋 제목은 정식 제목 형식을 사용합니다: $subject"
+                exit 1
+                ;;
+            esac
+            printf '%s\n' "$subject" > "$message"
+            .githooks/commit-msg "$message"
+            if [[ "$(cat "$message")" != "$subject" ]]; then
+              echo "커밋 제목에 AI 생성 표식을 넣을 수 없습니다."
+              exit 1
+            fi
+          done <<< "$subjects"

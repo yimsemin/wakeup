@@ -14,11 +14,20 @@ Desktop.ini
 .env
 .env.*
 !.env.example
+*.pem
+*.key
 *.log
 
 # Agent-local state
+.claude/settings.local.json
+.claude/worktrees/
 .agents/
 .codex/
 
-# Build output
+# Dependencies, build output, and caches
+node_modules/
+.venv/
+__pycache__/
 dist/
+coverage/
+.cache/
