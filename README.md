@@ -22,7 +22,7 @@ Windows에서 Python 런처를 사용한다면 `python3` 대신 `py -3`를 입�
 
 서버는 이 컴퓨터에서만 접속할 수 있습니다. 브라우저에서 [127.0.0.1:8000](http://127.0.0.1:8000/)을 엽니다. 이 주소는 HTTP에서도 절전 방지와 Service Worker를 사용할 수 있는 보안 컨텍스트입니다. 8000번 포트가 이미 사용 중이면 명령과 주소의 포트 번호를 함께 바꿉니다. 서버를 끄려면 실행한 터미널에서 `Ctrl+C`를 누릅니다.
 
-제품 사양은 [기획서](docs/PLANNING.md), 작업 규칙은 [AGENTS.md](AGENTS.md), 로컬 검사는 [CLAUDE.md](CLAUDE.md)를 참고하세요.
+제품 사양은 [기획서](docs/PLANNING.md), 개발 가이드는 [AGENTS.md](AGENTS.md)를 참고하세요.
 
 ## 라이선스
 

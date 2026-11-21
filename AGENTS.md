@@ -8,7 +8,7 @@ Wakeup은 데스크톱 브라우저에서 Screen Wake Lock으로 화면을 켜 �
 
 - 핵심 기능의 정확성과 실제 상태 표시를 장식이나 부가 기능보다 우선한다.
 - 순수 HTML, CSS, JavaScript만 사용한다.
-- 프레임워크, 번들러·트랜스파일러 같은 빌드 도구, 외부 라이브러리, 외부 폰트 및 CDN을 추가하지 않는다. `package.json`은 Cloudflare Pages 표준(`npm run build` → `dist`)을 위한 것이며 의존성을 두지 않는다. 빌드는 `scripts/build.mjs`(Node 내장 모듈만)가 배포 파일을 내용 변경 없이 `dist/`로 복사하는 것으로 한정한다.
+- 프레임워크, 번들러·트랜스파일러 같은 빌드 도구, 외부 라이브러리, 외부 폰트 및 CDN을 추가하지 않는다. `package.json`에 의존성을 두지 않는다. 빌드는 Node 내장 모듈만 사용하는 `scripts/build.mjs`로 배포 파일을 내용 변경 없이 복사하는 것으로 한정한다.
 - 요청하지 않은 기능, 호환성 우회책, 빌드·배포 자동화를 선제적으로 추가하지 않는다. SEO 관련 태그·파일은 [`docs/PLANNING.md`](docs/PLANNING.md) 3.6절에 정의된 범위로 한정하고 그 밖으로 확장하지 않는다. CI는 정적 검사 워크플로 하나로 한정한다. 배포 파일을 추가·삭제하면 `scripts/build.mjs`의 복사 목록도 함께 고친다.
 
 ## 기능 안전성
@@ -34,7 +34,8 @@ Wakeup은 데스크톱 브라우저에서 Screen Wake Lock으로 화면을 켜 �
 
 - 글자 크기·접근성 기준은 [`docs/PLANNING.md`](docs/PLANNING.md) 8절을 따른다.
 - 상태는 색상뿐 아니라 텍스트로 전달하고, 키보드 포커스와 보조기기 알림을 보존한다.
-- 한국어와 영어 문구는 `app.js`의 번역 사전 한 곳에서 관리한다.
+- 색상을 바꾸면 `styles.css`에서 시스템 다크 모드와 명시적으로 선택한 다크 모드의 규칙을 함께 확인한다.
+- 한국어와 영어 문구는 `app.js`의 `COPY`에서 관리한다. 문구를 바꿀 때 해당하는 초기 한국어 HTML과 FAQ 구조화 데이터도 맞춘다. `data-i18n`은 본문, `data-i18n-content`는 메타 정보, `data-i18n-aria`는 접근성 라벨에 쓴다.
 - 화면 문구의 표준 용어는 [용어집](docs/GLOSSARY.md)을 따른다.
 - 새 사용자 표시 문구를 추가할 때 두 언어를 동시에 추가한다. 영어 문구에서 "wake lock" 같은 개발 용어는 표준 기능 이름을 말할 때만 쓰고, 상태·시간 표시는 "keep the screen awake" 계열로 통일한다.
 - 언어 URL 매개변수는 `lang=ko`와 `lang=en`만 허용한다.
@@ -51,10 +52,28 @@ Wakeup은 데스크톱 브라우저에서 Screen Wake Lock으로 화면을 켜 �
 - push 전에 원격에 없는 커밋을 검토하고 같은 목적의 커밋을 정리한다. 정리 전 백업 브랜치를 만들고 정리한 목록을 사용자에게 보여 승인받는다.
 - `main`에 병합되면 Cloudflare Pages가 자동 배포한다(작업 브랜치 미리보기 배포는 Cloudflare 대시보드 설정을 따른다). 버전 태그, GitHub 릴리스, CHANGELOG 파일, 코드 내 버전 문자열은 두지 않는다. `sw.js`의 `CACHE_NAME`은 캐시 무효화 카운터일 뿐 버전이 아니다.
 
-## 검증
+### Cloudflare Pages 설정
 
-- [정적 검사](CLAUDE.md#로컬-실행-및-검사)를 실행하고, HTML 변경 시 기본 문법도 확인한다.
-- 시작, 중지, 타이머 종료, 자동 해제, 재요청, 언어 전환 및 오프라인 흐름을 검증한다.
+GitHub 저장소를 연결하고 빌드 명령은 `npm run build`, 출력 폴더는 `dist`로 설정한다. Web Analytics는 비활성화한다. HSTS와 Service Worker의 재검증 정책은 `_headers`에 설정하고, 응답 헤더는 Cloudflare Pages에서 확인한다.
+
+## 로컬 실행 및 검사
+
+[README의 실행 방법](README.md#로컬-실행)으로 저장소 루트를 서빙한다. Node 버전은 `.node-version`을 따른다.
+
+[정적 검사 워크플로](.github/workflows/checks.yml)는 PR과 `main` 푸시에서 실행된다. 로컬에서는 다음 명령을 실행한다.
+
+```sh
+node --check app.js
+node --check sw.js
+node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest', 'utf8'))"
+node scripts/check-copy.mjs
+npm run build
+git diff --check
+```
+
+워크플로에서는 빌드에 앱 셸 파일이 모두 들어 있는지와 기준 커밋 대비 앱 셸 변경에 캐시 이름 갱신이 있는지도 검사한다. `main` 푸시의 커밋 제목 검사는 `.githooks/commit-msg`로 실행한다.
+
+HTML을 변경하면 기본 문법도 확인한다. 시작, 중지, 타이머 종료, 자동 해제, 재요청, 언어 전환 및 오프라인 흐름을 검증한다.
 
 <!-- ysm-baseline:start -->
 ## 공통 작업 규칙 (ysm baseline)

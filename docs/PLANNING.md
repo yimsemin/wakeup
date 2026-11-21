@@ -95,7 +95,7 @@ Wakeup은 Windows와 macOS의 데스크톱 브라우저에서 화면이 꺼지�
 
 ## 6. 저장소
 
-화면은 `index.html`, `styles.css`, `app.js`로 구성한다. 배포 파일 목록은 `scripts/build.mjs`, 오프라인 앱 셸 목록은 `sw.js`에 있다. 로컬 검사와 배포 설정은 [CLAUDE.md](../CLAUDE.md)를 따른다.
+화면은 `index.html`, `styles.css`, `app.js`로 구성한다. 배포 파일 목록은 `scripts/build.mjs`, 오프라인 앱 셸 목록은 `sw.js`에 있다. 개발 가이드는 [AGENTS.md](../AGENTS.md)를 따른다.
 
 ## 7. 브라우저 제약
 
