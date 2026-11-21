@@ -216,7 +216,8 @@ label {
   color: #244039;
 }
 
-.primary-action:disabled {
+.primary-action:disabled,
+#chime-preview:disabled {
   cursor: not-allowed;
   opacity: 0.55;
 }
