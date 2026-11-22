@@ -2,7 +2,7 @@
   "attribution": {
     "commit": "",
     "pr": "",
-    "sessionUrl": false
+    "sessionUrl": true
   },
   "env": {
     "PIP_REQUIRE_VIRTUALENV": "true"
