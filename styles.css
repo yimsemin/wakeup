@@ -1,7 +1,40 @@
 :root {
   color-scheme: light dark;
-  color: #17201e;
-  background: #f4f6f5;
+  --page-bg: #f4f6f5;
+  --text: #17201e;
+  --card-bg: #ffffff;
+  --card-shadow: rgba(23, 32, 30, 0.07);
+  --focus: #0b6ecf;
+  --muted: #63706c;
+  --body-text: #4f5d59;
+  --link: #52605c;
+  --switch-bg: #f1f4f3;
+  --selected-bg: #dfece7;
+  --selected-text: #0d4c3f;
+  --pending: #b7791f;
+  --pending-halo: #f7ead6;
+  --ok: #147a5f;
+  --ok-halo: #dcefe8;
+  --off: #66736f;
+  --off-halo: #e5e9e7;
+  --bad: #b42318;
+  --bad-halo: #f8dfdc;
+  --primary-bg: #145c4b;
+  --primary-text: #ffffff;
+  --stop-bg: #e6efec;
+  --stop-text: #244039;
+  --outline-border: #cdd8d4;
+  --outline-bg: #ffffff;
+  --outline-text: #244039;
+  --option-bg: #eef2f0;
+  --input-border: #aab8b3;
+  --input-bg: #ffffff;
+  --apply-bg: #25332f;
+  --apply-text: #ffffff;
+  --accent: #145c4b;
+  --notice-bg: #fff2f1;
+  color: var(--text);
+  background: var(--page-bg);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 18.667px;
   font-synthesis: none;
@@ -20,30 +53,27 @@ body {
      나타나고 사라질 때 카드 전체가 재중앙정렬되며 버튼이 위아래로 흔들린다. */
   place-items: start center;
   padding: 2rem 1.25rem;
-  background: #f4f6f5;
+  background: var(--page-bg);
   /* 한글은 음절이 아니라 단어(띄어쓰기) 단위로 줄바꿈한다. */
   word-break: keep-all;
   overflow-wrap: break-word;
 }
 
 button,
-input,
-summary {
+input {
   color: inherit;
   font: inherit;
   font-size: 1rem;
 }
 
-button,
-summary {
+button {
   cursor: pointer;
 }
 
 button:focus-visible,
 input:focus-visible,
-summary:focus-visible,
 a:focus-visible {
-  outline: 3px solid #0b6ecf;
+  outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -55,8 +85,8 @@ a:focus-visible {
   width: min(100%, 42rem);
   padding: 2rem;
   border-radius: 1.4rem;
-  background: #ffffff;
-  box-shadow: 0 1rem 3rem rgba(23, 32, 30, 0.07);
+  background: var(--card-bg);
+  box-shadow: 0 1rem 3rem var(--card-shadow);
 }
 
 .topbar {
@@ -74,14 +104,14 @@ a:focus-visible {
 }
 
 .brand a {
-  color: #17201e;
+  color: var(--text);
   font-weight: 800;
   text-decoration: none;
 }
 
 .tagline {
   margin: 0.55rem 0 0;
-  color: #63706c;
+  color: var(--muted);
   line-height: 1.4;
 }
 
@@ -97,7 +127,7 @@ a:focus-visible {
   padding: 0.4rem 0.8rem;
   border: 0;
   border-radius: 0.7rem;
-  background: #f1f4f3;
+  background: var(--switch-bg);
   font-weight: 600;
 }
 
@@ -106,7 +136,7 @@ a:focus-visible {
   gap: 0.15rem;
   padding: 0.2rem;
   border-radius: 0.7rem;
-  background: #f1f4f3;
+  background: var(--switch-bg);
 }
 
 .language-switch button {
@@ -118,10 +148,9 @@ a:focus-visible {
 }
 
 .language-switch button[aria-pressed="true"],
-
 .theme-toggle[aria-pressed="true"] {
-  background: #dfece7;
-  color: #0d4c3f;
+  background: var(--selected-bg);
+  color: var(--selected-text);
   font-weight: 750;
 }
 
@@ -141,25 +170,25 @@ a:focus-visible {
   height: 1rem;
   margin-top: 0.4rem;
   border-radius: 50%;
-  background: #b7791f;
-  box-shadow: 0 0 0 0.3rem #f7ead6;
+  background: var(--pending);
+  box-shadow: 0 0 0 0.3rem var(--pending-halo);
 }
 
 .status-panel[data-state="active"] .status-mark {
-  background: #147a5f;
-  box-shadow: 0 0 0 0.3rem #dcefe8;
+  background: var(--ok);
+  box-shadow: 0 0 0 0.3rem var(--ok-halo);
 }
 
 .status-panel[data-state="idle"] .status-mark,
 .status-panel[data-state="expired"] .status-mark {
-  background: #66736f;
-  box-shadow: 0 0 0 0.3rem #e5e9e7;
+  background: var(--off);
+  box-shadow: 0 0 0 0.3rem var(--off-halo);
 }
 
 .status-panel[data-state="unsupported"] .status-mark,
 .status-panel[data-state="error"] .status-mark {
-  background: #b42318;
-  box-shadow: 0 0 0 0.3rem #f8dfdc;
+  background: var(--bad);
+  box-shadow: 0 0 0 0.3rem var(--bad-halo);
 }
 
 .status-copy h2 {
@@ -171,7 +200,7 @@ a:focus-visible {
 
 .status-copy p {
   margin: 0.75rem 0 0;
-  color: #4f5d59;
+  color: var(--body-text);
   line-height: 1.55;
 }
 
@@ -186,13 +215,13 @@ a:focus-visible {
 label {
   display: block;
   margin: 0 0 0.3rem;
-  color: #63706c;
+  color: var(--muted);
   font-weight: 650;
 }
 
 .time-value {
   display: block;
-  color: #17201e;
+  color: var(--text);
   font-size: 1.55rem;
   font-variant-numeric: tabular-nums;
   font-weight: 800;
@@ -206,14 +235,14 @@ label {
   padding: 0.7rem 1rem;
   border: 0;
   border-radius: 0.75rem;
-  background: #145c4b;
-  color: #ffffff;
+  background: var(--primary-bg);
+  color: var(--primary-text);
   font-weight: 800;
 }
 
 .primary-action[data-action="stop"] {
-  background: #e6efec;
-  color: #244039;
+  background: var(--stop-bg);
+  color: var(--stop-text);
 }
 
 .primary-action:disabled,
@@ -226,10 +255,10 @@ label {
   width: 100%;
   min-height: 2.9rem;
   padding: 0.6rem 1rem;
-  border: 1px solid #cdd8d4;
+  border: 1px solid var(--outline-border);
   border-radius: 0.75rem;
-  background: #ffffff;
-  color: #244039;
+  background: var(--outline-bg);
+  color: var(--outline-text);
   font-weight: 700;
 }
 
@@ -251,7 +280,8 @@ label {
   margin-top: 3.25rem;
 }
 
-.section-title {
+.section-title,
+.faq h2 {
   margin: 0;
   font-size: 1.5rem;
   line-height: 1.2;
@@ -270,13 +300,13 @@ label {
   padding: 0.55rem 0.7rem;
   border: 0;
   border-radius: 0.7rem;
-  background: #eef2f0;
+  background: var(--option-bg);
   font-weight: 700;
 }
 
 .timer-options button[aria-pressed="true"] {
-  background: #145c4b;
-  color: #ffffff;
+  background: var(--primary-bg);
+  color: var(--primary-text);
 }
 
 .custom-duration {
@@ -291,9 +321,9 @@ input {
   width: 100%;
   min-height: 3rem;
   padding: 0.55rem 0.75rem;
-  border: 1px solid #aab8b3;
+  border: 1px solid var(--input-border);
   border-radius: 0.65rem;
-  background: #ffffff;
+  background: var(--input-bg);
 }
 
 .apply-timer {
@@ -301,8 +331,8 @@ input {
   padding: 0.55rem 1rem;
   border: 0;
   border-radius: 0.65rem;
-  background: #25332f;
-  color: #ffffff;
+  background: var(--apply-bg);
+  color: var(--apply-text);
   font-weight: 750;
 }
 
@@ -326,12 +356,12 @@ input {
   border: 0;
   border-radius: 0;
   background: transparent;
-  accent-color: #145c4b;
+  accent-color: var(--accent);
 }
 
 #chime-volume-value {
   min-width: 2.8rem;
-  color: #63706c;
+  color: var(--muted);
   font-variant-numeric: tabular-nums;
   font-weight: 650;
 }
@@ -339,22 +369,15 @@ input {
 #chime-preview {
   min-height: 2.6rem;
   padding: 0.45rem 0.9rem;
-  border: 1px solid #cdd8d4;
+  border: 1px solid var(--outline-border);
   border-radius: 0.6rem;
-  background: #ffffff;
-  color: #244039;
+  background: var(--outline-bg);
+  color: var(--outline-text);
   font-weight: 700;
 }
 
 .faq {
   margin-top: 3.25rem;
-}
-
-.faq h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  line-height: 1.2;
-  letter-spacing: -0.025em;
 }
 
 .faq-list {
@@ -366,13 +389,13 @@ input {
 }
 
 .faq-item dt {
-  color: #17201e;
+  color: var(--text);
   font-weight: 700;
 }
 
 .faq-item dd {
   margin: 0.4rem 0 0;
-  color: #4f5d59;
+  color: var(--body-text);
   line-height: 1.65;
 }
 
@@ -382,14 +405,14 @@ input {
 }
 
 .site-footer a {
-  color: #52605c;
+  color: var(--link);
   font-weight: 650;
 }
 
 .noscript {
   padding: 1rem;
   border-radius: 0.7rem;
-  background: #fff2f1;
+  background: var(--notice-bg);
 }
 
 .ambient {
@@ -464,122 +487,45 @@ input {
   visibility: hidden;
 }
 
-/* 다크 테마: 기본은 시스템 설정, 버튼으로 바꾸면 data-theme이 우선한다(저장 없음). */
+/* 다크 테마: 기본은 시스템 설정, 버튼으로 바꾸면 data-theme이 우선한다(저장 없음).
+   색은 위 :root와 아래 두 블록의 변수로만 바꾼다. 두 블록의 값은 같아야 한다. */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { color-scheme: dark; }
-
-  :root:not([data-theme="light"]),
-  :root:not([data-theme="light"]) body {
-      color: #e3ebe8;
-      background: #0d1211;
-    }
-
-  :root:not([data-theme="light"]) button:focus-visible,
-  :root:not([data-theme="light"]) input:focus-visible,
-  :root:not([data-theme="light"]) summary:focus-visible,
-  :root:not([data-theme="light"]) a:focus-visible {
-      outline-color: #5aa9f0;
-    }
-
-  :root:not([data-theme="light"]) .app {
-      background: #171e1c;
-      box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.45);
-    }
-
-  :root:not([data-theme="light"]) .brand a,
-  :root:not([data-theme="light"]) .time-value,
-  :root:not([data-theme="light"]) .faq-item dt {
-      color: #e3ebe8;
-    }
-
-  :root:not([data-theme="light"]) .tagline,
-  :root:not([data-theme="light"]) .time-label,
-  :root:not([data-theme="light"]) label,
-  :root:not([data-theme="light"]) #chime-volume-value {
-      color: #9aa8a3;
-    }
-
-  :root:not([data-theme="light"]) .status-copy p,
-  :root:not([data-theme="light"]) .faq-item dd {
-      color: #b4c1bc;
-    }
-
-  :root:not([data-theme="light"]) .site-footer a {
-      color: #a9b8b2;
-    }
-
-  :root:not([data-theme="light"]) .language-switch {
-      background: #232c29;
-    }
-
-  :root:not([data-theme="light"]) .language-switch button[aria-pressed="true"],
-
-  :root:not([data-theme="light"]) .theme-toggle[aria-pressed="true"] {
-      background: #2f4a41;
-      color: #cfeee2;
-    }
-
-  :root:not([data-theme="light"]) .status-mark {
-      box-shadow: 0 0 0 0.3rem #3a2f1a;
-    }
-
-  :root:not([data-theme="light"]) .status-panel[data-state="active"] .status-mark {
-      background: #34c091;
-      box-shadow: 0 0 0 0.3rem #1b3a30;
-    }
-
-  :root:not([data-theme="light"]) .status-panel[data-state="idle"] .status-mark,
-  :root:not([data-theme="light"]) .status-panel[data-state="expired"] .status-mark {
-      background: #8a9893;
-      box-shadow: 0 0 0 0.3rem #2a3230;
-    }
-
-  :root:not([data-theme="light"]) .status-panel[data-state="unsupported"] .status-mark,
-  :root:not([data-theme="light"]) .status-panel[data-state="error"] .status-mark {
-      background: #f0685c;
-      box-shadow: 0 0 0 0.3rem #3d201d;
-    }
-
-  :root:not([data-theme="light"]) .primary-action,
-  :root:not([data-theme="light"]) .timer-options button[aria-pressed="true"] {
-      background: #2a9a7c;
-      color: #04130e;
-    }
-
-  :root:not([data-theme="light"]) .primary-action[data-action="stop"] {
-      background: #2a3532;
-      color: #d4e2dd;
-    }
-
-  :root:not([data-theme="light"]) .secondary-action,
-  :root:not([data-theme="light"]) #chime-preview {
-      border-color: #3a4642;
-      background: #1e2725;
-      color: #d4e2dd;
-    }
-
-  :root:not([data-theme="light"]) .timer-options button {
-      background: #242d2a;
-    }
-
-  :root:not([data-theme="light"]) input {
-      border-color: #4a5854;
-      background: #101715;
-    }
-
-  :root:not([data-theme="light"]) .apply-timer {
-      background: #d4e2dd;
-      color: #10201b;
-    }
-
-  :root:not([data-theme="light"]) .chime-control input[type="range"] {
-      background: transparent;
-      accent-color: #34c091;
-    }
-
-  :root:not([data-theme="light"]) .noscript {
-      background: #3d201d;
-    }
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page-bg: #0d1211;
+    --text: #e3ebe8;
+    --card-bg: #171e1c;
+    --card-shadow: rgba(0, 0, 0, 0.45);
+    --focus: #5aa9f0;
+    --muted: #9aa8a3;
+    --body-text: #b4c1bc;
+    --link: #a9b8b2;
+    --switch-bg: #232c29;
+    --selected-bg: #2f4a41;
+    --selected-text: #cfeee2;
+    --pending: #b7791f;
+    --pending-halo: #3a2f1a;
+    --ok: #34c091;
+    --ok-halo: #1b3a30;
+    --off: #8a9893;
+    --off-halo: #2a3230;
+    --bad: #f0685c;
+    --bad-halo: #3d201d;
+    --primary-bg: #2a9a7c;
+    --primary-text: #04130e;
+    --stop-bg: #2a3532;
+    --stop-text: #d4e2dd;
+    --outline-border: #3a4642;
+    --outline-bg: #1e2725;
+    --outline-text: #d4e2dd;
+    --option-bg: #242d2a;
+    --input-border: #4a5854;
+    --input-bg: #101715;
+    --apply-bg: #d4e2dd;
+    --apply-text: #10201b;
+    --accent: #34c091;
+    --notice-bg: #3d201d;
+  }
 }
 
 :root[data-theme="light"] {
@@ -588,120 +534,40 @@ input {
 
 :root[data-theme="dark"] {
   color-scheme: dark;
+  --page-bg: #0d1211;
+  --text: #e3ebe8;
+  --card-bg: #171e1c;
+  --card-shadow: rgba(0, 0, 0, 0.45);
+  --focus: #5aa9f0;
+  --muted: #9aa8a3;
+  --body-text: #b4c1bc;
+  --link: #a9b8b2;
+  --switch-bg: #232c29;
+  --selected-bg: #2f4a41;
+  --selected-text: #cfeee2;
+  --pending: #b7791f;
+  --pending-halo: #3a2f1a;
+  --ok: #34c091;
+  --ok-halo: #1b3a30;
+  --off: #8a9893;
+  --off-halo: #2a3230;
+  --bad: #f0685c;
+  --bad-halo: #3d201d;
+  --primary-bg: #2a9a7c;
+  --primary-text: #04130e;
+  --stop-bg: #2a3532;
+  --stop-text: #d4e2dd;
+  --outline-border: #3a4642;
+  --outline-bg: #1e2725;
+  --outline-text: #d4e2dd;
+  --option-bg: #242d2a;
+  --input-border: #4a5854;
+  --input-bg: #101715;
+  --apply-bg: #d4e2dd;
+  --apply-text: #10201b;
+  --accent: #34c091;
+  --notice-bg: #3d201d;
 }
-
-:root[data-theme="dark"],
-:root[data-theme="dark"] body {
-    color: #e3ebe8;
-    background: #0d1211;
-  }
-
-:root[data-theme="dark"] button:focus-visible,
-:root[data-theme="dark"] input:focus-visible,
-:root[data-theme="dark"] summary:focus-visible,
-:root[data-theme="dark"] a:focus-visible {
-    outline-color: #5aa9f0;
-  }
-
-:root[data-theme="dark"] .app {
-    background: #171e1c;
-    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.45);
-  }
-
-:root[data-theme="dark"] .brand a,
-:root[data-theme="dark"] .time-value,
-:root[data-theme="dark"] .faq-item dt {
-    color: #e3ebe8;
-  }
-
-:root[data-theme="dark"] .tagline,
-:root[data-theme="dark"] .time-label,
-:root[data-theme="dark"] label,
-:root[data-theme="dark"] #chime-volume-value {
-    color: #9aa8a3;
-  }
-
-:root[data-theme="dark"] .status-copy p,
-:root[data-theme="dark"] .faq-item dd {
-    color: #b4c1bc;
-  }
-
-:root[data-theme="dark"] .site-footer a {
-    color: #a9b8b2;
-  }
-
-:root[data-theme="dark"] .language-switch {
-    background: #232c29;
-  }
-
-:root[data-theme="dark"] .language-switch button[aria-pressed="true"],
-
-:root[data-theme="dark"] .theme-toggle[aria-pressed="true"] {
-    background: #2f4a41;
-    color: #cfeee2;
-  }
-
-:root[data-theme="dark"] .status-mark {
-    box-shadow: 0 0 0 0.3rem #3a2f1a;
-  }
-
-:root[data-theme="dark"] .status-panel[data-state="active"] .status-mark {
-    background: #34c091;
-    box-shadow: 0 0 0 0.3rem #1b3a30;
-  }
-
-:root[data-theme="dark"] .status-panel[data-state="idle"] .status-mark,
-:root[data-theme="dark"] .status-panel[data-state="expired"] .status-mark {
-    background: #8a9893;
-    box-shadow: 0 0 0 0.3rem #2a3230;
-  }
-
-:root[data-theme="dark"] .status-panel[data-state="unsupported"] .status-mark,
-:root[data-theme="dark"] .status-panel[data-state="error"] .status-mark {
-    background: #f0685c;
-    box-shadow: 0 0 0 0.3rem #3d201d;
-  }
-
-:root[data-theme="dark"] .primary-action,
-:root[data-theme="dark"] .timer-options button[aria-pressed="true"] {
-    background: #2a9a7c;
-    color: #04130e;
-  }
-
-:root[data-theme="dark"] .primary-action[data-action="stop"] {
-    background: #2a3532;
-    color: #d4e2dd;
-  }
-
-:root[data-theme="dark"] .secondary-action,
-:root[data-theme="dark"] #chime-preview {
-    border-color: #3a4642;
-    background: #1e2725;
-    color: #d4e2dd;
-  }
-
-:root[data-theme="dark"] .timer-options button {
-    background: #242d2a;
-  }
-
-:root[data-theme="dark"] input {
-    border-color: #4a5854;
-    background: #101715;
-  }
-
-:root[data-theme="dark"] .apply-timer {
-    background: #d4e2dd;
-    color: #10201b;
-  }
-
-:root[data-theme="dark"] .chime-control input[type="range"] {
-    background: transparent;
-    accent-color: #34c091;
-  }
-
-:root[data-theme="dark"] .noscript {
-    background: #3d201d;
-  }
 
 @media (max-width: 560px) {
   body {

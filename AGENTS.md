@@ -34,10 +34,10 @@ Wakeup은 데스크톱 브라우저에서 Screen Wake Lock으로 화면을 켜 �
 
 - 글자 크기·접근성 기준은 [`docs/PLANNING.md`](docs/PLANNING.md) 8절을 따른다.
 - 상태는 색상뿐 아니라 텍스트로 전달하고, 키보드 포커스와 보조기기 알림을 보존한다.
-- 색상을 바꾸면 `styles.css`에서 시스템 다크 모드와 명시적으로 선택한 다크 모드의 규칙을 함께 확인한다.
+- 색상은 `styles.css`의 색 변수로 정의한다. 값을 바꾸거나 추가하면 라이트(`:root`), 시스템 다크 모드, 명시적으로 선택한 다크 모드의 세 블록을 함께 맞춘다.
 - 한국어와 영어 문구는 `app.js`의 `COPY`에서 관리한다. 문구를 바꿀 때 해당하는 초기 한국어 HTML과 FAQ 구조화 데이터도 맞춘다. `data-i18n`은 본문, `data-i18n-content`는 메타 정보, `data-i18n-aria`는 접근성 라벨에 쓴다.
 - 화면 문구의 표준 용어는 [용어집](docs/GLOSSARY.md)을 따른다.
-- 새 사용자 표시 문구를 추가할 때 두 언어를 동시에 추가한다. 영어 문구에서 "wake lock" 같은 개발 용어는 표준 기능 이름을 말할 때만 쓰고, 상태·시간 표시는 "keep the screen awake" 계열로 통일한다.
+- 영어 문구에서 "wake lock" 같은 개발 용어는 표준 기능 이름을 말할 때만 쓰고, 상태·시간 표시는 "keep the screen awake" 계열로 통일한다.
 - 언어 URL 매개변수는 `lang=ko`와 `lang=en`만 허용한다.
 - 서비스명은 `Wakeup`으로 유지하고 한 줄 설명은 [`docs/PLANNING.md`](docs/PLANNING.md)를 기준으로 한다.
 - SEO 범위와 FAQ·구조화 데이터 문구 규칙은 [`docs/PLANNING.md`](docs/PLANNING.md) 3.6절이 기준이다.
@@ -46,9 +46,7 @@ Wakeup은 데스크톱 브라우저에서 Screen Wake Lock으로 화면을 켜 �
 
 - `main`은 정식 배포 브랜치, `develop`은 미리보기 브랜치다. 작업 브랜치는 `develop`에서 따서 `develop`으로 PR하고, `main`은 릴리스 PR(`develop` → `main`)로만 갱신한다. 두 브랜치 모두 브랜치 보호가 `static-checks` 통과를 요구한다.
 - `develop`을 두는 이유: Cloudflare Pages로 배포하므로 `main` 병합 전에 `develop`에서 미리보기를 확인한다.
-- PR 제목은 커밋 제목 형식을 따른다.
 <!-- ysm:commit-lang=ko -->
-- 커밋 제목 요약은 간결한 한국어로 쓴다. CI는 `main` 푸시 범위의 커밋 제목을 검사한다.
 - 프로젝트의 기본 적용 작업에는 로컬 stage와 커밋을 포함한다.
 - push 전에 원격에 없는 커밋을 검토하고 같은 목적의 커밋을 정리한다. 정리 전 백업 브랜치를 만들고 정리한 목록을 사용자에게 보여 승인받는다.
 - `main`에 병합되면 Cloudflare Pages가 자동 배포한다(`develop`·작업 브랜치 미리보기 배포는 Cloudflare 대시보드 설정을 따른다). 버전 태그, GitHub 릴리스, CHANGELOG 파일, 코드 내 버전 문자열은 두지 않는다. `sw.js`의 `CACHE_NAME`은 캐시 무효화 카운터일 뿐 버전이 아니다.
