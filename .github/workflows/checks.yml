@@ -66,7 +66,9 @@ jobs:
           else
             range=("$BEFORE_SHA..$AFTER_SHA")
           fi
-          subjects="$(git log --no-merges --format='%s' "${range[@]}")"
+          # 봇(Dependabot 등)이 만든 커밋 제목은 언어 선언의 예외다.
+          subjects="$(git log --no-merges --format='%an%x09%s' "${range[@]}" |
+            awk -F'\t' '$1 !~ /\[bot\]$/ { sub(/^[^\t]*\t/, ""); print }')"
           [[ -n "$subjects" ]] || exit 0
           message="$(mktemp)"
           trap 'rm -f "$message"' EXIT
