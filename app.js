@@ -837,7 +837,7 @@
     if (!elements.ambient.hidden) return;
     if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
     if (event.target instanceof Element &&
-        event.target.closest("input, button, summary, a, [contenteditable]")) return;
+        event.target.closest("input, button, a, [contenteditable]")) return;
     event.preventDefault();
     elements.action.click();
   });
